@@ -1,3 +1,3 @@
-var vimlet_commons = require("../index.js");
+var vimlet_commons = require("../release");
 
 vimlet_commons.run.exec("dir", "/a");
