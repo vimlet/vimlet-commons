@@ -23,7 +23,7 @@ exports.download = function(url, file, handler) {
   var filePath = path.resolve(file);
   var fileDirectory = path.dirname(filePath);
 
-  // Make parent directorys
+  // Make parent directories
   fs.mkdirsSync(fileDirectory);
 
   var out = fs.createWriteStream(filePath);

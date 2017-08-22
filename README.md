@@ -49,3 +49,19 @@ Handle http requests and download files.
 
 **Notes**:
 - DownloadHandler is a callback function(received, total, done, error) on node.
+
+## Compress
+
+**Description**:
+
+Packs and unpacks files and directories for the following formats:
+- zip
+- tar
+- tgz
+
+**Methods**:
+- pack(String file, String out, String format) : **void**
+- unpack(String file, String out, String format) : **void**
+
+**Notes**:
+- Format must exactly match one of these "zip", "tar", "tgz".
