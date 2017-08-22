@@ -1,7 +1,7 @@
 var spawn = require("child_process").spawn;
-var os = require(__dirname +"/os.js")
+var os = require(__dirname +"/os.js");
 
-function runCommand(command, args, workingDirectory) {
+function runCommand(command, args, workingDirectory, execHandler) {
 
   var config = {
     encoding: "utf8"
@@ -13,23 +13,13 @@ function runCommand(command, args, workingDirectory) {
 
   var p = spawn(command, args, config);
 
-  // Register spawn callbacks
-  p.stdout.on("data", function (data) {
-    console.log(data.toString());
-  });
-
-  p.stderr.on("data", function (data) {
-    console.log(data.toString());
-  });
-
-
   return p;
 
 }
 
-exports.exec = function (command, args, workingDirectory) {
+exports.exec = function (command, args, workingDirectory, execHandler) {
 
-  var cmd;
+  var p;
 
   if(os.isWindows()){
 
@@ -39,10 +29,40 @@ exports.exec = function (command, args, workingDirectory) {
       winArgs.concat(args);
     }
 
-    cmd = runCommand("cmd", winArgs, workingDirectory);
+    p = runCommand("cmd", winArgs, workingDirectory);
 
   } else {
-    cmd = runCommand(command, args, workingDirectory);
+    p = runCommand(command, args, workingDirectory);
   }
+
+  // Register spawn execHandlers
+  p.stdout.on("data", function (data) {
+
+    if(execHandler) {
+      execHandler(data.toString());
+    } else {
+      console.log(data.toString());
+    }
+
+  });
+
+  p.stderr.on("data", function (data) {
+
+    if(execHandler) {
+      execHandler(null, data.toString());
+    } else {
+      console.log(data.toString());
+    }
+
+  });
+
+  p.on('exit', function (exit) {
+
+    if(execHandler) {
+      execHandler(null, null, exit);
+    }
+
+  });
+
 
 };
