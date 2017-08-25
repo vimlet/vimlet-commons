@@ -73,9 +73,11 @@ function unpackHelper(file, out, format) {
   // Make out directory
   fs.mkdirsSync(out);
 
-  var total_bytes = getTotalUncompressedSize(file, format);
+  var totalUncompressedSizeObject = getTotalUncompressedSize(file, format);
 
-  var unpack_bytes = 0;
+  var total_size = totalUncompressedSizeObject.size;
+  var total_unpack = 0;
+
   var lastProgress = 0;
 
   new compressing[format].UncompressStream({
@@ -86,8 +88,9 @@ function unpackHelper(file, out, format) {
       forceSync = false;
       compressDone();
 
-      console.log("total bytes: " + total_bytes);
-      console.log("uncompressed bytes: " + unpack_bytes);
+      // TODO remove total
+      console.log("total bytes: " + total_size);
+      console.log("uncompressed bytes: " + total_unpack);
 
     })
     .on('error', function(error) {
@@ -98,11 +101,21 @@ function unpackHelper(file, out, format) {
     })
     .on('entry', function(header, stream, next) {
 
-      var entrySize = getEntryUncompressedSize(header);
-      onEntryWrite(header, stream, next, out);
-      unpack_bytes += entrySize;
+      // Use fileSize or fileCount mode
+      var entrySize;
+      if (totalUncompressedSizeObject.useFileCount) {
+        entrySize = 1;
+      } else {
+        entrySize = getEntryUncompressedSize(header);
+      }
 
-      var percentage = Math.ceil((unpack_bytes * 100) / total_bytes);
+      // Write entry
+      onEntryWrite(header, stream, next, out);
+
+      // Update total_unpack
+      total_unpack += entrySize;
+
+      var percentage = Math.ceil((total_unpack * 100) / total_size);
 
       if (lastProgress != percentage) {
 
@@ -176,7 +189,10 @@ function getTotalUncompressedSize(file, format) {
     deasync.sleep(100);
   }
 
-  return useFileCount ? count : size;
+  return {
+    useFileCount: useFileCount,
+    size: useFileCount ? count : size
+  };
 
 }
 
