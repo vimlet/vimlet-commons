@@ -9,6 +9,7 @@ Provides a cross environment standarized API for common used functions.
 - IO
 - Validation
 - Serialization
+- Util
 
 
 ## Run
@@ -53,6 +54,9 @@ Handle http requests and download files.
 ## Compress
 
 **Description**:
+
+**Depends**:
+- Util on node
 
 Packs and unpacks files and directories for the following formats:
 - zip
