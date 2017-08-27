@@ -1,9 +1,25 @@
 var fs = require("fs-extra");
-var path = require('path');
-var compressing = require('compressing');
-var deasync = require('deasync');
+var path = require("path");
+var compressing = require("compressing");
+var deasync = require("deasync");
 var util = require(__dirname + "/util.js");
-var pipe = require('multipipe');
+var pipe = require("multipipe");
+
+
+// Hook _onEntryFinish(err) of stream.js
+function hookOnEntryFinish(stream) {
+
+  var originalFunction = stream._onEntryFinish;
+
+  stream._onEntryFinish = function (error) {
+
+      console.log(this._waitingEntries);
+      console.log("done");
+
+      originalFunction.apply(this, arguments);
+  };
+
+}
 
 exports.pack = function(file, out, format) {
 
@@ -37,6 +53,8 @@ function packHelper(file, out, format) {
 
   var fileStream = new compressing[format].Stream();
 
+  hookOnEntryFinish(fileStream);
+
   // Add file or directories
   if (util.isDirectory(file)) {
     fileStream.addEntry(file, { ignoreBase: true });
@@ -44,20 +62,21 @@ function packHelper(file, out, format) {
     fileStream.addEntry(file);
   }
 
+
   var destStream = fs.createWriteStream(out);
 
-  pipe(fileStream, destStream, function (error) {
-    forceSync = false;
-    if(error){
-      console.log(error);
-    } else {
-      console.log("done");
-    }
-  });
+  // pipe(fileStream, destStream, function (error) {
+  //   forceSync = false;
+  //   if(error){
+  //     console.log(error);
+  //   } else {
+  //     console.log("done");
+  //   }
+  // });
 
-  while (forceSync) {
-    deasync.sleep(100);
-  }
+  // while (forceSync) {
+  //   deasync.sleep(100);
+  // }
 
 }
 
@@ -78,7 +97,7 @@ function unpackHelper(file, out, format) {
   new compressing[format].UncompressStream({
       source: file
     })
-    .on('finish', function() {
+    .on("finish", function() {
 
       forceSync = false;
       compressDone();
@@ -88,13 +107,13 @@ function unpackHelper(file, out, format) {
       console.log("uncompressed bytes: " + total_unpack);
 
     })
-    .on('error', function(error) {
+    .on("error", function(error) {
 
       forceSync = false;
       handleError(error);
 
     })
-    .on('entry', function(header, stream, next) {
+    .on("entry", function(header, stream, next) {
 
       // Use fileSize or fileCount mode
       var entrySize;
@@ -158,14 +177,14 @@ function getTotalUncompressedSize(file, format) {
   new compressing[format].UncompressStream({
       source: file
     })
-    .on('finish', function() {
+    .on("finish", function() {
       forceSync = false;
     })
-    .on('error', function(error) {
+    .on("error", function(error) {
       forceSync = false;
       count = -1;
     })
-    .on('entry', function(header, stream, next) {
+    .on("entry", function(header, stream, next) {
 
       var sizeValue = getEntryUncompressedSize(header);
 
@@ -204,9 +223,9 @@ function onEntryWrite(header, stream, next, out) {
   // header.type => file | directory
   // header.name => path name
 
-  stream.on('end', next);
+  stream.on("end", next);
 
-  if (header.type === 'file') {
+  if (header.type === "file") {
 
     var file = path.join(out, header.name);
     var parent = path.dirname(file);
