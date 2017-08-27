@@ -3,6 +3,7 @@ var path = require('path');
 var compressing = require('compressing');
 var deasync = require('deasync');
 var util = require(__dirname + "/util.js");
+var pipe = require('multipipe');
 
 exports.pack = function(file, out, format) {
 
@@ -34,31 +35,25 @@ function packHelper(file, out, format) {
 
   var forceSync = true;
 
+  var fileStream = new compressing[format].Stream();
+
+  // Add file or directories
   if (util.isDirectory(file)) {
-
-    compressing[format].compressDir(file, out)
-      .then(function() {
-        forceSync = false;
-        compressDone();
-      })
-      .catch(function(error) {
-        forceSync = false;
-        handleError(error);
-      });
-
+    fileStream.addEntry(file, { ignoreBase: true });
   } else {
-
-    compressing[format].compressFile(file, out)
-      .then(function() {
-        forceSync = false;
-        compressDone();
-      })
-      .catch(function(error) {
-        forceSync = false;
-        handleError(error);
-      });
-
+    fileStream.addEntry(file);
   }
+
+  var destStream = fs.createWriteStream(out);
+
+  pipe(fileStream, destStream, function (error) {
+    forceSync = false;
+    if(error){
+      console.log(error);
+    } else {
+      console.log("done");
+    }
+  });
 
   while (forceSync) {
     deasync.sleep(100);
@@ -193,6 +188,14 @@ function getTotalUncompressedSize(file, format) {
     useFileCount: useFileCount,
     size: useFileCount ? count : size
   };
+
+}
+
+function getEntryPathSize() {
+
+}
+
+function getTotalPathSize() {
 
 }
 
