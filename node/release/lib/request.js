@@ -1,7 +1,7 @@
-var path = require('path');
+var path = require("path");
 var fs = require("fs-extra");
-var request = require('request');
-var deasync = require('deasync');
+var request = require("request");
+var deasync = require("deasync");
 
 exports.download = function(url, file, handler) {
 
@@ -16,7 +16,7 @@ exports.download = function(url, file, handler) {
   var total_bytes = 0;
 
   var req = request({
-    method: 'GET',
+    method: "GET",
     uri: url
   });
 
@@ -29,12 +29,12 @@ exports.download = function(url, file, handler) {
   var out = fs.createWriteStream(filePath);
   req.pipe(out);
 
-  req.on('response', function(data) {
+  req.on("response", function(data) {
     // Change the total bytes value to get progress later.
-    total_bytes = parseInt(data.headers['content-length']);
+    total_bytes = parseInt(data.headers["content-length"]);
   });
 
-  req.on('data', function(chunk) {
+  req.on("data", function(chunk) {
 
     // Update the received bytes
     received_bytes += chunk.length;
@@ -57,7 +57,7 @@ exports.download = function(url, file, handler) {
 
   });
 
-  req.on('end', function() {
+  req.on("end", function() {
 
     syncDownload = false;
 
@@ -70,7 +70,7 @@ exports.download = function(url, file, handler) {
 
   });
 
-  req.on('error', function(error) {
+  req.on("error", function(error) {
 
     error = true;
     syncDownload = false;

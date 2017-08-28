@@ -2,21 +2,40 @@ var fs = require("fs-extra");
 var path = require("path");
 var compressing = require("compressing");
 var deasync = require("deasync");
-var util = require(__dirname + "/util.js");
 var pipe = require("multipipe");
+var util = require(__dirname + "/util.js");
 
+function getStreamObject(stream) {
+
+  var baseStream = stream;
+
+  if (!baseStream._onEntryFinish) {
+    // Must be tgz
+    baseStream = stream._tarStream;
+  }
+
+  return baseStream;
+
+}
 
 // Hook _onEntryFinish(err) of stream.js
-function hookOnEntryFinish(stream) {
+function hookOnEntryFinish(stream, fn) {
+
+  // NOTE this might break on future releases of compressing module,
+  // Using exact version on package.json is recommended to stay safe
+  // (Compressing Module Version: 1.2.3)
 
   var originalFunction = stream._onEntryFinish;
 
-  stream._onEntryFinish = function (error) {
+  stream._onEntryFinish = function(err) {
 
-      console.log(this._waitingEntries);
-      console.log("done");
+    // Current entries befire shift()
+    if (this._waitingEntries && this._waitingEntries.length > 0) {
+      fn(this._waitingEntries[0][0]);
+    }
 
-      originalFunction.apply(this, arguments);
+    originalFunction.apply(this, arguments);
+
   };
 
 }
@@ -51,13 +70,40 @@ function packHelper(file, out, format) {
 
   var forceSync = true;
 
+  var sizeObject = getFileListSize(getFileList(file));
   var fileStream = new compressing[format].Stream();
+  var streamObject = getStreamObject(fileStream);
 
-  hookOnEntryFinish(fileStream);
+  var total_size = sizeObject.total;
+  var total_pack = 0;
+  var lastProgress = 0;
+
+
+  hookOnEntryFinish(streamObject, function(entry) {
+
+    if(!util.isDirectory(entry)) {
+
+      // Update total_unpack
+      total_pack += sizeObject.files[entry];
+
+      var percentage = Math.ceil((total_pack * 100) / total_size);
+
+      if (lastProgress != percentage) {
+
+        lastProgress = percentage;
+        showProgress(percentage);
+
+      }
+
+    }
+
+  });
 
   // Add file or directories
   if (util.isDirectory(file)) {
-    fileStream.addEntry(file, { ignoreBase: true });
+    fileStream.addEntry(file, {
+      ignoreBase: true
+    });
   } else {
     fileStream.addEntry(file);
   }
@@ -65,18 +111,18 @@ function packHelper(file, out, format) {
 
   var destStream = fs.createWriteStream(out);
 
-  // pipe(fileStream, destStream, function (error) {
-  //   forceSync = false;
-  //   if(error){
-  //     console.log(error);
-  //   } else {
-  //     console.log("done");
-  //   }
-  // });
+  pipe(fileStream, destStream, function(error) {
+    forceSync = false;
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("done");
+    }
+  });
 
-  // while (forceSync) {
-  //   deasync.sleep(100);
-  // }
+  while (forceSync) {
+    deasync.sleep(100);
+  }
 
 }
 
@@ -91,7 +137,6 @@ function unpackHelper(file, out, format) {
 
   var total_size = totalUncompressedSizeObject.size;
   var total_unpack = 0;
-
   var lastProgress = 0;
 
   new compressing[format].UncompressStream({
@@ -100,11 +145,7 @@ function unpackHelper(file, out, format) {
     .on("finish", function() {
 
       forceSync = false;
-      compressDone();
-
-      // TODO remove total
-      console.log("total bytes: " + total_size);
-      console.log("uncompressed bytes: " + total_unpack);
+      unpackComplete();
 
     })
     .on("error", function(error) {
@@ -210,11 +251,48 @@ function getTotalUncompressedSize(file, format) {
 
 }
 
-function getEntryPathSize() {
+// Recursive function
+function getFileList(dir, fileList) {
+
+  fileList = fileList || [];
+  files = fs.readdirSync(dir);
+
+  files.forEach(function(file) {
+    if (util.isDirectory(path.join(dir, file))) {
+      fileList = getFileList(path.join(dir, file), fileList);
+    } else {
+      fileList.push(path.join(dir, file));
+    }
+  });
+
+  return fileList;
 
 }
 
-function getTotalPathSize() {
+function getFileListSize(fileList) {
+
+  var sizeObject = {
+    files: {
+
+    },
+    total: 0,
+    count: fileList.length
+  };
+
+  var file;
+  var size;
+
+  for (var i = 0; i < fileList.length; i++) {
+
+    file = fileList[i];
+    size = util.getFileSize(file);
+
+    sizeObject.files[file] = size;
+    sizeObject.total += size;
+
+  }
+
+  return sizeObject;
 
 }
 
@@ -245,8 +323,12 @@ function onEntryWrite(header, stream, next, out) {
   }
 }
 
-function compressDone() {
-  console.log("done");
+function packComplete() {
+  console.log("Pack complete");
+}
+
+function unpackComplete() {
+  console.log("Unpack complete");
 }
 
 function handleError(error) {

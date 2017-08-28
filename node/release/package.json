@@ -7,8 +7,8 @@
     "fs-extra": "^4.0.1",
     "request": "^2.81.0",
     "deasync": "^0.1.10",
-    "compressing": "^1.2.3",
-    "multipipe": "^1.0.2"
+    "multipipe": "^1.0.2",
+    "compressing": "1.2.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

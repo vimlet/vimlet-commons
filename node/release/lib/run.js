@@ -56,7 +56,7 @@ exports.exec = function (command, args, workingDirectory, execHandler) {
 
   });
 
-  p.on('exit', function (exit) {
+  p.on("exit", function (exit) {
 
     if(execHandler) {
       execHandler(null, null, exit);
