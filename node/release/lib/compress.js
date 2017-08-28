@@ -70,23 +70,23 @@ function packHelper(file, out, format) {
 
   var forceSync = true;
 
-  var sizeObject = getFileListSize(getFileList(file));
+  var packSizeObject = getPackSizeObject(getFileList(file));
   var fileStream = new compressing[format].Stream();
   var streamObject = getStreamObject(fileStream);
 
-  var total_size = sizeObject.total;
-  var total_pack = 0;
+  var totalSize = packSizeObject.totalSize;
+  var totalPacked = 0;
   var lastProgress = 0;
 
 
   hookOnEntryFinish(streamObject, function(entry) {
 
-    if(!util.isDirectory(entry)) {
+    if (!util.isDirectory(entry)) {
 
-      // Update total_unpack
-      total_pack += sizeObject.files[entry];
+      // Update totalPacked
+      totalPacked += packSizeObject.files[entry];
 
-      var percentage = Math.ceil((total_pack * 100) / total_size);
+      var percentage = Math.ceil((totalPacked * 100) / totalSize);
 
       if (lastProgress != percentage) {
 
@@ -114,9 +114,9 @@ function packHelper(file, out, format) {
   pipe(fileStream, destStream, function(error) {
     forceSync = false;
     if (error) {
-      console.log(error);
+      handleError(error);
     } else {
-      console.log("done");
+      packComplete();
     }
   });
 
@@ -133,10 +133,10 @@ function unpackHelper(file, out, format) {
   // Make out directory
   fs.mkdirsSync(out);
 
-  var totalUncompressedSizeObject = getTotalUncompressedSize(file, format);
+  var unpackSizeObject = getUnpackSizeObject(file, format);
 
-  var total_size = totalUncompressedSizeObject.size;
-  var total_unpack = 0;
+  var totalSize = unpackSizeObject.useFileCount ? unpackSizeObject.count : unpackSizeObject.totalSize;
+  var totalUnpacked = 0;
   var lastProgress = 0;
 
   new compressing[format].UncompressStream({
@@ -158,19 +158,19 @@ function unpackHelper(file, out, format) {
 
       // Use fileSize or fileCount mode
       var entrySize;
-      if (totalUncompressedSizeObject.useFileCount) {
+      if (unpackSizeObject.useFileCount) {
         entrySize = 1;
       } else {
         entrySize = getEntryUncompressedSize(header);
       }
 
       // Write entry
-      onEntryWrite(header, stream, next, out);
+      onUnpackEntryWrite(header, stream, next, out);
 
-      // Update total_unpack
-      total_unpack += entrySize;
+      // Update totalUnpacked
+      totalUnpacked += entrySize;
 
-      var percentage = Math.ceil((total_unpack * 100) / total_size);
+      var percentage = Math.ceil((totalUnpacked * 100) / totalSize);
 
       if (lastProgress != percentage) {
 
@@ -203,17 +203,17 @@ function getEntryUncompressedSize(header) {
 
 }
 
-function getTotalUncompressedSize(file, format) {
+function getUnpackSizeObject(file, format) {
 
   // Will attempt to find the total size in bytes of the UncompressStream, if not possible
   // file count will be provided instead
-
-  var useFileCount = false;
-
-  var count = 0;
-  var size = 0;
-
   var forceSync = true;
+
+  var sizeObject = {
+    useFileCount: false,
+    totalSize: 0,
+    count: 0
+  };
 
   new compressing[format].UncompressStream({
       source: file
@@ -222,20 +222,23 @@ function getTotalUncompressedSize(file, format) {
       forceSync = false;
     })
     .on("error", function(error) {
+
       forceSync = false;
-      count = -1;
+      sizeObject.count = -1;
+      handleError(error);
+
     })
     .on("entry", function(header, stream, next) {
 
       var sizeValue = getEntryUncompressedSize(header);
 
       if (sizeValue != -1) {
-        size += sizeValue;
+        sizeObject.totalSize += sizeValue;
       } else {
-        useFileCount = true;
+        sizeObject.useFileCount = true;
       }
 
-      count++;
+      sizeObject.count++;
       next();
 
     });
@@ -244,10 +247,7 @@ function getTotalUncompressedSize(file, format) {
     deasync.sleep(100);
   }
 
-  return {
-    useFileCount: useFileCount,
-    size: useFileCount ? count : size
-  };
+  return sizeObject;
 
 }
 
@@ -269,13 +269,11 @@ function getFileList(dir, fileList) {
 
 }
 
-function getFileListSize(fileList) {
+function getPackSizeObject(fileList) {
 
   var sizeObject = {
-    files: {
-
-    },
-    total: 0,
+    files: {},
+    totalSize: 0,
     count: fileList.length
   };
 
@@ -288,7 +286,7 @@ function getFileListSize(fileList) {
     size = util.getFileSize(file);
 
     sizeObject.files[file] = size;
-    sizeObject.total += size;
+    sizeObject.totalSize += size;
 
   }
 
@@ -296,7 +294,7 @@ function getFileListSize(fileList) {
 
 }
 
-function onEntryWrite(header, stream, next, out) {
+function onUnpackEntryWrite(header, stream, next, out) {
 
   // header.type => file | directory
   // header.name => path name
@@ -317,10 +315,11 @@ function onEntryWrite(header, stream, next, out) {
     stream.pipe(fs.createWriteStream(file));
 
   } else { // directory
-    // Note this is just per API specification but never triggers
+    // Note this is just per compressing API specification but never triggers
     fs.mkdirsSync(path.join(out, header.name));
     stream.resume();
   }
+
 }
 
 function packComplete() {
