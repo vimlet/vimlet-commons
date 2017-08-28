@@ -247,6 +247,9 @@ function getUnpackSizeObject(file, format) {
     }
 
     sizeObject.count++;
+
+    // Must resume to avoid stream block
+    stream.resume();
     next();
 
   });
