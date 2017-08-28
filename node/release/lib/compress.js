@@ -86,6 +86,7 @@ function packHelper(file, out, format) {
       // Update totalPacked
       totalPacked += packSizeObject.files[entry];
 
+      // Show progress
       var percentage = Math.ceil((totalPacked * 100) / totalSize);
 
       if (lastProgress != percentage) {
@@ -139,47 +140,51 @@ function unpackHelper(file, out, format) {
   var totalUnpacked = 0;
   var lastProgress = 0;
 
-  new compressing[format].UncompressStream({
-      source: file
-    })
-    .on("finish", function() {
+  var fileStream = new compressing[format].UncompressStream({
+    source: file
+  });
 
-      forceSync = false;
-      unpackComplete();
+  fileStream.on("finish", function() {
 
-    })
-    .on("error", function(error) {
+    forceSync = false;
+    unpackComplete();
 
-      forceSync = false;
-      handleError(error);
+  });
 
-    })
-    .on("entry", function(header, stream, next) {
+  fileStream.on("error", function(error) {
 
-      // Use fileSize or fileCount mode
-      var entrySize;
-      if (unpackSizeObject.useFileCount) {
-        entrySize = 1;
-      } else {
-        entrySize = getEntryUncompressedSize(header);
-      }
+    forceSync = false;
+    handleError(error);
 
-      // Write entry
-      onUnpackEntryWrite(header, stream, next, out);
+  });
 
-      // Update totalUnpacked
-      totalUnpacked += entrySize;
+  fileStream.on("entry", function(header, stream, next) {
 
-      var percentage = Math.ceil((totalUnpacked * 100) / totalSize);
+    // Use fileSize or fileCount mode
+    var entrySize;
+    if (unpackSizeObject.useFileCount) {
+      entrySize = 1;
+    } else {
+      entrySize = getEntryUncompressedSize(header);
+    }
 
-      if (lastProgress != percentage) {
+    // Write entry
+    onUnpackEntryWrite(header, stream, next, out);
 
-        lastProgress = percentage;
-        showProgress(percentage);
+    // Update totalUnpacked
+    totalUnpacked += entrySize;
 
-      }
+    // Show progress
+    var percentage = Math.ceil((totalUnpacked * 100) / totalSize);
 
-    });
+    if (lastProgress != percentage) {
+
+      lastProgress = percentage;
+      showProgress(percentage);
+
+    }
+
+  });
 
   while (forceSync) {
     deasync.sleep(100);
@@ -215,33 +220,36 @@ function getUnpackSizeObject(file, format) {
     count: 0
   };
 
-  new compressing[format].UncompressStream({
-      source: file
-    })
-    .on("finish", function() {
-      forceSync = false;
-    })
-    .on("error", function(error) {
+  var fileStream = new compressing[format].UncompressStream({
+    source: file
+  });
 
-      forceSync = false;
-      sizeObject.count = -1;
-      handleError(error);
+  fileStream.on("finish", function() {
+    forceSync = false;
+  });
 
-    })
-    .on("entry", function(header, stream, next) {
+  fileStream.on("error", function(error) {
 
-      var sizeValue = getEntryUncompressedSize(header);
+    forceSync = false;
+    sizeObject.count = -1;
+    handleError(error);
 
-      if (sizeValue != -1) {
-        sizeObject.totalSize += sizeValue;
-      } else {
-        sizeObject.useFileCount = true;
-      }
+  });
 
-      sizeObject.count++;
-      next();
+  fileStream.on("entry", function(header, stream, next) {
 
-    });
+    var sizeValue = getEntryUncompressedSize(header);
+
+    if (sizeValue != -1) {
+      sizeObject.totalSize += sizeValue;
+    } else {
+      sizeObject.useFileCount = true;
+    }
+
+    sizeObject.count++;
+    next();
+
+  });
 
   while (forceSync) {
     deasync.sleep(100);
