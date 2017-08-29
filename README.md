@@ -22,7 +22,7 @@ Run commands and binarys with args.
 - OS
 
 **Methods**:
-- exec(String command, String[] args, String, workingDirectory, ExecHandler handler) : **void**
+- exec(String command, String[] args, String workingDirectory, ExecHandler handler) : **void**
 
 **Notes**:
 - ExecHandler is a callback function(out, error, exit) on node.

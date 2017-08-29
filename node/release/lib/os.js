@@ -11,6 +11,6 @@ exports.isLinux = function () {
 exports.isMac = function () {
   return os.platform() === "darwin";
 };
-exports.is64bit = function () {
+exports.is64Bit = function () {
   return process.arch === "x64" || process.env.hasOwnProperty("PROCESSOR_ARCHITEW6432");
 };
