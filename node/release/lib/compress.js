@@ -92,7 +92,11 @@ function packHelper(file, out, format) {
       if (lastProgress != percentage) {
 
         lastProgress = percentage;
-        showProgress(percentage);
+
+        // Only show 100% when last file finish write
+        if(percentage != 100) {
+          showProgress(percentage);
+        }
 
       }
 
@@ -113,12 +117,19 @@ function packHelper(file, out, format) {
   var destStream = fs.createWriteStream(out);
 
   pipe(fileStream, destStream, function(error) {
+
     forceSync = false;
+
     if (error) {
       handleError(error);
     } else {
+
+      // Show 100%;
+      showProgress(lastProgress);
       packComplete();
+
     }
+
   });
 
   while (forceSync) {
@@ -147,6 +158,9 @@ function unpackHelper(file, out, format) {
   fileStream.on("finish", function() {
 
     forceSync = false;
+    
+    // Show 100%;
+    showProgress(lastProgress);
     unpackComplete();
 
   });
@@ -180,7 +194,11 @@ function unpackHelper(file, out, format) {
     if (lastProgress != percentage) {
 
       lastProgress = percentage;
-      showProgress(percentage);
+
+      // Only show 100% when last file finish write
+      if(percentage != 100) {
+        showProgress(percentage);
+      }
 
     }
 

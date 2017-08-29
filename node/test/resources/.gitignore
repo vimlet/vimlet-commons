@@ -1,3 +1,4 @@
 /compress/compress
-/compress/pack/large
+/compress/pack/large/*
+/compress/pack/large/place_large_files_here
 /compress/unpack
