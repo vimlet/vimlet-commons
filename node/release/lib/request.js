@@ -5,15 +5,15 @@ var deasync = require("deasync");
 
 exports.download = function(url, file, handler) {
 
-  var syncDownload = true;
+  var forceSync = true;
 
   // Last percentage shown
   var lastProgress = null;
   var error = false;
 
   // Save variable to know progress
-  var received_bytes = 0;
-  var total_bytes = 0;
+  var receivedBytes = 0;
+  var totalBytes = 0;
 
   var req = request({
     method: "GET",
@@ -23,68 +23,88 @@ exports.download = function(url, file, handler) {
   var filePath = path.resolve(file);
   var fileDirectory = path.dirname(filePath);
 
-  // Make parent directories
-  fs.mkdirsSync(fileDirectory);
+  var doDownload = false;
 
-  var out = fs.createWriteStream(filePath);
-  req.pipe(out);
 
   req.on("response", function(data) {
-    // Change the total bytes value to get progress later.
-    total_bytes = parseInt(data.headers["content-length"]);
+
+    if(data.statusCode >= 200 && data.statusCode < 400 ) {
+
+      doDownload = true;
+
+      // Change the total bytes value to get progress later.
+      totalBytes = parseInt(data.headers["content-length"]);
+
+      // Make parent directories
+      fs.mkdirsSync(fileDirectory);
+
+      // Pipe file output
+      var out = fs.createWriteStream(filePath);
+      req.pipe(out);
+
+    } else {
+      handleError("Download failed, response " + data.statusCode);
+    }
+
   });
 
   req.on("data", function(chunk) {
 
-    // Update the received bytes
-    received_bytes += chunk.length;
+    if(doDownload) {
 
-    if (handler) {
-      handler(received_bytes, total_bytes);
-    } else {
+      // Update the received bytes
+      receivedBytes += chunk.length;
 
-      var percentage = Math.ceil((received_bytes * 100) / total_bytes);
+      if (handler) {
+        handler(receivedBytes, totalBytes);
+      } else {
 
-      if (lastProgress != percentage) {
+        var percentage = Math.ceil((receivedBytes * 100) / totalBytes);
 
-        lastProgress = percentage;
-        showProgress( percentage);
+        if (lastProgress != percentage) {
+
+          lastProgress = percentage;
+          showProgress( percentage);
+
+        }
 
       }
 
     }
 
-
   });
 
   req.on("end", function() {
 
-    syncDownload = false;
+    forceSync = false;
 
-    if(handler) {
-      handler(null, null, true);
-    } else {
-      console.log("File succesfully downloaded");
+    if(doDownload) {
+
+      if(handler) {
+        handler(null, null, true);
+      } else {
+        downloadComplete();
+      }
+
     }
-
 
   });
 
   req.on("error", function(error) {
 
     error = true;
-    syncDownload = false;
+    forceSync = false;
 
     if(handler) {
       handler(null, null, null, error);
     } else {
-      console.log(error);
+      handleError(error);
     }
 
   });
 
   // Force sync
-  while (syncDownload) {
+  while (forceSync) {
     deasync.sleep(100);
   }
 
@@ -92,6 +112,15 @@ exports.download = function(url, file, handler) {
 
 };
 
+
+function handleError(error) {
+  console.log(error);
+}
+
 function showProgress(percentage) {
     console.log(percentage + "%");
+}
+
+function downloadComplete() {
+  console.log("Download complete");
 }

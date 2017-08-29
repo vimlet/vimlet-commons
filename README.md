@@ -46,7 +46,7 @@ Detects platform and architecture.
 Handle http requests and download files.
 
 **Methods**:
-- download(String url, String file, DownloadHandler handler) : **boolean**
+- download(String url, String file, DownloadHandler handler[opt]) : **boolean**
 
 **Notes**:
 - DownloadHandler is a callback function(received, total, done, error) on node.
@@ -64,8 +64,10 @@ Packs and unpacks files and directories for the following formats:
 - tgz
 
 **Methods**:
-- pack(String file, String out, String format) : **void**
-- unpack(String file, String out, String format) : **void**
+- pack(String file, String out, String format, PackHandler handler[opt]) : **void**
+- unpack(String file, String out, String format, UnpackHandler handler[opt]) : **void**
 
 **Notes**:
 - Format must exactly match one of these "zip", "tar", "tgz".
+- TODO - PackHandler is a callback function(received, total, done, error) on node.
+- TODO - UnpackHandler is a callback function(received, total, done, error) on node.
