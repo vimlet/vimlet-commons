@@ -40,33 +40,33 @@ function hookOnEntryFinish(stream, fn) {
 
 }
 
-exports.pack = function(file, out, format) {
+exports.pack = function(file, out, format, handler) {
 
   if (format === "zip" ||
     format === "tar" ||
     format === "tgz") {
-    packHelper(file, out, format);
+    packHelper(file, out, format, handler);
   } else {
     console.log("Unsupported format");
   }
 
 };
 
-exports.unpack = function(file, out, format) {
+exports.unpack = function(file, out, format, handler) {
 
   format = format.toLowerCase();
 
   if (format === "zip" ||
     format === "tar" ||
     format === "tgz") {
-    unpackHelper(file, out, format);
+    unpackHelper(file, out, format, handler);
   } else {
     console.log("Unsupported format");
   }
 
 };
 
-function packHelper(file, out, format) {
+function packHelper(file, out, format, handler) {
 
   var forceSync = true;
 
@@ -84,18 +84,29 @@ function packHelper(file, out, format) {
     if (!util.isDirectory(entry)) {
 
       // Update totalPacked
-      totalPacked += packSizeObject.files[entry];
+      var entrySize = packSizeObject.files[entry];
+      totalPacked += entrySize;
 
-      // Show progress
-      var percentage = Math.ceil((totalPacked * 100) / totalSize);
+      if (handler) {
 
-      if (lastProgress != percentage) {
+        // Custom progress
+        handler(entry, null, null, packSizeObject.count, entrySize, totalSize);
 
-        lastProgress = percentage;
+      } else {
 
-        // Only show 100% when last file finish write
-        if(percentage != 100) {
-          showProgress(percentage);
+        // Default progress
+
+        var percentage = Math.ceil((totalPacked * 100) / totalSize);
+
+        if (lastProgress != percentage) {
+
+          lastProgress = percentage;
+
+          // Only show 100% when last file finish write
+          if (percentage != 100) {
+            showProgress(percentage);
+          }
+
         }
 
       }
@@ -121,12 +132,24 @@ function packHelper(file, out, format) {
     forceSync = false;
 
     if (error) {
-      handleError(error);
+
+      if (handler) {
+        handler(null, null, error);
+      } else {
+        handleError(error);
+      }
+
     } else {
 
-      // Show 100%;
-      showProgress(lastProgress);
-      packComplete();
+      if (handler) {
+        handler(null, true);
+      } else {
+
+        // Show 100%;
+        showProgress(lastProgress);
+        packComplete();
+
+      }
 
     }
 
@@ -138,7 +161,7 @@ function packHelper(file, out, format) {
 
 }
 
-function unpackHelper(file, out, format) {
+function unpackHelper(file, out, format, handler) {
 
   var forceSync = true;
 
@@ -158,17 +181,28 @@ function unpackHelper(file, out, format) {
   fileStream.on("finish", function() {
 
     forceSync = false;
-    
-    // Show 100%;
-    showProgress(lastProgress);
-    unpackComplete();
+
+    if (handler) {
+      handler(null, true);
+    } else {
+
+      // Show 100%;
+      showProgress(lastProgress);
+      unpackComplete();
+
+    }
 
   });
 
   fileStream.on("error", function(error) {
 
     forceSync = false;
-    handleError(error);
+
+    if (handler) {
+      handler(null, null, error);
+    } else {
+      handleError(error);
+    }
 
   });
 
@@ -188,16 +222,25 @@ function unpackHelper(file, out, format) {
     // Update totalUnpacked
     totalUnpacked += entrySize;
 
-    // Show progress
-    var percentage = Math.ceil((totalUnpacked * 100) / totalSize);
+    if (handler) {
 
-    if (lastProgress != percentage) {
+      // Custom progress
+      handler(header.name);
 
-      lastProgress = percentage;
+    } else {
 
-      // Only show 100% when last file finish write
-      if(percentage != 100) {
-        showProgress(percentage);
+      // Show progress
+      var percentage = Math.ceil((totalUnpacked * 100) / totalSize);
+
+      if (lastProgress != percentage) {
+
+        lastProgress = percentage;
+
+        // Only show 100% when last file finish write
+        if (percentage != 100) {
+          showProgress(percentage);
+        }
+
       }
 
     }

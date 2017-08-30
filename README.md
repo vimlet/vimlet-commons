@@ -64,10 +64,9 @@ Packs and unpacks files and directories for the following formats:
 - tgz
 
 **Methods**:
-- pack(String file, String out, String format, PackHandler handler[opt]) : **void**
-- unpack(String file, String out, String format, UnpackHandler handler[opt]) : **void**
+- pack(String file, String out, String format, CompressHandler handler[opt]) : **void**
+- unpack(String file, String out, String format, CompressHandler handler[opt]) : **void**
 
 **Notes**:
 - Format must exactly match one of these "zip", "tar", "tgz".
-- TODO - PackHandler is a callback function(received, total, done, error) on node.
-- TODO - UnpackHandler is a callback function(received, total, done, error) on node.
+- CompressHandler is a callback function(entry, done, error, count, entrySize, totalSize) on node.
