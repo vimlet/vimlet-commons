@@ -3,7 +3,7 @@ var path = require("path");
 var compressing = require("compressing");
 var deasync = require("deasync");
 var pipe = require("multipipe");
-var util = require(__dirname + "/util.js");
+var util = require("./util.js");
 
 function getStreamObject(stream) {
 
