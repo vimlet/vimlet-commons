@@ -74,23 +74,29 @@ function packHelper(file, out, format, handler) {
   var fileStream = new compressing[format].Stream();
   var streamObject = getStreamObject(fileStream);
 
+  var totalCount = packSizeObject.count;
   var totalSize = packSizeObject.totalSize;
   var totalPacked = 0;
   var lastProgress = 0;
 
+  var currentEntry;
+  var currentEntrySize;
 
   hookOnEntryFinish(streamObject, function(entry) {
 
     if (!util.isDirectory(entry)) {
 
-      // Update totalPacked
-      var entrySize = packSizeObject.files[entry];
-      totalPacked += entrySize;
+      // Store currentEntry
+      currentEntry = entry;
+
+      // Update size
+      currentEntrySize = packSizeObject.files[entry];
+      totalPacked += currentEntrySize;
 
       if (handler) {
 
         // Custom progress
-        handler(entry, null, null, packSizeObject.count, entrySize, totalSize);
+        handler(currentEntry, null, null, totalCount, currentEntrySize, totalSize);
 
       } else {
 
@@ -170,9 +176,13 @@ function unpackHelper(file, out, format, handler) {
 
   var unpackSizeObject = getUnpackSizeObject(file, format);
 
-  var totalSize = unpackSizeObject.useFileCount ? unpackSizeObject.count : unpackSizeObject.totalSize;
+  var totalCount = unpackSizeObject.count;
+  var totalSize = unpackSizeObject.totalSize;
   var totalUnpacked = 0;
   var lastProgress = 0;
+
+  var currentEntry;
+  var currentEntrySize;
 
   var fileStream = new compressing[format].UncompressStream({
     source: file
@@ -208,24 +218,20 @@ function unpackHelper(file, out, format, handler) {
 
   fileStream.on("entry", function(header, stream, next) {
 
-    // Use fileSize or fileCount mode
-    var entrySize;
-    if (unpackSizeObject.useFileCount) {
-      entrySize = 1;
-    } else {
-      entrySize = getEntryUncompressedSize(header);
-    }
+    // Store currentEntry
+    currentEntry = path.join(out, header.name);
+
+    // Update size
+    currentEntrySize = getEntryUncompressedSize(header);
+    totalUnpacked += currentEntrySize;
 
     // Write entry
     onUnpackEntryWrite(header, stream, next, out);
 
-    // Update totalUnpacked
-    totalUnpacked += entrySize;
-
     if (handler) {
 
       // Custom progress
-      handler(header.name);
+      handler(currentEntry, null, null, totalCount, currentEntrySize, totalSize);
 
     } else {
 
