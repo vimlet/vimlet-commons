@@ -25,7 +25,7 @@ Run commands and binarys with args.
 - exec(String command, String[] args, String workingDirectory, ExecHandler handler) : **void**
 
 **Notes**:
-- ExecHandler is a callback function(out, error, exit) on node.
+- ExecHandler is a callback function(dest, error, exit) on node.
 
 ## OS
 
@@ -49,7 +49,7 @@ Handle http requests and download files.
 - download(String url, String file, DownloadHandler handler[opt]) : **boolean**
 
 **Notes**:
-- DownloadHandler is a callback function(received, total, done, error) on node.
+- DownloadHandler is a callback function(done, error, received, total) on node.
 
 ## Compress
 
@@ -64,9 +64,9 @@ Packs and unpacks files and directories for the following formats:
 - tgz
 
 **Methods**:
-- pack(String file, String out, String format, CompressHandler handler[opt]) : **void**
-- unpack(String file, String out, String format, CompressHandler handler[opt]) : **void**
+- pack(String file, String dest, String format, CompressHandler handler[opt]) : **void**
+- unpack(String file, String dest, String format, CompressHandler handler[opt]) : **void**
 
 **Notes**:
 - Format must exactly match one of these "zip", "tar", "tgz".
-- CompressHandler is a callback function(entry, done, error, count, entrySize, totalSize) on node.
+- CompressHandler is a callback function(done, error, entry, entrySize, totalSize, totalCount) on node.

@@ -40,33 +40,33 @@ function hookOnEntryFinish(stream, fn) {
 
 }
 
-exports.pack = function(file, out, format, handler) {
+exports.pack = function(file, dest, format, handler) {
 
   if (format === "zip" ||
     format === "tar" ||
     format === "tgz") {
-    packHelper(file, out, format, handler);
+    packHelper(file, dest, format, handler);
   } else {
     console.log("Unsupported format");
   }
 
 };
 
-exports.unpack = function(file, out, format, handler) {
+exports.unpack = function(file, dest, format, handler) {
 
   format = format.toLowerCase();
 
   if (format === "zip" ||
     format === "tar" ||
     format === "tgz") {
-    unpackHelper(file, out, format, handler);
+    unpackHelper(file, dest, format, handler);
   } else {
     console.log("Unsupported format");
   }
 
 };
 
-function packHelper(file, out, format, handler) {
+function packHelper(file, dest, format, handler) {
 
   var forceSync = true;
 
@@ -96,7 +96,7 @@ function packHelper(file, out, format, handler) {
       if (handler) {
 
         // Custom progress
-        handler(currentEntry, null, null, totalCount, currentEntrySize, totalSize);
+        handler(null, null, currentEntry, currentEntrySize, totalSize, totalCount);
 
       } else {
 
@@ -131,7 +131,7 @@ function packHelper(file, out, format, handler) {
   }
 
 
-  var destStream = fs.createWriteStream(out);
+  var destStream = fs.createWriteStream(dest);
 
   pipe(fileStream, destStream, function(error) {
 
@@ -140,7 +140,7 @@ function packHelper(file, out, format, handler) {
     if (error) {
 
       if (handler) {
-        handler(null, null, error);
+        handler(null, error);
       } else {
         handleError(error);
       }
@@ -148,7 +148,7 @@ function packHelper(file, out, format, handler) {
     } else {
 
       if (handler) {
-        handler(null, true);
+        handler(true);
       } else {
 
         // Show 100%;
@@ -167,12 +167,12 @@ function packHelper(file, out, format, handler) {
 
 }
 
-function unpackHelper(file, out, format, handler) {
+function unpackHelper(file, dest, format, handler) {
 
   var forceSync = true;
 
-  // Make out directory
-  fs.mkdirsSync(out);
+  // Make dest directory
+  fs.mkdirsSync(dest);
 
   var unpackSizeObject = getUnpackSizeObject(file, format);
 
@@ -193,7 +193,7 @@ function unpackHelper(file, out, format, handler) {
     forceSync = false;
 
     if (handler) {
-      handler(null, true);
+      handler(true);
     } else {
 
       // Show 100%;
@@ -209,7 +209,7 @@ function unpackHelper(file, out, format, handler) {
     forceSync = false;
 
     if (handler) {
-      handler(null, null, error);
+      handler(null, error);
     } else {
       handleError(error);
     }
@@ -219,19 +219,19 @@ function unpackHelper(file, out, format, handler) {
   fileStream.on("entry", function(header, stream, next) {
 
     // Store currentEntry
-    currentEntry = path.join(out, header.name);
+    currentEntry = path.join(dest, header.name);
 
     // Update size
     currentEntrySize = getEntryUncompressedSize(header);
     totalUnpacked += currentEntrySize;
 
     // Write entry
-    onUnpackEntryWrite(header, stream, next, out);
+    onUnpackEntryWrite(header, stream, next, dest);
 
     if (handler) {
 
       // Custom progress
-      handler(currentEntry, null, null, totalCount, currentEntrySize, totalSize);
+      handler(null, null, currentEntry, currentEntrySize, totalSize, totalCount);
 
     } else {
 
@@ -372,7 +372,7 @@ function getPackSizeObject(fileList) {
 
 }
 
-function onUnpackEntryWrite(header, stream, next, out) {
+function onUnpackEntryWrite(header, stream, next, dest) {
 
   // header.type => file | directory
   // header.name => path name
@@ -381,7 +381,7 @@ function onUnpackEntryWrite(header, stream, next, out) {
 
   if (header.type === "file") {
 
-    var file = path.join(out, header.name);
+    var file = path.join(dest, header.name);
     var parent = path.dirname(file);
 
     try {
@@ -394,7 +394,7 @@ function onUnpackEntryWrite(header, stream, next, out) {
 
   } else { // directory
     // Note this is just per compressing API specification but never triggers
-    fs.mkdirsSync(path.join(out, header.name));
+    fs.mkdirsSync(path.join(dest, header.name));
     stream.resume();
   }
 

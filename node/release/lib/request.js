@@ -3,7 +3,7 @@ var fs = require("fs-extra");
 var request = require("request");
 var deasync = require("deasync");
 
-exports.download = function(url, file, handler) {
+exports.download = function(url, dest, handler) {
 
   var forceSync = true;
 
@@ -20,8 +20,8 @@ exports.download = function(url, file, handler) {
     uri: url
   });
 
-  var filePath = path.resolve(file);
-  var fileDirectory = path.dirname(filePath);
+  var destPath = path.resolve(dest);
+  var destDirectory = path.dirname(destPath);
 
   var doDownload = false;
 
@@ -36,10 +36,10 @@ exports.download = function(url, file, handler) {
       totalBytes = parseInt(data.headers["content-length"]);
 
       // Make parent directories
-      fs.mkdirsSync(fileDirectory);
+      fs.mkdirsSync(destDirectory);
 
-      // Pipe file output
-      var out = fs.createWriteStream(filePath);
+      // Pipe dest output
+      var out = fs.createWriteStream(destPath);
       req.pipe(out);
 
     } else {
@@ -56,7 +56,7 @@ exports.download = function(url, file, handler) {
       receivedBytes += chunk.length;
 
       if (handler) {
-        handler(receivedBytes, totalBytes);
+        handler(null, null, receivedBytes, totalBytes);
       } else {
 
         var percentage = Math.ceil((receivedBytes * 100) / totalBytes);
@@ -81,7 +81,7 @@ exports.download = function(url, file, handler) {
     if(doDownload) {
 
       if(handler) {
-        handler(null, null, true);
+        handler(true);
       } else {
         downloadComplete();
       }
@@ -96,7 +96,7 @@ exports.download = function(url, file, handler) {
     forceSync = false;
 
     if(handler) {
-      handler(null, null, null, error);
+      handler(null, error);
     } else {
       handleError(error);
     }
