@@ -11,16 +11,17 @@ var out = path.resolve("./resources/compress/compress");
 //vimlet_commons.compress.pack(pack, out, "tar");
 //vimlet_commons.compress.unpack(out, unpack, "tar");
 
-vimlet_commons.compress.pack(pack, out, "tar", function (done, error, entry) {
-  if(entry){
-    console.log(entry);
-  }
-});
-vimlet_commons.compress.unpack(out, unpack, "tar", function (done, error, entry) {
-  if(entry) {
-    console.log(entry);
-  }
-});
 
-// vimlet_commons.compress.pack(pack, out, "tgz");
-// vimlet_commons.compress.unpack(out, unpack, "tgz");
+vimlet_commons.compress.pack(pack, out, "tgz");
+vimlet_commons.compress.unpack(out, unpack, "tgz");
+
+// vimlet_commons.compress.pack(pack, out, "tar", function (done, error, entry) {
+//   if(entry){
+//     console.log(entry);
+//   }
+// });
+// vimlet_commons.compress.unpack(out, unpack, "tar", function (done, error, entry) {
+//   if(entry) {
+//     console.log(entry);
+//   }
+// });

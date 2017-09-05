@@ -4,6 +4,7 @@ var compressing = require("compressing");
 var deasync = require("deasync");
 var pipe = require("multipipe");
 var util = require("./util.js");
+var progress = require("./progress.js");
 
 function getStreamObject(stream) {
 
@@ -27,7 +28,7 @@ function hookOnEntryFinish(stream, fn) {
 
   var originalFunction = stream._onEntryFinish;
 
-  stream._onEntryFinish = function(err) {
+  stream._onEntryFinish = function (err) {
 
     // Current entries befire shift()
     if (this._waitingEntries && this._waitingEntries.length > 0) {
@@ -40,7 +41,7 @@ function hookOnEntryFinish(stream, fn) {
 
 }
 
-exports.pack = function(file, dest, format, handler) {
+exports.pack = function (file, dest, format, handler) {
 
   if (format === "zip" ||
     format === "tar" ||
@@ -52,7 +53,7 @@ exports.pack = function(file, dest, format, handler) {
 
 };
 
-exports.unpack = function(file, dest, format, handler) {
+exports.unpack = function (file, dest, format, handler) {
 
   format = format.toLowerCase();
 
@@ -76,13 +77,14 @@ function packHelper(file, dest, format, handler) {
 
   var totalCount = packSizeObject.count;
   var totalSize = packSizeObject.totalSize;
-  var totalPacked = 0;
-  var lastProgress = 0;
+  var totalProgress = 0;
 
   var currentEntry;
   var currentEntrySize;
 
-  hookOnEntryFinish(streamObject, function(entry) {
+  var progressHandler;
+
+  hookOnEntryFinish(streamObject, function (entry) {
 
     if (!util.isDirectory(entry)) {
 
@@ -91,7 +93,7 @@ function packHelper(file, dest, format, handler) {
 
       // Update size
       currentEntrySize = packSizeObject.files[entry];
-      totalPacked += currentEntrySize;
+      totalProgress += currentEntrySize;
 
       if (handler) {
 
@@ -101,19 +103,11 @@ function packHelper(file, dest, format, handler) {
       } else {
 
         // Default progress
-
-        var percentage = Math.ceil((totalPacked * 100) / totalSize);
-
-        if (lastProgress != percentage) {
-
-          lastProgress = percentage;
-
-          // Only show 100% when last file finish write
-          if (percentage != 100) {
-            showProgress(percentage);
-          }
-
+        if (!progressHandler) {
+          progressHandler = progress.progressHandler(totalSize, 99);
         }
+
+        progressHandler.showProgressChange(totalProgress);
 
       }
 
@@ -133,7 +127,7 @@ function packHelper(file, dest, format, handler) {
 
   var destStream = fs.createWriteStream(dest);
 
-  pipe(fileStream, destStream, function(error) {
+  pipe(fileStream, destStream, function (error) {
 
     forceSync = false;
 
@@ -152,7 +146,7 @@ function packHelper(file, dest, format, handler) {
       } else {
 
         // Show 100%;
-        showProgress(lastProgress);
+        progressHandler.showProgress(100);
         packComplete();
 
       }
@@ -178,17 +172,18 @@ function unpackHelper(file, dest, format, handler) {
 
   var totalCount = unpackSizeObject.count;
   var totalSize = unpackSizeObject.totalSize;
-  var totalUnpacked = 0;
-  var lastProgress = 0;
+  var totalProgress = 0;
 
   var currentEntry;
   var currentEntrySize;
+
+  var progressHandler;
 
   var fileStream = new compressing[format].UncompressStream({
     source: file
   });
 
-  fileStream.on("finish", function() {
+  fileStream.on("finish", function () {
 
     forceSync = false;
 
@@ -197,14 +192,14 @@ function unpackHelper(file, dest, format, handler) {
     } else {
 
       // Show 100%;
-      showProgress(lastProgress);
+      progressHandler.showProgress(100);
       unpackComplete();
 
     }
 
   });
 
-  fileStream.on("error", function(error) {
+  fileStream.on("error", function (error) {
 
     forceSync = false;
 
@@ -216,14 +211,14 @@ function unpackHelper(file, dest, format, handler) {
 
   });
 
-  fileStream.on("entry", function(header, stream, next) {
+  fileStream.on("entry", function (header, stream, next) {
 
     // Store currentEntry
     currentEntry = path.join(dest, header.name);
 
     // Update size
     currentEntrySize = getEntryUncompressedSize(header);
-    totalUnpacked += currentEntrySize;
+    totalProgress += currentEntrySize;
 
     // Write entry
     onUnpackEntryWrite(header, stream, next, dest);
@@ -235,19 +230,12 @@ function unpackHelper(file, dest, format, handler) {
 
     } else {
 
-      // Show progress
-      var percentage = Math.ceil((totalUnpacked * 100) / totalSize);
-
-      if (lastProgress != percentage) {
-
-        lastProgress = percentage;
-
-        // Only show 100% when last file finish write
-        if (percentage != 100) {
-          showProgress(percentage);
-        }
-
+      // Default progress
+      if (!progressHandler) {
+        progressHandler = progress.progressHandler(totalSize, 99);
       }
+
+      progressHandler.showProgressChange(totalProgress);
 
     }
 
@@ -291,11 +279,11 @@ function getUnpackSizeObject(file, format) {
     source: file
   });
 
-  fileStream.on("finish", function() {
+  fileStream.on("finish", function () {
     forceSync = false;
   });
 
-  fileStream.on("error", function(error) {
+  fileStream.on("error", function (error) {
 
     forceSync = false;
     sizeObject.count = -1;
@@ -303,7 +291,7 @@ function getUnpackSizeObject(file, format) {
 
   });
 
-  fileStream.on("entry", function(header, stream, next) {
+  fileStream.on("entry", function (header, stream, next) {
 
     var sizeValue = getEntryUncompressedSize(header);
 
@@ -335,7 +323,7 @@ function getFileList(dir, fileList) {
   fileList = fileList || [];
   files = fs.readdirSync(dir);
 
-  files.forEach(function(file) {
+  files.forEach(function (file) {
     if (util.isDirectory(path.join(dir, file))) {
       fileList = getFileList(path.join(dir, file), fileList);
     } else {
