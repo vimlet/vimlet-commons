@@ -2,14 +2,15 @@ var path = require("path");
 var fs = require("fs-extra");
 var request = require("request");
 var deasync = require("deasync");
+var progress = require("./progress.js");
+
 
 exports.download = function(url, dest, handler) {
 
   var forceSync = true;
-
-  // Last percentage shown
-  var lastProgress = null;
   var error = false;
+
+  var progressHandler;
 
   // Save variable to know progress
   var receivedBytes = 0;
@@ -59,14 +60,12 @@ exports.download = function(url, dest, handler) {
         handler(null, null, receivedBytes, totalBytes);
       } else {
 
-        var percentage = Math.ceil((receivedBytes * 100) / totalBytes);
-
-        if (lastProgress != percentage) {
-
-          lastProgress = percentage;
-          showProgress( percentage);
-
+        // Default progress
+        if (!progressHandler) {
+          progressHandler = progress.progressHandler(totalBytes, 99);
         }
+
+        progressHandler.showProgressChange(receivedBytes);
 
       }
 
@@ -83,7 +82,10 @@ exports.download = function(url, dest, handler) {
       if(handler) {
         handler(true);
       } else {
+
+        progressHandler.showProgress(100);
         downloadComplete();
+
       }
 
     }
@@ -112,13 +114,8 @@ exports.download = function(url, dest, handler) {
 
 };
 
-
 function handleError(error) {
   console.log(error);
-}
-
-function showProgress(percentage) {
-    console.log(percentage + "%");
 }
 
 function downloadComplete() {
