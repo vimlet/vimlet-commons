@@ -71,12 +71,12 @@ function packHelper(file, dest, format, handler) {
 
   var forceSync = true;
 
-  var packSizeObject = getPackSizeObject(getFileList(file));
+  var sizeObject = getPackSizeObject(getFileList(file));
   var fileStream = new compressing[format].Stream();
   var streamObject = getStreamObject(fileStream);
 
-  var totalCount = packSizeObject.count;
-  var totalSize = packSizeObject.totalSize;
+  var totalCount = sizeObject.count;
+  var totalSize = sizeObject.totalSize;
   var totalProgress = 0;
 
   var currentEntry;
@@ -92,8 +92,7 @@ function packHelper(file, dest, format, handler) {
       currentEntry = entry;
 
       // Update size
-      currentEntrySize = packSizeObject.files[entry];
-      totalProgress += currentEntrySize;
+      currentEntrySize = sizeObject.files[entry];
 
       if (handler) {
 
@@ -101,6 +100,14 @@ function packHelper(file, dest, format, handler) {
         handler(null, null, currentEntry, currentEntrySize, totalSize, totalCount);
 
       } else {
+
+        // File count fallback 
+        if (sizeObject.useFileCount) {
+          totalProgress += 1;
+          totalSize = totalCount;
+        } else {
+          totalProgress += currentEntrySize;
+        }
 
         // Default progress
         if (!progressHandler) {
@@ -168,10 +175,10 @@ function unpackHelper(file, dest, format, handler) {
   // Make dest directory
   fs.mkdirsSync(dest);
 
-  var unpackSizeObject = getUnpackSizeObject(file, format);
+  var sizeObject = getUpackSizeObject(file, format);
 
-  var totalCount = unpackSizeObject.count;
-  var totalSize = unpackSizeObject.totalSize;
+  var totalCount = sizeObject.count;
+  var totalSize = sizeObject.totalSize;
   var totalProgress = 0;
 
   var currentEntry;
@@ -218,7 +225,6 @@ function unpackHelper(file, dest, format, handler) {
 
     // Update size
     currentEntrySize = getEntryUncompressedSize(header);
-    totalProgress += currentEntrySize;
 
     // Write entry
     onUnpackEntryWrite(header, stream, next, dest);
@@ -229,6 +235,14 @@ function unpackHelper(file, dest, format, handler) {
       handler(null, null, currentEntry, currentEntrySize, totalSize, totalCount);
 
     } else {
+
+      // File count fallback 
+      if (sizeObject.useFileCount) {
+        totalProgress += 1;
+        totalSize = totalCount;
+      } else {
+        totalProgress += currentEntrySize;
+      }
 
       // Default progress
       if (!progressHandler) {
@@ -263,7 +277,7 @@ function getEntryUncompressedSize(header) {
 
 }
 
-function getUnpackSizeObject(file, format) {
+function getUpackSizeObject(file, format) {
 
   // Will attempt to find the total size in bytes of the UncompressStream, if not possible
   // file count will be provided instead
@@ -338,9 +352,10 @@ function getFileList(dir, fileList) {
 function getPackSizeObject(fileList) {
 
   var sizeObject = {
-    files: {},
+    useFileCount: false,
     totalSize: 0,
-    count: fileList.length
+    count: fileList.length,
+    files: {}
   };
 
   var file;
@@ -350,6 +365,10 @@ function getPackSizeObject(fileList) {
 
     file = fileList[i];
     size = util.getFileSize(file);
+
+    if(size = -1) {
+      sizeObject.useFileCount = true;
+    }
 
     sizeObject.files[file] = size;
     sizeObject.totalSize += size;
