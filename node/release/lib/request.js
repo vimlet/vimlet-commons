@@ -10,7 +10,7 @@ exports.download = function(url, dest, handler) {
   var forceSync = true;
   var error = false;
 
-  var progressHandler;
+  var progressHandler = handler ? null : progress.progressHandler(totalSize, 99);
 
   // Save variable to know progress
   var receivedBytes = 0;
@@ -61,10 +61,6 @@ exports.download = function(url, dest, handler) {
       } else {
 
         // Default progress
-        if (!progressHandler) {
-          progressHandler = progress.progressHandler(totalBytes, 99);
-        }
-
         progressHandler.showProgressChange(receivedBytes);
 
       }

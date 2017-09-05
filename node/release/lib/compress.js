@@ -82,7 +82,7 @@ function packHelper(file, dest, format, handler) {
   var currentEntry;
   var currentEntrySize;
 
-  var progressHandler;
+  var progressHandler = handler ? null : progress.progressHandler(totalSize, 99);
 
   hookOnEntryFinish(streamObject, function (entry) {
 
@@ -110,10 +110,6 @@ function packHelper(file, dest, format, handler) {
         }
 
         // Default progress
-        if (!progressHandler) {
-          progressHandler = progress.progressHandler(totalSize, 99);
-        }
-
         progressHandler.showProgressChange(totalProgress);
 
       }
@@ -184,7 +180,7 @@ function unpackHelper(file, dest, format, handler) {
   var currentEntry;
   var currentEntrySize;
 
-  var progressHandler;
+  var progressHandler = handler ? null : progress.progressHandler(totalSize, 99);
 
   var fileStream = new compressing[format].UncompressStream({
     source: file
@@ -245,10 +241,6 @@ function unpackHelper(file, dest, format, handler) {
       }
 
       // Default progress
-      if (!progressHandler) {
-        progressHandler = progress.progressHandler(totalSize, 99);
-      }
-
       progressHandler.showProgressChange(totalProgress);
 
     }
@@ -366,7 +358,7 @@ function getPackSizeObject(fileList) {
     file = fileList[i];
     size = util.getFileSize(file);
 
-    if(size = -1) {
+    if(size == -1) {
       sizeObject.useFileCount = true;
     }
 
