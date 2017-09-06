@@ -1,5 +1,5 @@
 var spawn = require("child_process").spawn;
-var os = require(__dirname +"/os.js");
+var os = require("./os.js");
 
 function runCommand(command, args, workingDirectory, execHandler) {
 
