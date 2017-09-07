@@ -7,6 +7,10 @@ function runCommand(command, args, workingDirectory, execHandler) {
     encoding: "utf8"
   };
 
+  if(!args) {
+    args = [];
+  }
+
   if(workingDirectory){
     config.cwd = workingDirectory;
   }
