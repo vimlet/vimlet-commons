@@ -10,7 +10,7 @@ exports.download = function(url, dest, handler) {
   var forceSync = true;
   var error = false;
 
-  var progressHandler = handler ? null : progress.progressHandler(totalSize, 99);
+  var progressHandler;
 
   // Save variable to know progress
   var receivedBytes = 0;
@@ -35,6 +35,7 @@ exports.download = function(url, dest, handler) {
 
       // Change the total bytes value to get progress later.
       totalBytes = parseInt(data.headers["content-length"]);
+      progressHandler = handler ? null : progress.progressHandler(totalBytes, 99);
 
       // Make parent directories
       fs.mkdirsSync(destDirectory);

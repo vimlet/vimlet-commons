@@ -1,7 +1,7 @@
 var vimlet_commons = require("../release");
 var path = require("path");
 
-var url = "http://service.vimlet.com/vide/vide.json";
+var url = "https://nodejs.org/dist/v6.11.3/node-v6.11.3-x64.msi";
 var file = path.resolve("./resources/request/file.json");
 
 vimlet_commons.request.download(url, file);
