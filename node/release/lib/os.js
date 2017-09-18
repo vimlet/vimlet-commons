@@ -36,99 +36,87 @@ exports.getUnixUserProfile = function () {
 
 exports.setUserEnvironmentVariable = function (key, value) {
 
-  try {
+  // Check os
+  if (exports.isWindows()) {
 
-    // Check os
-    if (exports.isWindows()) {
+    run.execSync(windowsEnvironment, ["setUserEnvironmentVariable " + key + " " + value]);
 
-      run.exec(windowsEnvironment, ["setUserEnvironmentVariable " + key + " " + value], global.bar.workingDirectory);
+  } else {
+
+    // Unix profile file
+    var profileContent = fs.readFileSync(exports.getUnixUserProfile(), "utf8");
+
+    // Write user variable
+    if (profileContent.includes(key)) {
+
+      // Erase existing variable
+      profileContent = profileContent.replace(new RegExp(key + ".*"), key + "=" + '"' + value + '"');
 
     } else {
-
-      // Unix profile file
-      var profileContent = fs.readFileSync(exports.getUnixUserProfile(), "utf8");
-
-      // Write user variable
-      if (profileContent.includes(key)) {
-
-        // Erase existing variable
-        profileContent = profileContent.replace(new RegExp(key + ".*"), key + "=" + '"' + value + '"');
-
-      } else {
-        profileContent += key + "=" + '"' + value + '"' + "\n";
-      }
-
-      // Overwrite file with updated content
-      fs.writeFileSync(exports.getUnixUserProfile(), profileContent, "utf8");
-
-      // Call export
-      var args = key + "=\"" + value + "\"";
-
+      profileContent += key + "=" + '"' + value + '"' + "\n";
     }
 
-  } catch (e) {
-    // Do nothing
+    // Overwrite file with updated content
+    fs.writeFileSync(exports.getUnixUserProfile(), profileContent, "utf8");
+
+    // Call export
+    var args = key + "=\"" + value + "\"";
+
   }
+
 
 };
 
 exports.addToUserPath = function (path) {
 
-  try {
+  if (exports.isWindows()) {
 
-    if (exports.isWindows()) {
+    var userPath = run.fetchSync(windowsEnvironment, "getUserEnvironmentVariable Path");
+    // Run windows command
+    run.execSync(windowsEnvironment, "setUserEnvironmentVariable Path " + userPath + ";" + path);
 
-      var userPath = run.fetch(windowsEnvironment, "getUserEnvironmentVariable Path");
-      // Run windows command
-      run.exec(windowsEnvironment, "setUserEnvironmentVariable Path " + userPath + ";" + path, global.bar.workingDirectory);
+  } else {
 
-    } else {
+    // Unix profile file
+    var profileContent = fs.readFileSync(exports.getUnixUserProfile(), "utf8");
 
-      // Unix profile file
-      var profileContent = fs.readFileSync(exports.getUnixUserProfile(), "utf8");
-
-      // Check path on user environment PATH variable
-      if (!profileContent.includes("PATH=" + '"' + path + ":$PATH" + '"')) {
-        fs.appendFileSync(exports.getUnixUserProfile(), "PATH=" + '"' + path + ":$PATH" + '"' + "\n", "utf8");
-      }
-
+    // Check path on user environment PATH variable
+    if (!profileContent.includes("PATH=" + '"' + path + ":$PATH" + '"')) {
+      fs.appendFileSync(exports.getUnixUserProfile(), "PATH=" + '"' + path + ":$PATH" + '"' + "\n", "utf8");
     }
 
-  } catch (e) {
-    // Do nothing
   }
 
 };
 
-exports.killProcess = function (name) {
+exports.killProcessByName = function (name) {
 
-  // try {
 
-  //   // TODO - COMMONS - Run output bug
-  //   if (exports.isWindows()) {
+  var command;
+  var args;
 
-  //     command = "taskkill";
-  //     args = ["/f", "/im", name + "*", ">nul 2>&1"];
+  // TODO - COMMONS - Run output bug
+  if (exports.isWindows()) {
 
-  //     // Execute command
-  //     commons.run.exec(command, args, global.var.workingDirectory);
+    command = "taskkill";
+    args = ["/f", "/im", name + "*"];
 
-  //   } else {
 
-  //     command = "killall";
-  //     args = "/f /im " + name + "* >nul 2>&1";
+  } else {
 
-  //     // Execute command
-  //     commons.run.exec(command, args, global.var.workingDirectory);
+    command = "killall";
+    args = [name];
 
-  //   }
+  }
 
-  // } catch (e) {
+  // Execute command
+  commons.run.execSync(command, args, null, function (out, error, exit) {
+    // Do nothing
+  });
 
-  // }
 
 };
 
 exports.removeFromUserPath = function (path) {
-
+  // TODO
 };
