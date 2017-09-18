@@ -4,7 +4,7 @@ var os = require("./os.js");
 
 exports.encoding = "utf8";
 
-exports.exec = function (command, args, workingDirectory, execHandler) {
+exports.exec = function (command, args, workingDirectory, doneHandler, execHandler) {
 
   var p;
 
@@ -48,8 +48,8 @@ exports.exec = function (command, args, workingDirectory, execHandler) {
     // Exit code to string
     exit = exit + "";
 
-    if (execHandler) {
-      execHandler(null, null, exit);
+    if (doneHandler) {
+      doneHandler(exit);
     }
 
   });
@@ -62,37 +62,9 @@ exports.execSync = function (command, args, workingDirectory, execHandler) {
 
   exports.exec(command, args, workingDirectory, function () {
 
-    if (out) {
+    forceSync = false;
 
-      if (execHandler) {
-        execHandler(out);
-      } else {
-        console.log(out);
-      }
-
-    }
-
-    if (error) {
-
-      if (execHandler) {
-        execHandler(null, error);
-      } else {
-        console.log(error);
-      }
-
-    }
-
-    if (exit) {
-
-      if (execHandler) {
-        execHandler(null, null, exit);
-      }
-
-      forceSync = false;
-
-    }
-
-  });
+  }, execHandler);
 
   while (forceSync) {
     deasync.sleep(100);
@@ -101,12 +73,20 @@ exports.execSync = function (command, args, workingDirectory, execHandler) {
 };
 
 
-exports.fetch = function (command, args, workingDirectory, fetchHandler) {
+exports.fetch = function (command, args, workingDirectory, doneHandler) {
 
   var forceSync = true;
   var stringOutput = "";
 
-  exports.exec(command, args, workingDirectory, function (out, error, exit) {
+  exports.exec(command, args, workingDirectory, function () {
+
+    forceSync = false;
+
+    if (doneHandler) {
+      doneHandler(stringOutput);
+    }
+
+  }, function (out, error) {
 
     if (out) {
       stringOutput += out;
@@ -114,10 +94,6 @@ exports.fetch = function (command, args, workingDirectory, fetchHandler) {
 
     if (error) {
       stringOutput += error;
-    }
-
-    if (exit) {
-      fetchHandler(stringOutput);
     }
 
   });
@@ -131,7 +107,8 @@ exports.fetchSync = function (command, args, workingDirectory) {
 
   exports.fetch(command, args, workingDirectory, function (out) {
 
-    stringOutput += out;
+    stringOutput = out;
+
     forceSync = false;
 
   });

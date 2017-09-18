@@ -5,10 +5,7 @@ var deasync = require("deasync");
 var progress = require("./progress.js");
 
 
-exports.download = function(url, dest, handler) {
-
-  var forceSync = true;
-  var error = false;
+exports.download = function (url, dest, doneHandler, downloadHandler) {
 
   var progressHandler;
 
@@ -27,38 +24,40 @@ exports.download = function(url, dest, handler) {
   var doDownload = false;
 
 
-  req.on("response", function(data) {
+  req.on("response", function (data) {
 
-    if(data.statusCode >= 200 && data.statusCode < 400 ) {
+    if (data.statusCode >= 200 && data.statusCode < 400) {
 
       doDownload = true;
 
       // Change the total bytes value to get progress later.
       totalBytes = parseInt(data.headers["content-length"]);
-      progressHandler = handler ? null : progress.progressHandler(totalBytes, 99);
+      progressHandler = downloadHandler ? null : progress.progressHandler(totalBytes, 99);
 
       // Make parent directories
       fs.mkdirsSync(destDirectory);
 
       // Pipe dest output
-      var out = fs.createWriteStream(destPath);
-      req.pipe(out);
+      req.pipe(fs.createWriteStream(destPath));
 
     } else {
-      handleError("Download failed, response " + data.statusCode);
+      if (downloadHandler) {
+        downloadHandler(data.statusCode + "");
+      } else {
+        handleError("Download failed, response " + data.statusCode);
+      }
     }
-
   });
 
-  req.on("data", function(chunk) {
+  req.on("data", function (chunk) {
 
-    if(doDownload) {
+    if (doDownload) {
 
       // Update the received bytes
       receivedBytes += chunk.length;
 
-      if (handler) {
-        handler(null, null, receivedBytes, totalBytes);
+      if (downloadHandler) {
+        downloadHandler(null, receivedBytes, totalBytes);
       } else {
 
         // Default progress
@@ -70,44 +69,58 @@ exports.download = function(url, dest, handler) {
 
   });
 
-  req.on("end", function() {
+  req.on("end", function () {
 
-    forceSync = false;
+    if (doDownload) {
 
-    if(doDownload) {
+      if (doneHandler) {
+        doneHandler();
+      }
 
-      if(handler) {
-        handler(true);
-      } else {
-
+      if(!downloadHandler) {
         progressHandler.showProgress(100);
         downloadComplete();
-
       }
 
     }
 
   });
 
-  req.on("error", function(error) {
+  req.on("error", function (error) {
 
-    error = true;
-    forceSync = false;
+    if (!error || error == "") {
+      error = true;
+    }
 
-    if(handler) {
-      handler(null, error);
+    if (downloadHandler) {
+      downloadHandler(error);
     } else {
       handleError(error);
     }
 
   });
 
+
+};
+
+exports.downloadSync = function (url, dest, doneHandler, downloadHandler) {
+
+  var forceSync = true;
+
+  exports.download(url, dest, function () {
+
+    forceSync = false;
+
+    if (doneHandler) {
+      doneHandler();
+    } 
+
+  }, downloadHandler);
+
   // Force sync
   while (forceSync) {
     deasync.sleep(100);
   }
-
-  return !error;
 
 };
 

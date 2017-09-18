@@ -17,4 +17,7 @@ var vimlet_commons = require("../release");
 
 // });
 
-console.log(vimlet_commons.run.fetchSync("ping", ["8.8.8.8"]));
+vimlet_commons.run.fetch("ping", ["8.8.8.8"], null, function(out) {
+    console.log(out);
+});
+console.log("hola alex!");
