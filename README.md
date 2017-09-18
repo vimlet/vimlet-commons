@@ -49,7 +49,7 @@ Handle http requests and download files.
 - download(String url, String file, DownloadHandler handler[opt], DoneHandler handler[opt]) : **boolean**
 
 **Notes**:
-- DownloadHandler is a callback function(error, received, total) on node.
+- DownloadHandler is a callback function(received, total, statusCode) on node.
 
 ## Compress
 

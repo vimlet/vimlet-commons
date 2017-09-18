@@ -26,11 +26,16 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 
   req.on("response", function (data) {
 
+    // Handle the statusCode
+    if (downloadHandler) {
+      downloadHandler(null, null, data.statusCode);
+    }
+
     if (data.statusCode >= 200 && data.statusCode < 400) {
 
       doDownload = true;
 
-      // Change the total bytes value to get progress later.
+      // Change the total bytes value to get progress later
       totalBytes = parseInt(data.headers["content-length"]);
       progressHandler = downloadHandler ? null : progress.progressHandler(totalBytes, 99);
 
@@ -42,14 +47,26 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 
     } else {
 
-      if (downloadHandler) {
-        downloadHandler(data.statusCode + "");
-      } else {
-        handleError("Download failed, response " + data.statusCode);
+      // Trigger doneHandle if statusCode is an invalid download code 
+      if (doneHandler) {
+
+        var error = data.statusCode + "";
+
+        // Make sure we return something
+        if (!error || error == "") {
+          error = true;
+        }
+
+        doneHandler(error);
+      }
+
+      // Show failed message if no downloadHandler found
+      if (!downloadHandler) {
+        console.log("Download failed, response " + data.statusCode);
       }
 
     }
-    
+
   });
 
   req.on("data", function (chunk) {
@@ -60,7 +77,7 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
       receivedBytes += chunk.length;
 
       if (downloadHandler) {
-        downloadHandler(null, receivedBytes, totalBytes);
+        downloadHandler(receivedBytes, totalBytes);
       } else {
 
         // Default progress
@@ -81,8 +98,10 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
       }
 
       if (!downloadHandler) {
+        
         progressHandler.showProgress(100);
-        downloadComplete();
+        console.log("Download complete");
+
       }
 
     }
@@ -91,14 +110,15 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 
   req.on("error", function (error) {
 
+    // Make sure we return something
     if (!error || error == "") {
       error = true;
     }
 
-    if (downloadHandler) {
-      downloadHandler(error);
+    if (doneHandler) {
+      doneHandler(error);
     } else {
-      handleError(error);
+      console.log(error);
     }
 
   });
@@ -109,9 +129,16 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 exports.downloadSync = function (url, dest, downloadHandler) {
 
   var forceSync = true;
+  var errorOutput;
 
-  exports.download(url, dest, downloadHandler, function () {
+  exports.download(url, dest, downloadHandler, function (error) {
+
+    if (error) {
+      errorOutput = true;
+    }
+
     forceSync = false;
+
   });
 
   // Force sync
@@ -119,12 +146,7 @@ exports.downloadSync = function (url, dest, downloadHandler) {
     deasync.sleep(100);
   }
 
+  // Download successful
+  return !errorOutput;
+
 };
-
-function handleError(error) {
-  console.log(error);
-}
-
-function downloadComplete() {
-  console.log("Download complete");
-}
