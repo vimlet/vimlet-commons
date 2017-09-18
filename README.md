@@ -22,10 +22,10 @@ Run commands and binarys with args.
 - OS
 
 **Methods**:
-- exec(String command, String[] args, String workingDirectory, ExecHandler handler) : **void**
+- exec(String command, String[] args, String workingDirectory, ExecHandler handler, DoneHandler handler[opt]) : **void**
 
 **Notes**:
-- ExecHandler is a callback function(out, error, exit) on node.
+- ExecHandler is a callback function(out, error) on node.
 
 ## OS
 
@@ -46,10 +46,10 @@ Detects platform and architecture.
 Handle http requests and download files.
 
 **Methods**:
-- download(String url, String file, DownloadHandler handler[opt]) : **boolean**
+- download(String url, String file, DownloadHandler handler[opt], DoneHandler handler[opt]) : **boolean**
 
 **Notes**:
-- DownloadHandler is a callback function(done, error, received, total) on node.
+- DownloadHandler is a callback function(error, received, total) on node.
 
 ## Compress
 

@@ -41,12 +41,15 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
       req.pipe(fs.createWriteStream(destPath));
 
     } else {
+
       if (downloadHandler) {
         downloadHandler(data.statusCode + "");
       } else {
         handleError("Download failed, response " + data.statusCode);
       }
+
     }
+    
   });
 
   req.on("data", function (chunk) {
