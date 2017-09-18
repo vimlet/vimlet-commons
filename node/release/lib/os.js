@@ -4,8 +4,11 @@ var fs = require("fs-extra");
 var run = require("./run.js");
 
 // Platform variables
-exports.linuxUserProfile = path.resolve(os.homedir() + "/.profile");
-exports.macUserProfile = path.resolve(os.homedir() + "/.bash_profile");
+exports.linuxUserProfile = path.join(os.homedir(), ".profile");
+exports.macUserProfile = path.join(os.homedir(), ".bash_profile");
+
+// Platform binaries
+var windowsEnvironment = path.join(__dirname, "platform/windows_environment.exe");
 
 exports.isWindows = function () {
   return os.platform() === "win32";
@@ -24,7 +27,7 @@ exports.is64Bit = function () {
 };
 
 exports.getUnixUserProfile = function () {
-  if (exports.isWindows) {
+  if (exports.isWindows()) {
     return null;
   } else {
     return exports.isMac() ? exports.macUserProfile : exports.linuxUserProfile;
@@ -37,10 +40,8 @@ exports.setUserEnvironmentVariable = function (key, value) {
 
     // Check os
     if (exports.isWindows()) {
-      // TODO - TEST ON WINDOWS
-      // Run windows command
-      var bin = path.resolve("windows_environment.exe");
-      run.exec(bin, ["setUserEnvironmentVariable " + key + " " + value], global.bar.workingDirectory);
+
+      run.exec(windowsEnvironment, ["setUserEnvironmentVariable " + key + " " + value], global.bar.workingDirectory);
 
     } else {
 
@@ -56,23 +57,17 @@ exports.setUserEnvironmentVariable = function (key, value) {
       } else {
         profileContent += key + "=" + '"' + value + '"' + "\n";
       }
+
       // Overwrite file with updated content
       fs.writeFileSync(exports.getUnixUserProfile(), profileContent, "utf8");
 
       // Call export
       var args = key + "=\"" + value + "\"";
 
-      // TODO - COMMONS - TEST ON LINUX
-      run.exec("echo", ["test output"], null, function (out, error, exit) {
-        if (error) {
-          console.log("error", error);
-        }
-      });
-
     }
 
   } catch (e) {
-
+    // Do nothing
   }
 
 };
@@ -83,15 +78,9 @@ exports.addToUserPath = function (path) {
 
     if (exports.isWindows()) {
 
-      // TODO - check if bin exists
-      var bin = path.resolve("windows_environment.exe");
-
-      // TODO - EXEC HANDLER callback to get user path
-      // var userPath = commons.run.fetch();
-      var userPath = "";
-
+      var userPath = run.fetch(windowsEnvironment, "getUserEnvironmentVariable Path");
       // Run windows command
-      run.exec(bin, "setUserEnvironmentVariable Path " + userPath + ";" + path, global.bar.workingDirectory);
+      run.exec(windowsEnvironment, "setUserEnvironmentVariable Path " + userPath + ";" + path, global.bar.workingDirectory);
 
     } else {
 
@@ -106,48 +95,40 @@ exports.addToUserPath = function (path) {
     }
 
   } catch (e) {
-
+    // Do nothing
   }
 
 };
 
 exports.killProcess = function (name) {
 
-  try {
+  // try {
 
-    // TODO - COMMONS - Run output bug
-    if (exports.isWindows()) {
+  //   // TODO - COMMONS - Run output bug
+  //   if (exports.isWindows()) {
 
-      command = "taskkill";
-      args = "/f /im " + name + "* >nul 2>&1";
+  //     command = "taskkill";
+  //     args = ["/f", "/im", name + "*", ">nul 2>&1"];
 
-      // Execute command
-      commons.run.exec(command, [args], global.var.workingDirectory);
+  //     // Execute command
+  //     commons.run.exec(command, args, global.var.workingDirectory);
 
-    } else {
+  //   } else {
 
-      command = "killall";
-      args = "/f /im " + name + "* >nul 2>&1";
+  //     command = "killall";
+  //     args = "/f /im " + name + "* >nul 2>&1";
 
-      // Execute command
-      commons.run.exec("killall", [args], global.var.workingDirectory);
+  //     // Execute command
+  //     commons.run.exec(command, args, global.var.workingDirectory);
 
-    }
+  //   }
 
-  } catch (e) {
+  // } catch (e) {
 
-  }
+  // }
 
 };
 
 exports.removeFromUserPath = function (path) {
 
-  try {
-
-    // TODO
-
-  } catch (e) {
-
-  }
-
-}
+};

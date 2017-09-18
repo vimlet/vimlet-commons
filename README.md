@@ -25,7 +25,7 @@ Run commands and binarys with args.
 - exec(String command, String[] args, String workingDirectory, ExecHandler handler) : **void**
 
 **Notes**:
-- ExecHandler is a callback function(dest, error, exit) on node.
+- ExecHandler is a callback function(out, error, exit) on node.
 
 ## OS
 
