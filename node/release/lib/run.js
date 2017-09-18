@@ -4,7 +4,7 @@ var os = require("./os.js");
 
 exports.encoding = "utf8";
 
-exports.exec = function (command, args, workingDirectory, doneHandler, execHandler) {
+exports.exec = function (command, args, workingDirectory, execHandler, doneHandler) {
 
   var p;
 
@@ -60,11 +60,9 @@ exports.execSync = function (command, args, workingDirectory, execHandler) {
 
   var forceSync = true;
 
-  exports.exec(command, args, workingDirectory, function () {
-
+  exports.exec(command, args, workingDirectory, execHandler, function () {
     forceSync = false;
-
-  }, execHandler);
+  });
 
   while (forceSync) {
     deasync.sleep(100);
@@ -108,7 +106,6 @@ exports.fetchSync = function (command, args, workingDirectory) {
   exports.fetch(command, args, workingDirectory, function (out) {
 
     stringOutput = out;
-
     forceSync = false;
 
   });

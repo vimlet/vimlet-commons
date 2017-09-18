@@ -5,7 +5,7 @@ var deasync = require("deasync");
 var progress = require("./progress.js");
 
 
-exports.download = function (url, dest, doneHandler, downloadHandler) {
+exports.download = function (url, dest, downloadHandler, doneHandler) {
 
   var progressHandler;
 
@@ -77,7 +77,7 @@ exports.download = function (url, dest, doneHandler, downloadHandler) {
         doneHandler();
       }
 
-      if(!downloadHandler) {
+      if (!downloadHandler) {
         progressHandler.showProgress(100);
         downloadComplete();
       }
@@ -103,19 +103,13 @@ exports.download = function (url, dest, doneHandler, downloadHandler) {
 
 };
 
-exports.downloadSync = function (url, dest, doneHandler, downloadHandler) {
+exports.downloadSync = function (url, dest, downloadHandler) {
 
   var forceSync = true;
 
-  exports.download(url, dest, function () {
-
+  exports.download(url, dest, downloadHandler, function () {
     forceSync = false;
-
-    if (doneHandler) {
-      doneHandler();
-    } 
-
-  }, downloadHandler);
+  });
 
   // Force sync
   while (forceSync) {

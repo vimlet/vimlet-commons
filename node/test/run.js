@@ -17,7 +17,7 @@ var vimlet_commons = require("../release");
 
 // });
 
-vimlet_commons.run.fetch("ping", ["8.8.8.8"], null, function(out) {
-    console.log(out);
+vimlet_commons.run.execSync("ping", ["8.8.8.8"], null, function(out) {
+    process.stdout.write(out);
 });
-console.log("hola alex!");
+console.log("In sync mode this message should appear last!");
