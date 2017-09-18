@@ -43,6 +43,24 @@ function hookOnEntryFinish(stream, fn) {
 
 exports.pack = function (file, dest, format, handler) {
 
+  console.log("TODO - CURRENTLY ACTS AS SYNC!");
+
+  format = format.toLowerCase();
+
+  if (format === "zip" ||
+    format === "tar" ||
+    format === "tgz") {
+    packHelper(file, dest, format, handler);
+  } else {
+    console.log("Unsupported format");
+  }
+
+};
+
+exports.packSync = function (file, dest, format, handler) {
+
+  format = format.toLowerCase();
+
   if (format === "zip" ||
     format === "tar" ||
     format === "tgz") {
@@ -54,6 +72,22 @@ exports.pack = function (file, dest, format, handler) {
 };
 
 exports.unpack = function (file, dest, format, handler) {
+
+  console.log("TODO - CURRENTLY ACTS AS SYNC!");
+
+  format = format.toLowerCase();
+
+  if (format === "zip" ||
+    format === "tar" ||
+    format === "tgz") {
+    unpackHelper(file, dest, format, handler);
+  } else {
+    console.log("Unsupported format");
+  }
+
+};
+
+exports.unpackSync = function (file, dest, format, handler) {
 
   format = format.toLowerCase();
 
@@ -409,8 +443,4 @@ function unpackComplete() {
 
 function handleError(error) {
   console.log(error);
-}
-
-function showProgress(percentage) {
-  console.log(percentage + "%");
 }
