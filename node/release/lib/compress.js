@@ -6,19 +6,6 @@ var pipe = require("multipipe");
 var util = require("./util.js");
 var progress = require("./progress.js");
 
-function getStreamObject(stream) {
-
-  var baseStream = stream;
-
-  if (!baseStream._onEntryFinish) {
-    // Must be tgz
-    baseStream = stream._tarStream;
-  }
-
-  return baseStream;
-
-}
-
 // Hook _onEntryFinish(err) of stream.js
 function hookOnEntryFinish(stream, fn) {
 
@@ -41,69 +28,67 @@ function hookOnEntryFinish(stream, fn) {
 
 }
 
-exports.pack = function (file, dest, format, handler) {
+exports.pack = function (file, dest, format, packHandler, doneHandler) {
 
-  console.log("TODO - CURRENTLY ACTS AS SYNC!");
-
-  format = format.toLowerCase();
-
-  if (format === "zip" ||
-    format === "tar" ||
-    format === "tgz") {
-    packHelper(file, dest, format, handler);
+  if (isValidFormat(format)) {
+    packHelper(file, dest, format, packHandler, doneHandler);
   } else {
     console.log("Unsupported format");
   }
 
 };
 
-exports.packSync = function (file, dest, format, handler) {
+exports.packSync = function (file, dest, format, packHandler) {
 
-  format = format.toLowerCase();
-
-  if (format === "zip" ||
-    format === "tar" ||
-    format === "tgz") {
-    packHelper(file, dest, format, handler);
+  if (isValidFormat(format)) {
+    packHelperSync(file, dest, format, packHandler);
   } else {
     console.log("Unsupported format");
   }
 
 };
 
-exports.unpack = function (file, dest, format, handler) {
+exports.unpack = function (file, dest, format, unpackHandler) {
 
-  console.log("TODO - CURRENTLY ACTS AS SYNC!");
-
-  format = format.toLowerCase();
-
-  if (format === "zip" ||
-    format === "tar" ||
-    format === "tgz") {
-    unpackHelper(file, dest, format, handler);
+  if (isValidFormat(format)) {
+    unpackHelper(file, dest, format, unpackHandler);
   } else {
     console.log("Unsupported format");
   }
 
 };
 
-exports.unpackSync = function (file, dest, format, handler) {
+exports.unpackSync = function (file, dest, format, unpackHandler) {
 
-  format = format.toLowerCase();
-
-  if (format === "zip" ||
-    format === "tar" ||
-    format === "tgz") {
-    unpackHelper(file, dest, format, handler);
+  if (isValidFormat(format)) {
+    unpackHelperSync(file, dest, format, unpackHandler);
   } else {
     console.log("Unsupported format");
   }
 
 };
 
-function packHelper(file, dest, format, handler) {
+function isValidFormat(format) {
 
-  var forceSync = true;
+  format = format.toLowerCase();
+  return format === "zip" || format === "tar" || format === "tgz";
+
+}
+
+function getStreamObject(stream) {
+
+  var baseStream = stream;
+
+  if (!baseStream._onEntryFinish) {
+    // Must be tgz
+    baseStream = stream._tarStream;
+  }
+
+  return baseStream;
+
+}
+
+function packHelper(file, dest, format, packHandler, doneHandler) {
 
   var sizeObject = getPackSizeObject(getFileList(file));
   var fileStream = new compressing[format].Stream();
@@ -116,7 +101,7 @@ function packHelper(file, dest, format, handler) {
   var currentEntry;
   var currentEntrySize;
 
-  var progressHandler = handler ? null : progress.progressHandler(totalSize, 99);
+  var progressHandler = packHandler ? null : progress.progressHandler(totalSize, 99);
 
   hookOnEntryFinish(streamObject, function (entry) {
 
@@ -128,10 +113,10 @@ function packHelper(file, dest, format, handler) {
       // Update size
       currentEntrySize = sizeObject.files[entry];
 
-      if (handler) {
+      if (packHandler) {
 
         // Custom progress
-        handler(null, null, currentEntry, currentEntrySize, totalSize, totalCount);
+        packHandler(null, null, currentEntry, currentEntrySize, totalSize, totalCount);
 
       } else {
 
@@ -170,16 +155,21 @@ function packHelper(file, dest, format, handler) {
 
     if (error) {
 
-      if (handler) {
-        handler(null, error);
+      // Make sure we return something
+      if (error == "") {
+        error = true;
+      }
+
+      if (packHandler) {
+        packHandler(null, error);
       } else {
         handleError(error);
       }
 
     } else {
 
-      if (handler) {
-        handler(true);
+      if (packHandler) {
+        packHandler(true);
       } else {
 
         // Show 100%;
@@ -188,7 +178,30 @@ function packHelper(file, dest, format, handler) {
 
       }
 
+
     }
+
+    if (doneHandler) {
+      doneHandler(error);
+    }
+
+  });
+
+
+}
+
+function packHelperSync(file, dest, format, packHandler) {
+
+  var forceSync = true;
+  var errorOutput = false;
+
+  packHelper(file, dest, format, packHandler, function (error) {
+
+    if (error) {
+      errorOutput = true;
+    }
+
+    forceSync = false;
 
   });
 
@@ -196,11 +209,11 @@ function packHelper(file, dest, format, handler) {
     deasync.sleep(100);
   }
 
+  return !errorOutput;
+
 }
 
-function unpackHelper(file, dest, format, handler) {
-
-  var forceSync = true;
+function unpackHelper(file, dest, format, unpackHandler, doneHandler) {
 
   // Make dest directory
   fs.mkdirsSync(dest);
@@ -214,7 +227,7 @@ function unpackHelper(file, dest, format, handler) {
   var currentEntry;
   var currentEntrySize;
 
-  var progressHandler = handler ? null : progress.progressHandler(totalSize, 99);
+  var progressHandler = unpackHandler ? null : progress.progressHandler(totalSize, 99);
 
   var fileStream = new compressing[format].UncompressStream({
     source: file
@@ -222,9 +235,7 @@ function unpackHelper(file, dest, format, handler) {
 
   fileStream.on("finish", function () {
 
-    forceSync = false;
-
-    if (handler) {
+    if (unpackHandler) {
       handler(true);
     } else {
 
@@ -234,16 +245,27 @@ function unpackHelper(file, dest, format, handler) {
 
     }
 
+    if (doneHandler) {
+      doneHandler();
+    }
+
   });
 
   fileStream.on("error", function (error) {
 
-    forceSync = false;
+    // Make sure we return something
+    if (!error || error == "") {
+      error = true;
+    }
 
-    if (handler) {
-      handler(null, error);
+    if (unpackHandler) {
+      unpackHandler(null, error);
     } else {
       handleError(error);
+    }
+
+    if (doneHandler) {
+      doneHandler(error);
     }
 
   });
@@ -259,10 +281,10 @@ function unpackHelper(file, dest, format, handler) {
     // Write entry
     onUnpackEntryWrite(header, stream, next, dest);
 
-    if (handler) {
+    if (unpackHandler) {
 
       // Custom progress
-      handler(null, null, currentEntry, currentEntrySize, totalSize, totalCount);
+      unpackHandler(null, null, currentEntry, currentEntrySize, totalSize, totalCount);
 
     } else {
 
@@ -281,9 +303,28 @@ function unpackHelper(file, dest, format, handler) {
 
   });
 
+}
+
+function unpackHelperSync(file, dest, format, unpackHandler) {
+
+  var forceSync = true;
+  var errorOutput = false;
+
+  unpackHelper(file, dest, format, unpackHandler, function (error) {
+
+    if (error) {
+      errorOutput = true;
+    }
+
+    forceSync = false;
+
+  });
+
   while (forceSync) {
     deasync.sleep(100);
   }
+
+  return !errorOutput;
 
 }
 
@@ -392,7 +433,7 @@ function getPackSizeObject(fileList) {
     file = fileList[i];
     size = util.getFileSize(file);
 
-    if(size == -1) {
+    if (size == -1) {
       sizeObject.useFileCount = true;
     }
 

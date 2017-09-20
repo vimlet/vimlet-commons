@@ -12,8 +12,11 @@ var out = path.join(__dirname, "resources/compress/compress");
 //vimlet_commons.compress.unpack(out, unpack, "tar");
 
 
-vimlet_commons.compress.pack(pack, out, "tgz");
-vimlet_commons.compress.unpack(out, unpack, "tgz");
+// vimlet_commons.compress.packSync(pack, out, "tgz");
+// console.log("In sync mode this message should appear last!");
+
+vimlet_commons.compress.unpackSync(out, unpack, "tgz");
+console.log("In sync mode this message should appear last!");
 
 // vimlet_commons.compress.pack(pack, out, "tar", function (done, error, entry) {
 //   if(entry){

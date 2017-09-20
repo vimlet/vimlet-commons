@@ -129,7 +129,7 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 exports.downloadSync = function (url, dest, downloadHandler) {
 
   var forceSync = true;
-  var errorOutput;
+  var errorOutput = false;
 
   exports.download(url, dest, downloadHandler, function (error) {
 
