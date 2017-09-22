@@ -67,13 +67,13 @@ exports.setUserEnvironmentVariable = function (key, value) {
 
 };
 
-exports.addToUserPath = function (path) {
+exports.addToUserPath = function (value) {
 
   if (exports.isWindows()) {
 
     var userPath = run.fetchSync(windowsEnvironment, "getUserEnvironmentVariable Path");
     // Run windows command
-    run.execSync(windowsEnvironment, "setUserEnvironmentVariable Path " + userPath + ";" + path);
+    run.execSync(windowsEnvironment, "setUserEnvironmentVariable Path " + userPath + ";" + value);
 
   } else {
 
@@ -81,8 +81,8 @@ exports.addToUserPath = function (path) {
     var profileContent = fs.readFileSync(exports.getUnixUserProfile(), "utf8");
 
     // Check path on user environment PATH variable
-    if (!profileContent.includes("PATH=" + '"' + path + ":$PATH" + '"')) {
-      fs.appendFileSync(exports.getUnixUserProfile(), "PATH=" + '"' + path + ":$PATH" + '"' + "\n", "utf8");
+    if (!profileContent.includes("PATH=" + '"' + value + ":$PATH" + '"')) {
+      fs.appendFileSync(exports.getUnixUserProfile(), "PATH=" + '"' + value + ":$PATH" + '"' + "\n", "utf8");
     }
 
   }

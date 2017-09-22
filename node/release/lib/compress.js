@@ -116,7 +116,7 @@ function packHelper(file, dest, format, packHandler, doneHandler) {
       if (packHandler) {
 
         // Custom progress
-        packHandler(null, null, currentEntry, currentEntrySize, totalSize, totalCount);
+        packHandler(null, currentEntry, currentEntrySize, totalSize, totalCount);
 
       } else {
 
@@ -161,7 +161,7 @@ function packHelper(file, dest, format, packHandler, doneHandler) {
       }
 
       if (packHandler) {
-        packHandler(null, error);
+        packHandler(error);
       } else {
         handleError(error);
       }
@@ -259,7 +259,7 @@ function unpackHelper(file, dest, format, unpackHandler, doneHandler) {
     }
 
     if (unpackHandler) {
-      unpackHandler(null, error);
+      unpackHandler(error);
     } else {
       handleError(error);
     }
@@ -284,7 +284,7 @@ function unpackHelper(file, dest, format, unpackHandler, doneHandler) {
     if (unpackHandler) {
 
       // Custom progress
-      unpackHandler(null, null, currentEntry, currentEntrySize, totalSize, totalCount);
+      unpackHandler(null, currentEntry, currentEntrySize, totalSize, totalCount);
 
     } else {
 

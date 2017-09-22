@@ -1,72 +1,17 @@
 # Vimlet Commons Modules:
 
-Provides a cross environment standarized API for common used functions.
+### Provides a cross environment standardized API for common used functions. 
+
+This module is a constant effort of improving to achieve a stable solution for common case developing needs, currently supporting:
 
 - OS
 - Run
 - Request
 - Compress
+- Util
+- Progress
 - IO
 - Validation
 - Serialization
-- Util
 
-
-## Run
-
-**Description**:
-
-Run commands and binarys with args.
-
-**Depends**:
-- OS
-
-**Methods**:
-- exec(String command, String[] args, String workingDirectory, ExecHandler handler, DoneHandler handler[opt]) : **void**
-
-**Notes**:
-- ExecHandler is a callback function(out, error) on node.
-
-## OS
-
-**Description**:
-
-Detects platform and architecture.
-
-**Methods**:
-- isWindows() : **boolean**
-- isLinux() : **boolean**
-- isMac() : **boolean**
-- is64Bit() : **boolean**
-
-## Request
-
-**Description**:
-
-Handle http requests and download files.
-
-**Methods**:
-- download(String url, String file, DownloadHandler handler[opt], DoneHandler handler[opt]) : **boolean**
-
-**Notes**:
-- DownloadHandler is a callback function(received, total, statusCode) on node.
-
-## Compress
-
-**Description**:
-
-**Depends**:
-- Util on node
-
-Packs and unpacks files and directories for the following formats:
-- zip
-- tar
-- tgz
-
-**Methods**:
-- pack(String file, String dest, String format, CompressHandler handler[opt]) : **void**
-- unpack(String file, String dest, String format, CompressHandler handler[opt]) : **void**
-
-**Notes**:
-- Format must exactly match one of these "zip", "tar", "tgz".
-- CompressHandler is a callback function(done, error, entry, entrySize, totalSize, totalCount) on node.
+### For more information check specific module documentation.

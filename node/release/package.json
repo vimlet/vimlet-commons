@@ -1,7 +1,7 @@
 {
   "name": "vimlet-commons",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.2",
+  "description": "Provide utilities for common tasks such as, file compression, file download, OS integration, exec, etc",
   "main": "index.js",
   "dependencies": {
     "fs-extra": "^4.0.1",
@@ -13,6 +13,18 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "UNLICENSED"
+  "author": "Vimlet",
+  "license": "BSD-2-Clause-FreeBSD",
+  "keywords": [
+    "zip",
+    "tar",
+    "tgz",
+    "compress",
+    "uncompress",
+    "spawn",
+    "exec",
+    "run",
+    "download",
+    "os"
+  ]
 }
