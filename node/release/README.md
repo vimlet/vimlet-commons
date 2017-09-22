@@ -132,7 +132,7 @@ This project is licensed under [FreeBSD 2 clause license](https://spdx.org/licen
 
 ## Documentation
 Documentation is an ongoing effort, hopefully it will get better and better over time, feel free to open 
-[github issues](https://github.com/vimlet/VimletCommons) anytime, will try to resolve any doubts or issues you might have.
+[github issues](https://github.com/vimlet/VimletCommons) anytime, we will try to resolve any doubts or issues you might have.
 
 ## Known issues
 - Since we currently use "deasync" for sync functions some users might experience errors with different v8 versions, for example some error might occur when running under Electron. We are working on a replacement of "deasync" to solve this issue.
