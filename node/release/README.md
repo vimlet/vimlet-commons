@@ -2,7 +2,7 @@
 
 ### Provides a cross environment standardized API for common used functions. 
 
-This module is a constant effort of improving to achieve a stable free and open-source solution for common case developing needs, currently supporting:
+This module is a constant effort of improvement, to achieve a stable free and open-source solution for common case developing needs, currently supporting:
 
 - OS
 - Run
@@ -27,7 +27,7 @@ commons.run.*
 commons.request.*
 commons.compress.*
 
-// Example, note in most cases the API has async
+// Examples, note in most cases the API has async
 // and sync version of the same function and that
 // callbacks are optional
 
@@ -45,7 +45,7 @@ commons.compress.packSync(pack, out, "zip");
 ```
 
 Notes:
-- In most functions, when null handler is provided console output will be the default, this is useful to override default text output.
+- In most functions, when null handler is provided console output will be the default, this is useful to override text output.
 
 # API
 
