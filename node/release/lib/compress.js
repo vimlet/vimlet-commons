@@ -157,7 +157,7 @@ function packHelper(file, dest, format, packHandler, doneHandler) {
 
       // Make sure we return something
       if (error == "") {
-        error = true;
+        error = "true";
       }
 
       if (packHandler) {
@@ -255,7 +255,7 @@ function unpackHelper(file, dest, format, unpackHandler, doneHandler) {
 
     // Make sure we return something
     if (!error || error == "") {
-      error = true;
+      error = "true";
     }
 
     if (unpackHandler) {

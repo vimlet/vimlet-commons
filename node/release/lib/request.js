@@ -54,7 +54,7 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 
         // Make sure we return something
         if (!error || error == "") {
-          error = true;
+          error = "true";
         }
 
         doneHandler(error);
@@ -112,7 +112,7 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 
     // Make sure we return something
     if (!error || error == "") {
-      error = true;
+      error = "true";
     }
 
     if (doneHandler) {
