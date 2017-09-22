@@ -22,10 +22,10 @@ You can access the source code at [https://github.com/vimlet/VimletCommons](http
 const commons = require("vimlet-commons");
 
 // Where '*' use the desired function from the API below
-commons.os.*
-commons.run.*
-commons.request.*
-commons.compress.*
+// commons.os.*
+// commons.run.*
+// commons.request.*
+// commons.compress.*
 
 // Examples, note in most cases the API has async
 // and sync version of the same function and that
@@ -34,13 +34,14 @@ commons.compress.*
 var pack = require("path").join(__dirname, "resources/compress/pack");
 var out = require("path").join(__dirname, "resources/compress/file.zip");
 
+// Sync
+commons.compress.packSync(pack, out, "zip");
+
 // Async, when null handler is provided console output will be the default
 commons.compress.pack(pack, out, "zip", null, function(success){
     console.log("Success: " + success);
 });
 
-// Sync
-commons.compress.packSync(pack, out, "zip");
 
 ```
 
@@ -61,10 +62,10 @@ Run commands and binaries with args.
 - OS
 
 **Methods**:
-- exec(String command, String[] args, String workingDirectory, ExecHandler handler[opt], DoneHandler handler[opt]) : **void**
-- execSync(String command, String[] args, String workingDirectory, ExecHandler handler[opt]) : **String**
-- fetch(String command, String[] args, String workingDirectory, DoneHandler handler[opt]) : **void**
-- fetchSync(String command, String[] args, String workingDirectory) : **String**
+- **exec**(String command, String[] args, String workingDirectory, ExecHandler handler[opt], DoneHandler handler[opt]) : void
+- **execSync**(String command, String[] args, String workingDirectory, ExecHandler handler[opt]) : String
+- **fetch**(String command, String[] args, String workingDirectory, DoneHandler handler[opt]) : void
+- **fetchSync**(String command, String[] args, String workingDirectory) : String
 
 **Notes**:
 - ExecHandler is a callback function(out, error).
@@ -77,14 +78,14 @@ Run commands and binaries with args.
 Detects platform and architecture.
 
 **Methods**:
-- isWindows() : **boolean**
-- isLinux() : **boolean**
-- isMac() : **boolean**
-- is64Bit() : **boolean**
-- getUnixUserProfile() : **String**
-- setUserEnvironmentVariable(String key, String value) : **void**
-- addToUserPath(value) : **void**
-- killProcessByName(name) : **void**
+- **isWindows**() : boolean
+- **isLinux**() : boolean
+- **isMac**() : boolean
+- **is64Bit**() : boolean
+- **getUnixUserProfile**() : String
+- **setUserEnvironmentVariable**(String key, String value) : void
+- **addToUserPath**(value) : void
+- **killProcessByName**(name) : void
 
 ## Request
 
@@ -93,8 +94,8 @@ Detects platform and architecture.
 Handle http requests and download files.
 
 **Methods**:
-- download(String url, String file, DownloadHandler handler[opt], DoneHandler handler[opt]) : **boolean**
-- downloadSync(String url, String file, DownloadHandler handler[opt]) : **String**
+- **download**(String url, String file, DownloadHandler handler[opt], DoneHandler handler[opt]) : String
+- **downloadSync**(String url, String file, DownloadHandler handler[opt]) : String
 
 **Notes**:
 - DownloadHandler is a callback function(received, total, statusCode).
@@ -113,10 +114,10 @@ Packs and unpacks files and directories for the following formats:
 - tgz
 
 **Methods**:
-- pack(String file, String dest, String format, PackHandler handler[opt],  DoneHandler handler[opt]) : **void**
-- packSync(String file, String dest, String format, PackHandler handler[opt]) : **String**
-- unpack(String file, String dest, String format, UnpackHandler handler[opt],  DoneHandler handler[opt]) : **void**
-- unpackSync(String file, String dest, String format, UnpackHandler handler[opt]) : **String**
+- **pack**(String file, String dest, String format, PackHandler handler[opt],  DoneHandler handler[opt]) : void
+- **packSync**(String file, String dest, String format, PackHandler handler[opt]) : String
+- **unpack**(String file, String dest, String format, UnpackHandler handler[opt],  DoneHandler handler[opt]) : void
+- **unpackSync**(String file, String dest, String format, UnpackHandler handler[opt]) : String
 
 **Notes**:
 - Format must exactly match one of these "zip", "tar", "tgz".
