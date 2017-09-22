@@ -73,18 +73,9 @@ exports.execSync = function (command, args, workingDirectory, execHandler) {
 
 exports.fetch = function (command, args, workingDirectory, doneHandler) {
 
-  var forceSync = true;
   var stringOutput = "";
 
-  exports.exec(command, args, workingDirectory, function () {
-
-    forceSync = false;
-
-    if (doneHandler) {
-      doneHandler(stringOutput);
-    }
-
-  }, function (out, error) {
+  exports.exec(command, args, workingDirectory, function (out, error) {
 
     if (out) {
       stringOutput += out;
@@ -92,6 +83,12 @@ exports.fetch = function (command, args, workingDirectory, doneHandler) {
 
     if (error) {
       stringOutput += error;
+    }
+
+  }, function () {
+
+    if (doneHandler) {
+      doneHandler(stringOutput);
     }
 
   });
@@ -105,7 +102,10 @@ exports.fetchSync = function (command, args, workingDirectory) {
 
   exports.fetch(command, args, workingDirectory, function (out) {
 
-    stringOutput = out;
+    if (out) {
+      stringOutput += out;
+    }
+
     forceSync = false;
 
   });

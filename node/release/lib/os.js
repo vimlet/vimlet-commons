@@ -39,7 +39,7 @@ exports.setUserEnvironmentVariable = function (key, value) {
   // Check os
   if (exports.isWindows()) {
 
-    run.execSync(windowsEnvironment, ["setUserEnvironmentVariable " + key + " " + value]);
+    run.execSync(windowsEnvironment, ["setUserEnvironmentVariable", key, value]);
 
   } else {
 
@@ -71,9 +71,14 @@ exports.addToUserPath = function (value) {
 
   if (exports.isWindows()) {
 
-    var userPath = run.fetchSync(windowsEnvironment, "getUserEnvironmentVariable Path");
+    var userPath = run.fetchSync(windowsEnvironment, ["getUserEnvironmentVariable", "Path"]).trim();
+
+    if(userPath != "") {
+      value = userPath + ";" + value;
+    }
+
     // Run windows command
-    run.execSync(windowsEnvironment, "setUserEnvironmentVariable Path " + userPath + ";" + value);
+    run.execSync(windowsEnvironment, ["setUserEnvironmentVariable", "Path", value]);
 
   } else {
 
