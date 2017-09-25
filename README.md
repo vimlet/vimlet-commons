@@ -4,7 +4,7 @@
 
 This module is a constant effort of improvement to achieve a stable and flexible, free open-source solution, for common case developing needs.
 
-Currently supporting:
+**Currently supporting**:
 
 - OS
 - Run
