@@ -1,7 +1,6 @@
 var fs = require("fs-extra");
 var path = require("path");
 var compressing = require("compressing");
-var deasync = require("deasync");
 var pipe = require("multipipe");
 var util = require("./util.js");
 var progress = require("./progress.js");
@@ -38,30 +37,10 @@ exports.pack = function (file, dest, format, packHandler, doneHandler) {
 
 };
 
-exports.packSync = function (file, dest, format, packHandler) {
-
-  if (isValidFormat(format)) {
-    packHelperSync(file, dest, format, packHandler);
-  } else {
-    console.log("Unsupported format");
-  }
-
-};
-
 exports.unpack = function (file, dest, format, unpackHandler) {
 
   if (isValidFormat(format)) {
     unpackHelper(file, dest, format, unpackHandler);
-  } else {
-    console.log("Unsupported format");
-  }
-
-};
-
-exports.unpackSync = function (file, dest, format, unpackHandler) {
-
-  if (isValidFormat(format)) {
-    unpackHelperSync(file, dest, format, unpackHandler);
   } else {
     console.log("Unsupported format");
   }
@@ -190,141 +169,98 @@ function packHelper(file, dest, format, packHandler, doneHandler) {
 
 }
 
-function packHelperSync(file, dest, format, packHandler) {
-
-  var forceSync = true;
-  var errorOutput = false;
-
-  packHelper(file, dest, format, packHandler, function (error) {
-
-    if (error) {
-      errorOutput = true;
-    }
-
-    forceSync = false;
-
-  });
-
-  while (forceSync) {
-    deasync.sleep(100);
-  }
-
-  return !errorOutput;
-
-}
-
 function unpackHelper(file, dest, format, unpackHandler, doneHandler) {
 
   // Make dest directory
   fs.mkdirsSync(dest);
 
-  var sizeObject = getUpackSizeObject(file, format);
+  getUpackSizeObject(file, format, function (sizeObject) {
 
-  var totalCount = sizeObject.count;
-  var totalSize = sizeObject.totalSize;
-  var totalProgress = 0;
+    var totalCount = sizeObject.count;
+    var totalSize = sizeObject.totalSize;
+    var totalProgress = 0;
 
-  var currentEntry;
-  var currentEntrySize;
+    var currentEntry;
+    var currentEntrySize;
 
-  var progressHandler = unpackHandler ? null : progress.progressHandler(totalSize, 99);
+    var progressHandler = unpackHandler ? null : progress.progressHandler(totalSize, 99);
 
-  var fileStream = new compressing[format].UncompressStream({
-    source: file
-  });
+    var fileStream = new compressing[format].UncompressStream({
+      source: file
+    });
 
-  fileStream.on("finish", function () {
+    fileStream.on("finish", function () {
 
-    if (unpackHandler) {
-      handler(true);
-    } else {
-
-      // Show 100%;
-      progressHandler.showProgress(100);
-      unpackComplete();
-
-    }
-
-    if (doneHandler) {
-      doneHandler();
-    }
-
-  });
-
-  fileStream.on("error", function (error) {
-
-    // Make sure we return something
-    if (!error || error == "") {
-      error = "true";
-    }
-
-    if (unpackHandler) {
-      unpackHandler(error);
-    } else {
-      handleError(error);
-    }
-
-    if (doneHandler) {
-      doneHandler(error);
-    }
-
-  });
-
-  fileStream.on("entry", function (header, stream, next) {
-
-    // Store currentEntry
-    currentEntry = path.join(dest, header.name);
-
-    // Update size
-    currentEntrySize = getEntryUncompressedSize(header);
-
-    // Write entry
-    onUnpackEntryWrite(header, stream, next, dest);
-
-    if (unpackHandler) {
-
-      // Custom progress
-      unpackHandler(null, currentEntry, currentEntrySize, totalSize, totalCount);
-
-    } else {
-
-      // File count fallback 
-      if (sizeObject.useFileCount) {
-        totalProgress += 1;
-        totalSize = totalCount;
+      if (unpackHandler) {
+        handler(true);
       } else {
-        totalProgress += currentEntrySize;
+
+        // Show 100%;
+        progressHandler.showProgress(100);
+        unpackComplete();
+
       }
 
-      // Default progress
-      progressHandler.showProgressChange(totalProgress);
+      if (doneHandler) {
+        doneHandler();
+      }
 
-    }
+    });
+
+    fileStream.on("error", function (error) {
+
+      // Make sure we return something
+      if (!error || error == "") {
+        error = "true";
+      }
+
+      if (unpackHandler) {
+        unpackHandler(error);
+      } else {
+        handleError(error);
+      }
+
+      if (doneHandler) {
+        doneHandler(error);
+      }
+
+    });
+
+    fileStream.on("entry", function (header, stream, next) {
+
+      // Store currentEntry
+      currentEntry = path.join(dest, header.name);
+
+      // Update size
+      currentEntrySize = getEntryUncompressedSize(header);
+
+      // Write entry
+      onUnpackEntryWrite(header, stream, next, dest);
+
+      if (unpackHandler) {
+
+        // Custom progress
+        unpackHandler(null, currentEntry, currentEntrySize, totalSize, totalCount);
+
+      } else {
+
+        // File count fallback 
+        if (sizeObject.useFileCount) {
+          totalProgress += 1;
+          totalSize = totalCount;
+        } else {
+          totalProgress += currentEntrySize;
+        }
+
+        // Default progress
+        progressHandler.showProgressChange(totalProgress);
+
+      }
+
+    });
 
   });
 
-}
-
-function unpackHelperSync(file, dest, format, unpackHandler) {
-
-  var forceSync = true;
-  var errorOutput = false;
-
-  unpackHelper(file, dest, format, unpackHandler, function (error) {
-
-    if (error) {
-      errorOutput = true;
-    }
-
-    forceSync = false;
-
-  });
-
-  while (forceSync) {
-    deasync.sleep(100);
-  }
-
-  return !errorOutput;
 
 }
 
@@ -344,11 +280,10 @@ function getEntryUncompressedSize(header) {
 
 }
 
-function getUpackSizeObject(file, format) {
+function getUpackSizeObject(file, format, callback) {
 
   // Will attempt to find the total size in bytes of the UncompressStream, if not possible
   // file count will be provided instead
-  var forceSync = true;
 
   var sizeObject = {
     useFileCount: false,
@@ -361,12 +296,13 @@ function getUpackSizeObject(file, format) {
   });
 
   fileStream.on("finish", function () {
-    forceSync = false;
+
+    callback(sizeObject);
+
   });
 
   fileStream.on("error", function (error) {
 
-    forceSync = false;
     sizeObject.count = -1;
     handleError(error);
 
@@ -389,12 +325,6 @@ function getUpackSizeObject(file, format) {
     next();
 
   });
-
-  while (forceSync) {
-    deasync.sleep(100);
-  }
-
-  return sizeObject;
 
 }
 

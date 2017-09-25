@@ -1,0 +1,5 @@
+D:\Projects\VimletCommons\environment\windows\Environment\bin\Debug\windows_environment.exe
+D:\Projects\VimletCommons\environment\windows\Environment\bin\Debug\windows_environment.pdb
+D:\Projects\VimletCommons\environment\windows\Environment\obj\x86\Debug\Environment.csprojResolveAssemblyReference.cache
+D:\Projects\VimletCommons\environment\windows\Environment\obj\x86\Debug\windows_environment.exe
+D:\Projects\VimletCommons\environment\windows\Environment\obj\x86\Debug\windows_environment.pdb

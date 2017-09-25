@@ -1,4 +1,4 @@
-var vimlet_commons = require("../release");
+var commons = require("../release");
 
-// vimlet_commons.os.setUserEnvironmentVariable("test", "hi");
-vimlet_commons.os.addToUserPath("C:\\TEST");
+// commons.os.setUserEnvironmentVariable("test", "hi");
+commons.os.addToUserPath("C:\\TEST");

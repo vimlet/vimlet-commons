@@ -1,12 +1,11 @@
 {
   "name": "vimlet-commons",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Provide utilities for common tasks such as, file compression, file download, OS integration, exec, etc",
   "main": "index.js",
   "dependencies": {
     "fs-extra": "^4.0.1",
     "request": "^2.81.0",
-    "deasync": "^0.1.10",
     "multipipe": "^1.0.2",
     "compressing": "1.2.3"
   },
@@ -14,6 +13,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Vimlet",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vimlet/VimletCommons.git"
+  },
   "license": "BSD-2-Clause-FreeBSD",
   "keywords": [
     "zip",

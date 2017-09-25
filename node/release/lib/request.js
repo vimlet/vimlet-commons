@@ -1,7 +1,6 @@
 var path = require("path");
 var fs = require("fs-extra");
 var request = require("request");
-var deasync = require("deasync");
 var progress = require("./progress.js");
 
 
@@ -122,31 +121,5 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
     }
 
   });
-
-
-};
-
-exports.downloadSync = function (url, dest, downloadHandler) {
-
-  var forceSync = true;
-  var errorOutput = false;
-
-  exports.download(url, dest, downloadHandler, function (error) {
-
-    if (error) {
-      errorOutput = true;
-    }
-
-    forceSync = false;
-
-  });
-
-  // Force sync
-  while (forceSync) {
-    deasync.sleep(100);
-  }
-
-  // Download successful
-  return !errorOutput;
 
 };

@@ -1,5 +1,4 @@
 var spawn = require("child_process").spawn;
-var deasync = require("deasync");
 var os = require("./os.js");
 
 exports.encoding = "utf8";
@@ -49,27 +48,12 @@ exports.exec = function (command, args, workingDirectory, execHandler, doneHandl
     exit = exit + "";
 
     if (doneHandler) {
-      doneHandler(exit);
+      doneHandler(null, exit);
     }
 
   });
 
 };
-
-exports.execSync = function (command, args, workingDirectory, execHandler) {
-
-  var forceSync = true;
-
-  exports.exec(command, args, workingDirectory, execHandler, function () {
-    forceSync = false;
-  });
-
-  while (forceSync) {
-    deasync.sleep(100);
-  }
-
-};
-
 
 exports.fetch = function (command, args, workingDirectory, doneHandler) {
 
@@ -88,33 +72,10 @@ exports.fetch = function (command, args, workingDirectory, doneHandler) {
   }, function () {
 
     if (doneHandler) {
-      doneHandler(stringOutput);
+      doneHandler(null, stringOutput);
     }
 
   });
-
-};
-
-exports.fetchSync = function (command, args, workingDirectory) {
-
-  var forceSync = true;
-  var stringOutput = "";
-
-  exports.fetch(command, args, workingDirectory, function (out) {
-
-    if (out) {
-      stringOutput += out;
-    }
-
-    forceSync = false;
-
-  });
-
-  while (forceSync) {
-    deasync.sleep(100);
-  }
-
-  return stringOutput;
 
 };
 
