@@ -42,8 +42,8 @@ commons.compress.pack(pack, out, "zip", null, function(error) {
 This is a simplified API documentation where types are provided to ease the usage, note [opt] denotes optional or nullable parameters.
 
 **Notes:**
-- All async methods have a DoneHandler which is a standard node callback(error, data), this means promises and other synchronization methods should be compatible out of the box.
-- In most functions, when a null OutputHandler is provided console output will be the default, this is useful to override text output.
+- All async methods parameters ends with a standard node callback(error, data), this means promises and other synchronization methods should be compatible out of the box.
+- In most functions, when a null output callback is provided, console output will be the default, this is useful for overriding text output.
 
 ## Run
 
@@ -62,7 +62,7 @@ Run commands and binaries with args.
 
 **Notes**:
 
-- ExecHandler is a output callback function(out, error).
+- ExecHandler is an output callback function(out, error).
 - DoneHandler is a standard node callback function(error, exitCode).
 
 ## OS
@@ -94,7 +94,7 @@ Handle http requests and download files.
 
 **Notes**:
 
-- DownloadHandler is a output callback function(received, total, statusCode).
+- DownloadHandler is an output callback function(received, total, statusCode).
 - DoneHandler is a standard node callback function(error, statusCode).
 
 ## Compress
@@ -119,8 +119,8 @@ Packs and unpacks files and directories for the following formats:
 **Notes**:
 
 - Format must exactly match one of these "zip", "tar", "tgz".
-- PackHandler is a output callback function(error, entry, entrySize, totalSize, totalCount).
-- UnpackHandler is a output callback function(error, entry, entrySize, totalSize, totalCount).
+- PackHandler is an output callback function(error, entry, entrySize, totalSize, totalCount).
+- UnpackHandler is an output callback function(error, entry, entrySize, totalSize, totalCount).
 - DoneHandler is a standard node callback function(error).
 
 --------------------------------------------------------------------------
