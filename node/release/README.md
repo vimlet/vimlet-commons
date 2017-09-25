@@ -78,9 +78,13 @@ Detects platform, architecture and handle os specific operations.
 - **isMac**() : boolean
 - **is64Bit**() : boolean
 - **getUnixUserProfile**() : String
-- **setUserEnvironmentVariable**(String key, String value) : void
-- **addToUserPath**(String value) : void
-- **killProcessByName**(String name) : void
+- **setUserEnvironmentVariable**(String key, String value, DoneHandler handler[opt]) : void
+- **addToUserPath**(String value, DoneHandler handler[opt]) : void
+- **killProcessByName**(String name, DoneHandler handler[opt]) : void
+
+**Notes**:
+
+- DoneHandler is a standard node callback function(error, statusCode).
 
 ## Request
 

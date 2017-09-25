@@ -34,12 +34,12 @@ exports.getUnixUserProfile = function () {
   }
 };
 
-exports.setUserEnvironmentVariable = function (key, value) {
+exports.setUserEnvironmentVariable = function (key, value, callback) {
 
   // Check os
   if (exports.isWindows()) {
 
-    run.execSync(windowsEnvironment, ["setUserEnvironmentVariable", key, value]);
+    run.exec(windowsEnvironment, ["setUserEnvironmentVariable", key, value], null, null, callback);
 
   } else {
 
@@ -62,40 +62,65 @@ exports.setUserEnvironmentVariable = function (key, value) {
     // Call export
     var args = key + "=\"" + value + "\"";
 
-  }
+    callback();
 
+  }
 
 };
 
-exports.addToUserPath = function (value) {
+exports.addToUserPath = function (value, callback) {
 
   if (exports.isWindows()) {
 
-    var userPath = run.fetchSync(windowsEnvironment, ["getUserEnvironmentVariable", "Path"]).trim();
+    run.fetch(windowsEnvironment, ["getUserEnvironmentVariable", "Path"], null, function (error, userPath) {
 
-    if(userPath != "") {
-      value = userPath + ";" + value;
-    }
+      if (error) {
+        callback(error);
+      } else {
 
-    // Run windows command
-    run.execSync(windowsEnvironment, ["setUserEnvironmentVariable", "Path", value]);
+        userPath = userPath.trim();
+
+        // Only add if does not exist
+        if (!isInWindowsPath(userPath, value)) {
+
+          if (userPath != "") {
+
+            if (userPath.endsWith(";")) {
+              value = userPath + value;
+            } else {
+              value = userPath + ";" + value;
+            }
+          }
+
+          // Run windows command
+          run.exec(windowsEnvironment, ["setUserEnvironmentVariable", "Path", value], null, null, callback);
+
+        } else {
+          callback();
+        }
+
+      }
+
+    });
+
 
   } else {
 
     // Unix profile file
     var profileContent = fs.readFileSync(exports.getUnixUserProfile(), "utf8");
 
-    // Check path on user environment PATH variable
+    // Only add if does not exist, case sensitive check
     if (!profileContent.includes("PATH=" + '"' + value + ":$PATH" + '"')) {
       fs.appendFileSync(exports.getUnixUserProfile(), "PATH=" + '"' + value + ":$PATH" + '"' + "\n", "utf8");
     }
+
+    callback();
 
   }
 
 };
 
-exports.killProcessByName = function (name) {
-
+exports.killProcessByName = function (name, callback) {
 
   var command;
   var args;
@@ -115,13 +140,36 @@ exports.killProcessByName = function (name) {
   }
 
   // Execute command
-  commons.run.execSync(command, args, null, function (out, error, exit) {
-    // Do nothing
-  });
-
+  commons.run.exec(command, args, null, null, callback);
 
 };
 
-exports.removeFromUserPath = function (path) {
-  // TODO
-};
+
+function isInWindowsPath(windowsPath, value) {
+
+  windowsPath = windowsPath.toLowerCase();
+  value = value.toLowerCase();
+
+  if (!windowsPath.includes(";")) {
+    return windowsPath == value;
+  }
+
+  var pathValues = windowsPath.split(";");
+  var element;
+
+  value = value.toLowerCase();
+
+  for (var index = 0; index < pathValues.length; index++) {
+
+    element = pathValues[index].toLowerCase();
+
+    if (element == value) {
+      return true;
+      break;
+    }
+
+  }
+
+  return false;
+
+}
