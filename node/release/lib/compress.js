@@ -37,10 +37,10 @@ exports.pack = function (file, dest, format, packHandler, doneHandler) {
 
 };
 
-exports.unpack = function (file, dest, format, unpackHandler) {
+exports.unpack = function (file, dest, format, unpackHandler, doneHandler) {
 
   if (isValidFormat(format)) {
-    unpackHelper(file, dest, format, unpackHandler);
+    unpackHelper(file, dest, format, unpackHandler, doneHandler);
   } else {
     console.log("Unsupported format");
   }

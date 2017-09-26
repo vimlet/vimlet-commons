@@ -84,7 +84,7 @@ Detects platform, architecture and handle os specific operations.
 
 **Notes**:
 
-- DoneHandler is a standard node callback function(error, statusCode).
+- DoneHandler is a standard node callback function(error, exitCode).
 
 ## Request
 
