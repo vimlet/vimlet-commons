@@ -69,6 +69,10 @@ function getStreamObject(stream) {
 
 function packHelper(file, dest, format, packHandler, doneHandler) {
 
+  if(!packHandler) {
+    console.log("\nPacking " + file + "\n");
+  }
+
   var sizeObject = getPackSizeObject(getFileList(file));
   var fileStream = new compressing[format].Stream();
   var streamObject = getStreamObject(fileStream);
@@ -153,7 +157,7 @@ function packHelper(file, dest, format, packHandler, doneHandler) {
 
         // Show 100%;
         progressHandler.showProgress(100);
-        packComplete();
+        console.log("\nPack complete\n");
 
       }
 
@@ -170,6 +174,10 @@ function packHelper(file, dest, format, packHandler, doneHandler) {
 }
 
 function unpackHelper(file, dest, format, unpackHandler, doneHandler) {
+
+  if(!unpackHandler) {
+    console.log("\nUnpacking " + file + "\n");
+  }
 
   // Make dest directory
   fs.mkdirsSync(dest);
@@ -197,7 +205,7 @@ function unpackHelper(file, dest, format, unpackHandler, doneHandler) {
 
         // Show 100%;
         progressHandler.showProgress(100);
-        unpackComplete();
+        console.log("\nUnpack complete\n");
 
       }
 
@@ -402,14 +410,6 @@ function onUnpackEntryWrite(header, stream, next, dest) {
     stream.resume();
   }
 
-}
-
-function packComplete() {
-  console.log("Pack complete");
-}
-
-function unpackComplete() {
-  console.log("Unpack complete");
 }
 
 function handleError(error) {

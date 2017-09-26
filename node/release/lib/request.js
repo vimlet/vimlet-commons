@@ -34,6 +34,10 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 
       doDownload = true;
 
+      if(!downloadHandler) {
+        console.log("\nDownloading " + url + "\n");
+      }
+
       // Change the total bytes value to get progress later
       totalBytes = parseInt(data.headers["content-length"]);
       progressHandler = downloadHandler ? null : progress.progressHandler(totalBytes, 99);
@@ -99,7 +103,7 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
       if (!downloadHandler) {
         
         progressHandler.showProgress(100);
-        console.log("Download complete");
+        console.log("\nDownload complete\n");
 
       }
 

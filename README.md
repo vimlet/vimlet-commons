@@ -11,7 +11,7 @@ This module is a constant effort of improvement to achieve a stable and flexible
 - Request
 - Compress
 - Util
-- Progress (TODO)
+- Progress
 - IO (TODO)
 - Validation (TODO)
 - Serialization (TODO)
