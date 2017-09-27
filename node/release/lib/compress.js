@@ -161,7 +161,6 @@ function packHelper(file, dest, format, packHandler, doneHandler) {
 
       }
 
-
     }
 
     if (doneHandler) {

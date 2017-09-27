@@ -34,7 +34,7 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 
       doDownload = true;
 
-      if(!downloadHandler) {
+      if (!downloadHandler) {
         console.log("\nDownloading " + url + "\n");
       }
 
@@ -50,6 +50,11 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 
     } else {
 
+      // Show failed message if no downloadHandler found
+      if (!downloadHandler) {
+        console.log("Download failed, response " + data.statusCode);
+      }
+
       // Trigger doneHandle if statusCode is an invalid download code 
       if (doneHandler) {
 
@@ -61,11 +66,7 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
         }
 
         doneHandler(error);
-      }
-
-      // Show failed message if no downloadHandler found
-      if (!downloadHandler) {
-        console.log("Download failed, response " + data.statusCode);
+        
       }
 
     }
@@ -97,12 +98,12 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
     if (doDownload) {
 
       if (!downloadHandler) {
-        
+
         progressHandler.showProgress(100);
         console.log("\nDownload complete\n");
-        
+
       }
-      
+
       if (doneHandler) {
         doneHandler();
       }
