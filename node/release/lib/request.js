@@ -96,7 +96,6 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 
     if (doDownload) {
 
-      
       if (!downloadHandler) {
         
         progressHandler.showProgress(100);
@@ -107,6 +106,7 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
       if (doneHandler) {
         doneHandler();
       }
+
     }
 
   });
