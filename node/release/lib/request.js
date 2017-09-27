@@ -96,17 +96,17 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 
     if (doDownload) {
 
-      if (doneHandler) {
-        doneHandler();
-      }
-
+      
       if (!downloadHandler) {
         
         progressHandler.showProgress(100);
         console.log("\nDownload complete\n");
-
+        
       }
-
+      
+      if (doneHandler) {
+        doneHandler();
+      }
     }
 
   });

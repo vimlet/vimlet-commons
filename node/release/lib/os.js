@@ -140,7 +140,7 @@ exports.killProcessByName = function (name, callback) {
   }
 
   // Execute command
-  commons.run.exec(command, args, null, null, callback);
+  run.exec(command, args, null, null, callback);
 
 };
 
