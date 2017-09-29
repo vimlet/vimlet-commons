@@ -134,8 +134,6 @@ function packHelper(file, dest, format, packHandler, doneHandler) {
 
   pipe(fileStream, destStream, function (error) {
 
-    forceSync = false;
-
     if (error) {
 
       // Make sure we return something

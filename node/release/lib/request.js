@@ -19,9 +19,10 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 
   var destPath = path.resolve(dest);
   var destDirectory = path.dirname(destPath);
+  
+  var writer = fs.createWriteStream(destPath);
 
   var doDownload = false;
-
 
   req.on("response", function (data) {
 
@@ -46,7 +47,7 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
       fs.mkdirsSync(destDirectory);
 
       // Pipe dest output
-      req.pipe(fs.createWriteStream(destPath));
+      req.pipe(writer);
 
     } else {
 
@@ -66,7 +67,7 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
         }
 
         doneHandler(error);
-        
+
       }
 
     }
@@ -93,7 +94,8 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 
   });
 
-  req.on("end", function () {
+  // Note we wait till file finish writing
+  writer.on('finish', function () {
 
     if (doDownload) {
 
