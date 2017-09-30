@@ -11,9 +11,8 @@ var out = path.join(__dirname, "resources/compress/compress");
 //     }
 // });
 
-commons.compress.pack(pack, out, "zip", null, function (error) {
-    if (!error) {
-        commons.compress.unpack(out, unpack, "zip");
-    }
+commons.compress.pack(pack, out, "zip", null, function(error) {
+  if (!error) {
+    commons.compress.unpack(out, unpack, "zip");
+  }
 });
-

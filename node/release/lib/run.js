@@ -3,12 +3,16 @@ var os = require("./os.js");
 
 exports.encoding = "utf8";
 
-exports.exec = function (command, args, workingDirectory, execHandler, doneHandler) {
-
+exports.exec = function(
+  command,
+  args,
+  workingDirectory,
+  execHandler,
+  doneHandler
+) {
   var p;
 
   if (os.isWindows()) {
-
     var winArgs = ["/C", command];
 
     if (args) {
@@ -16,71 +20,62 @@ exports.exec = function (command, args, workingDirectory, execHandler, doneHandl
     }
 
     p = runCommand("cmd", winArgs, workingDirectory);
-
   } else {
     p = runCommand(command, args, workingDirectory);
   }
 
   // Register spawn execHandlers
-  p.stdout.on("data", function (data) {
-
+  p.stdout.on("data", function(data) {
     if (execHandler) {
       execHandler(data.toString(exports.encoding));
     } else {
       console.log(data.toString(exports.encoding));
     }
-
   });
 
-  p.stderr.on("data", function (data) {
-
+  p.stderr.on("data", function(data) {
     if (execHandler) {
       execHandler(null, data.toString(exports.encoding));
     } else {
       console.log(data.toString(exports.encoding));
     }
-
   });
 
-  p.on("exit", function (exit) {
-
+  p.on("exit", function(exit) {
     // Exit code to string
     exit = exit + "";
 
     if (doneHandler) {
       doneHandler(null, exit);
     }
-
   });
-
 };
 
-exports.fetch = function (command, args, workingDirectory, doneHandler) {
-
+exports.fetch = function(command, args, workingDirectory, doneHandler) {
   var stringOutput = "";
 
-  exports.exec(command, args, workingDirectory, function (out, error) {
+  exports.exec(
+    command,
+    args,
+    workingDirectory,
+    function(out, error) {
+      if (out) {
+        stringOutput += out;
+      }
 
-    if (out) {
-      stringOutput += out;
+      if (error) {
+        stringOutput += error;
+      }
+    },
+    function() {
+      if (doneHandler) {
+        doneHandler(null, stringOutput);
+      }
     }
-
-    if (error) {
-      stringOutput += error;
-    }
-
-  }, function () {
-
-    if (doneHandler) {
-      doneHandler(null, stringOutput);
-    }
-
-  });
-
+  );
 };
 
 function runCommand(command, args, workingDirectory, execHandler) {
-
   var config = {
     encoding: exports.encoding
   };
@@ -96,5 +91,4 @@ function runCommand(command, args, workingDirectory, execHandler) {
   var p = spawn(command, args, config);
 
   return p;
-
 }

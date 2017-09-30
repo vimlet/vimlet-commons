@@ -1,6 +1,5 @@
 var validator = validator || {};
 (function() {
-
   var SCHEMAMODEL = "model"; //Schema root.
   var SCHEMAREQUIRED = "required"; //Boolean.
   var SCHEMATYPE = "type"; //String with data type.
@@ -20,20 +19,18 @@ var validator = validator || {};
   function ValidationException(sMessage) {
     this.name = "ValidationException";
     this.message = sMessage;
-    this.stack = (new Error()).stack;
+    this.stack = new Error().stack;
   }
   ValidationException.prototype = Object.create(Error.prototype);
   ValidationException.prototype.constructor = ValidationException;
 
-
   function NotAcceptableException(sMessage) {
     this.name = "NotAcceptableException";
     this.message = sMessage;
-    this.stack = (new Error()).stack;
+    this.stack = new Error().stack;
   }
   NotAcceptableException.prototype = Object.create(Error.prototype);
   NotAcceptableException.prototype.constructor = NotAcceptableException;
-
 
   /**
    * Validate a json from its schema
@@ -45,7 +42,7 @@ var validator = validator || {};
     try {
       jsonSchema = JSON.parse(jsonSchema);
       if (jsonSchema[SCHEMAMODEL]) {
-        if (typeof jsonSchema[SCHEMAMODEL] == 'object') {
+        if (typeof jsonSchema[SCHEMAMODEL] == "object") {
           validateModel(JSON.parse(json), jsonSchema[SCHEMAMODEL]);
         } else {
           throw new NotAcceptableException(SCHEMAMODEL + " cast exception.");
@@ -74,7 +71,8 @@ var validator = validator || {};
       schemaKeys.push(keyInSchema);
     }
     // Check if foreing keys are allowed.
-    if (!model[SCHEMAALLOWUNKNOWN]) { // TODO ensure that null and false enter here.
+    if (!model[SCHEMAALLOWUNKNOWN]) {
+      // TODO ensure that null and false enter here.
       checkUnknown(json, schemaKeys);
     }
     for (var schemaKeyI = 0; schemaKeyI < schemaKeys.length; schemaKeyI++) {
@@ -89,14 +87,15 @@ var validator = validator || {};
     }
   }
 
-
   function validateNode(node, schema, key) {
     if (isRequired(schema) && node === null) {
       throw new ValidationException("Key " + key + " not found.");
     } else if (node != null) {
       var type = schema[SCHEMATYPE];
       if (!type) {
-        throw new ValidationException(SCHEMATYPE + " not found at schema for key: " + key);
+        throw new ValidationException(
+          SCHEMATYPE + " not found at schema for key: " + key
+        );
       } else {
         switch (type) {
           case "object":
@@ -131,16 +130,19 @@ var validator = validator || {};
     if (schema[SCHEMAREQUIRED]) {
       try {
         required = schema[SCHEMAREQUIRED];
-        if (typeof required != 'boolean') {
-          throw new ValidationException(schema[SCHEMAREQUIRED] + " cast exception.");
+        if (typeof required != "boolean") {
+          throw new ValidationException(
+            schema[SCHEMAREQUIRED] + " cast exception."
+          );
         }
       } catch (e) {
-        throw new ValidationException(schema[SCHEMAREQUIRED] + " cast exception.");
+        throw new ValidationException(
+          schema[SCHEMAREQUIRED] + " cast exception."
+        );
       }
     }
     return required;
   }
-
 
   /**
    * Check if the key is a reserved word to skip it.
@@ -148,9 +150,8 @@ var validator = validator || {};
    * @return {Boolean}     [description]
    */
   function isReservedWord(key) {
-    return (key === SCHEMAALLOWUNKNOWN);
+    return key === SCHEMAALLOWUNKNOWN;
   }
-
 
   /**
    * Check for unknown keys
@@ -162,7 +163,11 @@ var validator = validator || {};
     var jsonKeys = [];
     for (var k in json) {
       if (schemaKeys.indexOf(k) === -1) {
-        throw new ValidationException("The key: " + k + " is not declared in the schema. Declare it or allow unknown keys.");
+        throw new ValidationException(
+          "The key: " +
+            k +
+            " is not declared in the schema. Declare it or allow unknown keys."
+        );
       }
     }
   }
@@ -175,7 +180,7 @@ var validator = validator || {};
    * @return {[type]}        [description]
    */
   function validateObject(node, schema, key) {
-    if (typeof node == 'object') {
+    if (typeof node == "object") {
       try {
         validateModel(node, schema[SCHEMADATA]);
       } catch (e) {
@@ -202,7 +207,9 @@ var validator = validator || {};
         try {
           validateNode(node[arrayI], schema[SCHEMADATA], "");
         } catch (e) {
-          throw new ValidationException(e.message + key + " position " + arrayI);
+          throw new ValidationException(
+            e.message + key + " position " + arrayI
+          );
         }
       }
     } else {
@@ -230,7 +237,7 @@ var validator = validator || {};
     if (typeof node !== "string") {
       throw new ValidationException("Expected string for " + key);
     }
-    if(schema[SCHEMAREGEX]){
+    if (schema[SCHEMAREGEX]) {
       checkRegex(node, schema, key);
     }
   }
@@ -260,8 +267,11 @@ var validator = validator || {};
       if (size != schema[SCHEMALENGTH]) {
         throw new ValidationException("Size of " + key + " is not correct.");
       }
-    } else if (typeof schema[SCHEMALENGTH] == 'string') {
-      if (size < getMin(schema[SCHEMALENGTH], key) || size > getMax(schema[SCHEMALENGTH], key)) {
+    } else if (typeof schema[SCHEMALENGTH] == "string") {
+      if (
+        size < getMin(schema[SCHEMALENGTH], key) ||
+        size > getMax(schema[SCHEMALENGTH], key)
+      ) {
         throw new ValidationException("Size of " + key + " is not correct.");
       }
     } else {
@@ -288,8 +298,6 @@ var validator = validator || {};
       throw new NotAcceptableException("Length bad formated at " + key);
     }
   }
-
-
 
   /**
    * Get max of an array lenght [min-max]
@@ -325,6 +333,4 @@ var validator = validator || {};
       throw new ValidationException(key + " doesn't match its regex.");
     }
   }
-
-
-}).apply(validator);
+}.apply(validator));

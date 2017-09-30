@@ -3,9 +3,7 @@ var fs = require("fs-extra");
 var request = require("request");
 var progress = require("./progress.js");
 
-
-exports.download = function (url, dest, downloadHandler, doneHandler) {
-
+exports.download = function(url, dest, downloadHandler, doneHandler) {
   var progressHandler;
 
   // Save variable to know progress
@@ -19,20 +17,18 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 
   var destPath = path.resolve(dest);
   var destDirectory = path.dirname(destPath);
-  
+
   var writer = fs.createWriteStream(destPath);
 
   var doDownload = false;
 
-  req.on("response", function (data) {
-
+  req.on("response", function(data) {
     // Handle the statusCode
     if (downloadHandler) {
       downloadHandler(null, null, data.statusCode);
     }
 
     if (data.statusCode >= 200 && data.statusCode < 400) {
-
       doDownload = true;
 
       if (!downloadHandler) {
@@ -41,24 +37,23 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 
       // Change the total bytes value to get progress later
       totalBytes = parseInt(data.headers["content-length"]);
-      progressHandler = downloadHandler ? null : progress.progressHandler(totalBytes, 99);
+      progressHandler = downloadHandler
+        ? null
+        : progress.progressHandler(totalBytes, 99);
 
       // Make parent directories
       fs.mkdirsSync(destDirectory);
 
       // Pipe dest output
       req.pipe(writer);
-
     } else {
-
       // Show failed message if no downloadHandler found
       if (!downloadHandler) {
         console.log("Download failed, response " + data.statusCode);
       }
 
-      // Trigger doneHandle if statusCode is an invalid download code 
+      // Trigger doneHandle if statusCode is an invalid download code
       if (doneHandler) {
-
         var error = data.statusCode + "";
 
         // Make sure we return something
@@ -67,55 +62,39 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
         }
 
         doneHandler(error);
-
       }
-
     }
-
   });
 
-  req.on("data", function (chunk) {
-
+  req.on("data", function(chunk) {
     if (doDownload) {
-
       // Update the received bytes
       receivedBytes += chunk.length;
 
       if (downloadHandler) {
         downloadHandler(receivedBytes, totalBytes);
       } else {
-
         // Default progress
         progressHandler.showProgressChange(receivedBytes);
-
       }
-
     }
-
   });
 
   // Note we wait till file finish writing
-  writer.on('finish', function () {
-
+  writer.on("finish", function() {
     if (doDownload) {
-
       if (!downloadHandler) {
-
         progressHandler.showProgress(100);
         console.log("\nDownload complete\n");
-
       }
 
       if (doneHandler) {
         doneHandler();
       }
-
     }
-
   });
 
-  req.on("error", function (error) {
-
+  req.on("error", function(error) {
     // Make sure we return something
     if (!error || error == "") {
       error = "true";
@@ -126,7 +105,5 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
     } else {
       console.log(error);
     }
-
   });
-
 };
