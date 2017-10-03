@@ -128,7 +128,7 @@ exports.addToUserPath = function(value, callback) {
   }
 };
 
-exports.killProcessByName = function(name, callback) {
+exports.killProcessByName = function(name, execHandler, callback) {
   var command;
   var args;
 
@@ -142,7 +142,7 @@ exports.killProcessByName = function(name, callback) {
   }
 
   // Execute command
-  run.exec(command, args, null, null, callback);
+  run.exec(command, args, null, execHandler, callback);
 };
 
 function isInWindowsPath(windowsPath, value) {

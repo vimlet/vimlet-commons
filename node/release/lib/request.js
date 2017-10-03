@@ -3,7 +3,7 @@ var fs = require("fs-extra");
 var request = require("request");
 var progress = require("./progress.js");
 
-exports.download = function(url, dest, downloadHandler, doneHandler) {
+exports.download = function (url, dest, downloadHandler, doneHandler) {
   var progressHandler;
 
   // Save variable to know progress
@@ -18,11 +18,9 @@ exports.download = function(url, dest, downloadHandler, doneHandler) {
   var destPath = path.resolve(dest);
   var destDirectory = path.dirname(destPath);
 
-  var writer = fs.createWriteStream(destPath);
-
   var doDownload = false;
 
-  req.on("response", function(data) {
+  req.on("response", function (data) {
     // Handle the statusCode
     if (downloadHandler) {
       downloadHandler(null, null, data.statusCode);
@@ -44,8 +42,25 @@ exports.download = function(url, dest, downloadHandler, doneHandler) {
       // Make parent directories
       fs.mkdirsSync(destDirectory);
 
+      var writer = fs.createWriteStream(destPath);
+
+      // Note we wait till file finish writing
+      writer.on("finish", function () {
+        if (doDownload) {
+          if (!downloadHandler) {
+            progressHandler.showProgress(100);
+            console.log("\nDownload complete\n");
+          }
+
+          if (doneHandler) {
+            doneHandler();
+          }
+        }
+      });
+
       // Pipe dest output
       req.pipe(writer);
+      
     } else {
       // Show failed message if no downloadHandler found
       if (!downloadHandler) {
@@ -66,7 +81,7 @@ exports.download = function(url, dest, downloadHandler, doneHandler) {
     }
   });
 
-  req.on("data", function(chunk) {
+  req.on("data", function (chunk) {
     if (doDownload) {
       // Update the received bytes
       receivedBytes += chunk.length;
@@ -80,21 +95,7 @@ exports.download = function(url, dest, downloadHandler, doneHandler) {
     }
   });
 
-  // Note we wait till file finish writing
-  writer.on("finish", function() {
-    if (doDownload) {
-      if (!downloadHandler) {
-        progressHandler.showProgress(100);
-        console.log("\nDownload complete\n");
-      }
-
-      if (doneHandler) {
-        doneHandler();
-      }
-    }
-  });
-
-  req.on("error", function(error) {
+  req.on("error", function (error) {
     // Make sure we return something
     if (!error || error == "") {
       error = "true";
