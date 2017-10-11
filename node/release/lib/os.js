@@ -145,6 +145,28 @@ exports.killProcessByName = function(name, execHandler, callback) {
   run.exec(command, args, null, execHandler, callback);
 };
 
+exports.createSymlink = function(dest, src, execHandler, callback) {
+
+  // Windows symbolic link
+  if (exports.isWindows()) {
+    
+    var command = "mklink";
+    var args = ["/h", dest, src];
+
+    // Check file type
+    if (fs.lstatSync(src).isDirectory()) {
+      args[0] = "/j";
+    }
+    
+    run.exec(command, args, null, execHandler, callback);
+
+  } else {
+    // UNIX symbolic link
+    fs.ensureSymlinkSync(src, dest);
+  }
+  
+};
+
 function isInWindowsPath(windowsPath, value) {
   windowsPath = windowsPath.toLowerCase();
   value = value.toLowerCase();
