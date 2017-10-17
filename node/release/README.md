@@ -1,7 +1,3 @@
-## THIS PACKAGE IS DEPRECATED, USE [@vimlet/commons](https://www.npmjs.com/package/@vimlet/commons) INSTEAD.
-
----
-
 # Vimlet Commons
 
 ### Provides a cross environment standardized API for common used functions. 
