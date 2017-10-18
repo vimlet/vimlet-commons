@@ -163,8 +163,9 @@ exports.createSymlink = function(dest, src, execHandler, callback) {
   } else {
     // UNIX symbolic link
     fs.ensureSymlinkSync(src, dest);
+    callback();
   }
-  
+
 };
 
 function isInWindowsPath(windowsPath, value) {
