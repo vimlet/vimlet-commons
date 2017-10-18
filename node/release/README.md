@@ -22,7 +22,7 @@ You can access the source code at [https://github.com/vimlet/VimletCommons](http
 
 ```
 
-const commons = require("vimlet-commons");
+const commons = require("@vimlet/commons");
 
 var pack = require("path").join(__dirname, "resources/compress/pack");
 var out = require("path").join(__dirname, "resources/compress/file.zip");
