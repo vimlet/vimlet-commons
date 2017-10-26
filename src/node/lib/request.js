@@ -46,7 +46,7 @@ exports.download = function (url, dest, downloadHandler, outputHandler, doneHand
         if (doDownload) {
 
           progressHandler.showProgress(100);
-          util.output("\nDownload complete\n", outputHandler);
+          util.output("\n", outputHandler);
 
           if (doneHandler) {
             doneHandler();

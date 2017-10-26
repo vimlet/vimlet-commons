@@ -7,7 +7,7 @@ var file = path.join(__dirname, "resources/request/file");
 commons.request.download(url, file, function (receivedBytes, totalBytes, statusCode) {
     // console.log("receivedBytes: " + receivedBytes + " totalBytes: " + totalBytes + " statusCode: " + statusCode);
 }, function (out) {
-    // process.stdout.write(out);
+    process.stdout.write(out);
 }, function (error) {
     // Done
 });

@@ -69,7 +69,7 @@ function packHelper(file, dest, format, packHandler, outputHandler, doneHandler)
   var currentEntry;
   var currentEntrySize;
 
-  var progressHandler = packHandler ? null : progress.progressHandler(totalSize, 99);
+  var progressHandler = packHandler ? null : progress.progressHandler(totalSize, 99, null, outputHandler);
 
   hookOnEntryFinish(streamObject, function (entry) {
     if (!util.isDirectory(entry)) {
@@ -81,25 +81,20 @@ function packHelper(file, dest, format, packHandler, outputHandler, doneHandler)
 
       if (packHandler) {
         // Custom progress
-        packHandler(
-          null,
-          currentEntry,
-          currentEntrySize,
-          totalSize,
-          totalCount
-        );
-      } else {
-        // File count fallback
-        if (sizeObject.useFileCount) {
-          totalProgress += 1;
-          totalSize = totalCount;
-        } else {
-          totalProgress += currentEntrySize;
-        }
-
-        // Default progress
-        progressHandler.showProgressChange(totalProgress);
+        packHandler(null, currentEntry, currentEntrySize, totalSize, totalCount);
       }
+
+      // File count fallback
+      if (sizeObject.useFileCount) {
+        totalProgress += 1;
+        totalSize = totalCount;
+      } else {
+        totalProgress += currentEntrySize;
+      }
+
+      // Default progress
+      progressHandler.showProgressChange(totalProgress);
+
     }
   });
 
@@ -123,22 +118,25 @@ function packHelper(file, dest, format, packHandler, outputHandler, doneHandler)
 
       if (packHandler) {
         packHandler(error);
-      } else {
-        util.output(error, outputHandler);
       }
+
+      util.output(error, outputHandler);
+
     } else {
       if (packHandler) {
         packHandler(true);
-      } else {
-        // Show 100%;
-        progressHandler.showProgress(100);
-        util.output("\nPack complete\n", outputHandler);
       }
+
+      // Show 100%;
+      progressHandler.showProgress(100);
+      util.output("\n", outputHandler);
+
     }
 
     if (doneHandler) {
       doneHandler(error);
     }
+
   });
 }
 
@@ -157,7 +155,7 @@ function unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHand
     var currentEntry;
     var currentEntrySize;
 
-    var progressHandler = unpackHandler ? null : progress.progressHandler(totalSize, 99);
+    var progressHandler = unpackHandler ? null : progress.progressHandler(totalSize, 99, null, outputHandler);
 
     var fileStream = new compressing[format].UncompressStream({
       source: file
@@ -166,15 +164,17 @@ function unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHand
     fileStream.on("finish", function () {
       if (unpackHandler) {
         handler(true);
-      } else {
-        // Show 100%;
-        progressHandler.showProgress(100);
-        util.output("\nUnpack complete\n", outputHandler);
       }
+
+      // Show 100%;
+      progressHandler.showProgress(100);
+      util.output("\n", outputHandler);
+
 
       if (doneHandler) {
         doneHandler();
       }
+
     });
 
     fileStream.on("error", function (error) {
@@ -185,9 +185,10 @@ function unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHand
 
       if (unpackHandler) {
         unpackHandler(error);
-      } else {
-        util.output(error, outputHandler);
       }
+
+      util.output(error, outputHandler);
+
 
       if (doneHandler) {
         doneHandler(error);
@@ -213,18 +214,19 @@ function unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHand
           totalSize,
           totalCount
         );
-      } else {
-        // File count fallback
-        if (sizeObject.useFileCount) {
-          totalProgress += 1;
-          totalSize = totalCount;
-        } else {
-          totalProgress += currentEntrySize;
-        }
-
-        // Default progress
-        progressHandler.showProgressChange(totalProgress);
       }
+      
+      // File count fallback
+      if (sizeObject.useFileCount) {
+        totalProgress += 1;
+        totalSize = totalCount;
+      } else {
+        totalProgress += currentEntrySize;
+      }
+
+      // Default progress
+      progressHandler.showProgressChange(totalProgress);
+
     });
 
   }, outputHandler);

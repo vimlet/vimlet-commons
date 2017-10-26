@@ -45,13 +45,18 @@ exports.showProgress = function (value, total, paintProgress, outputHandler) {
   return -1;
 };
 
-exports.progressHandler = function (total, max, paintProgress, outputHandler) {
+exports.progressHandler = function (total, max, paintProgress, mainOutputHandler) {
   var handlerObject = {
     total: total,
     max: max,
     progress: -1,
     paintProgress: paintProgress,
     showProgressChange: function (value, total, paintProgress, outputHandler) {
+
+      if(!outputHandler) {
+        outputHandler = mainOutputHandler;
+      }
+
       if (!total) {
         total = this.total;
       }
@@ -72,6 +77,11 @@ exports.progressHandler = function (total, max, paintProgress, outputHandler) {
       }
     },
     showProgress: function (value, total, paintProgress, outputHandler) {
+      
+      if(!outputHandler) {
+        outputHandler = mainOutputHandler;
+      }
+
       if (!this.paintProgress) { 
         this.paintProgress = paintProgress ? paintProgress : exports.paintProgress;
       }
