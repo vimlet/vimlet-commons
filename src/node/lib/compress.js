@@ -13,7 +13,7 @@ function hookOnEntryFinish(stream, fn) {
 
   var originalFunction = stream._onEntryFinish;
 
-  stream._onEntryFinish = function(err) {
+  stream._onEntryFinish = function (err) {
     // Current entries befire shift()
     if (this._waitingEntries && this._waitingEntries.length > 0) {
       fn(this._waitingEntries[0][0]);
@@ -23,19 +23,19 @@ function hookOnEntryFinish(stream, fn) {
   };
 }
 
-exports.pack = function(file, dest, format, packHandler, doneHandler) {
+exports.pack = function (file, dest, format, packHandler, outputHandler, doneHandler) {
   if (isValidFormat(format)) {
-    packHelper(file, dest, format, packHandler, doneHandler);
+    packHelper(file, dest, format, packHandler, outputHandler, doneHandler);
   } else {
-    console.log("Unsupported format");
+    util.output("Unsupported format", outputHandler);
   }
 };
 
-exports.unpack = function(file, dest, format, unpackHandler, doneHandler) {
+exports.unpack = function (file, dest, format, unpackHandler, outputHandler, doneHandler) {
   if (isValidFormat(format)) {
-    unpackHelper(file, dest, format, unpackHandler, doneHandler);
+    unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHandler);
   } else {
-    console.log("Unsupported format");
+    util.output("Unsupported format", outputHandler);
   }
 };
 
@@ -55,10 +55,8 @@ function getStreamObject(stream) {
   return baseStream;
 }
 
-function packHelper(file, dest, format, packHandler, doneHandler) {
-  if (!packHandler) {
-    console.log("\nPacking " + file + "\n");
-  }
+function packHelper(file, dest, format, packHandler, outputHandler, doneHandler) {
+  util.output("\nPacking " + file + "\n", outputHandler);
 
   var sizeObject = getPackSizeObject(getFileList(file));
   var fileStream = new compressing[format].Stream();
@@ -71,11 +69,9 @@ function packHelper(file, dest, format, packHandler, doneHandler) {
   var currentEntry;
   var currentEntrySize;
 
-  var progressHandler = packHandler
-    ? null
-    : progress.progressHandler(totalSize, 99);
+  var progressHandler = packHandler ? null : progress.progressHandler(totalSize, 99);
 
-  hookOnEntryFinish(streamObject, function(entry) {
+  hookOnEntryFinish(streamObject, function (entry) {
     if (!util.isDirectory(entry)) {
       // Store currentEntry
       currentEntry = entry;
@@ -118,7 +114,7 @@ function packHelper(file, dest, format, packHandler, doneHandler) {
 
   var destStream = fs.createWriteStream(dest);
 
-  pipe(fileStream, destStream, function(error) {
+  pipe(fileStream, destStream, function (error) {
     if (error) {
       // Make sure we return something
       if (error == "") {
@@ -128,7 +124,7 @@ function packHelper(file, dest, format, packHandler, doneHandler) {
       if (packHandler) {
         packHandler(error);
       } else {
-        handleError(error);
+        util.output(error, outputHandler);
       }
     } else {
       if (packHandler) {
@@ -136,7 +132,7 @@ function packHelper(file, dest, format, packHandler, doneHandler) {
       } else {
         // Show 100%;
         progressHandler.showProgress(100);
-        console.log("\nPack complete\n");
+        util.output("\nPack complete\n", outputHandler);
       }
     }
 
@@ -146,15 +142,14 @@ function packHelper(file, dest, format, packHandler, doneHandler) {
   });
 }
 
-function unpackHelper(file, dest, format, unpackHandler, doneHandler) {
-  if (!unpackHandler) {
-    console.log("\nUnpacking " + file + "\n");
-  }
+function unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHandler) {
+
+  util.output("\nUnpacking " + file + "\n", outputHandler);
 
   // Make dest directory
   fs.mkdirsSync(dest);
 
-  getUpackSizeObject(file, format, function(sizeObject) {
+  getUpackSizeObject(file, format, function (sizeObject) {
     var totalCount = sizeObject.count;
     var totalSize = sizeObject.totalSize;
     var totalProgress = 0;
@@ -162,21 +157,19 @@ function unpackHelper(file, dest, format, unpackHandler, doneHandler) {
     var currentEntry;
     var currentEntrySize;
 
-    var progressHandler = unpackHandler
-      ? null
-      : progress.progressHandler(totalSize, 99);
+    var progressHandler = unpackHandler ? null : progress.progressHandler(totalSize, 99);
 
     var fileStream = new compressing[format].UncompressStream({
       source: file
     });
 
-    fileStream.on("finish", function() {
+    fileStream.on("finish", function () {
       if (unpackHandler) {
         handler(true);
       } else {
         // Show 100%;
         progressHandler.showProgress(100);
-        console.log("\nUnpack complete\n");
+        util.output("\nUnpack complete\n", outputHandler);
       }
 
       if (doneHandler) {
@@ -184,7 +177,7 @@ function unpackHelper(file, dest, format, unpackHandler, doneHandler) {
       }
     });
 
-    fileStream.on("error", function(error) {
+    fileStream.on("error", function (error) {
       // Make sure we return something
       if (!error || error == "") {
         error = "true";
@@ -193,7 +186,7 @@ function unpackHelper(file, dest, format, unpackHandler, doneHandler) {
       if (unpackHandler) {
         unpackHandler(error);
       } else {
-        handleError(error);
+        util.output(error, outputHandler);
       }
 
       if (doneHandler) {
@@ -201,7 +194,7 @@ function unpackHelper(file, dest, format, unpackHandler, doneHandler) {
       }
     });
 
-    fileStream.on("entry", function(header, stream, next) {
+    fileStream.on("entry", function (header, stream, next) {
       // Store currentEntry
       currentEntry = path.join(dest, header.name);
 
@@ -233,7 +226,9 @@ function unpackHelper(file, dest, format, unpackHandler, doneHandler) {
         progressHandler.showProgressChange(totalProgress);
       }
     });
-  });
+
+  }, outputHandler);
+
 }
 
 function getEntryUncompressedSize(header) {
@@ -250,7 +245,7 @@ function getEntryUncompressedSize(header) {
   return size == null || typeof size == "undefined" ? -1 : size;
 }
 
-function getUpackSizeObject(file, format, callback) {
+function getUpackSizeObject(file, format, callback, outputHandler) {
   // Will attempt to find the total size in bytes of the UncompressStream, if not possible
   // file count will be provided instead
 
@@ -264,16 +259,16 @@ function getUpackSizeObject(file, format, callback) {
     source: file
   });
 
-  fileStream.on("finish", function() {
+  fileStream.on("finish", function () {
     callback(sizeObject);
   });
 
-  fileStream.on("error", function(error) {
+  fileStream.on("error", function (error) {
     sizeObject.count = -1;
-    handleError(error);
+    util.output(error, outputHandler);
   });
 
-  fileStream.on("entry", function(header, stream, next) {
+  fileStream.on("entry", function (header, stream, next) {
     var sizeValue = getEntryUncompressedSize(header);
 
     if (sizeValue != -1) {
@@ -295,7 +290,7 @@ function getFileList(dir, fileList) {
   fileList = fileList || [];
   files = fs.readdirSync(dir);
 
-  files.forEach(function(file) {
+  files.forEach(function (file) {
     if (util.isDirectory(path.join(dir, file))) {
       fileList = getFileList(path.join(dir, file), fileList);
     } else {
@@ -355,8 +350,4 @@ function onUnpackEntryWrite(header, stream, next, dest) {
     fs.mkdirsSync(path.join(dest, header.name));
     stream.resume();
   }
-}
-
-function handleError(error) {
-  console.log(error);
 }

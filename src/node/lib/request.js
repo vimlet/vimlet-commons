@@ -34,7 +34,7 @@ exports.download = function (url, dest, downloadHandler, outputHandler, doneHand
 
       // Change the total bytes value to get progress later
       totalBytes = parseInt(data.headers["content-length"]);
-      progressHandler = progress.progressHandler(totalBytes, 99);
+      progressHandler = progress.progressHandler(totalBytes, 99, null, outputHandler);
 
       // Make parent directories
       fs.mkdirsSync(destDirectory);
@@ -45,7 +45,7 @@ exports.download = function (url, dest, downloadHandler, outputHandler, doneHand
       writer.on("finish", function () {
         if (doDownload) {
 
-          progressHandler.showProgress(100, null, null, outputHandler);
+          progressHandler.showProgress(100);
           util.output("\nDownload complete\n", outputHandler);
 
           if (doneHandler) {
@@ -89,13 +89,13 @@ exports.download = function (url, dest, downloadHandler, outputHandler, doneHand
       }
 
       // Default progress
-      progressHandler.showProgressChange(receivedBytes, null, null, outputHandler);
+      progressHandler.showProgressChange(receivedBytes);
 
     }
   });
 
   req.on("error", function (error) {
-    
+
     // Make sure we return something
     if (!error || error == "") {
       error = "true";
