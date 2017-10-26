@@ -22,3 +22,11 @@ exports.resolveObject = function(path, obj) {
     return prev ? prev[curr] : undefined;
   }, obj || self);
 };
+
+exports.output = function(s, outputHandler) {
+  if (outputHandler) {
+    outputHandler(s);
+  } else {
+    process.stdout.write(s);
+  }
+};

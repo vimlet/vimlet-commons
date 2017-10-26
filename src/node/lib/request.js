@@ -2,8 +2,9 @@ var path = require("path");
 var fs = require("fs-extra");
 var request = require("request");
 var progress = require("./progress.js");
+var util = require("./util.js");
 
-exports.download = function (url, dest, downloadHandler, doneHandler) {
+exports.download = function (url, dest, downloadHandler, outputHandler, doneHandler) {
   var progressHandler;
 
   // Save variable to know progress
@@ -29,15 +30,11 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
     if (data.statusCode >= 200 && data.statusCode < 400) {
       doDownload = true;
 
-      if (!downloadHandler) {
-        console.log("\nDownloading " + url + "\n");
-      }
+      util.output("\nDownloading " + url + "\n", outputHandler);
 
       // Change the total bytes value to get progress later
       totalBytes = parseInt(data.headers["content-length"]);
-      progressHandler = downloadHandler
-        ? null
-        : progress.progressHandler(totalBytes, 99);
+      progressHandler = progress.progressHandler(totalBytes, 99);
 
       // Make parent directories
       fs.mkdirsSync(destDirectory);
@@ -47,25 +44,25 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
       // Note we wait till file finish writing
       writer.on("finish", function () {
         if (doDownload) {
-          if (!downloadHandler) {
-            progressHandler.showProgress(100);
-            console.log("\nDownload complete\n");
-          }
+
+          progressHandler.showProgress(100, null, null, outputHandler);
+          util.output("\nDownload complete\n", outputHandler);
 
           if (doneHandler) {
             doneHandler();
           }
+
         }
+
       });
 
       // Pipe dest output
       req.pipe(writer);
-      
+
     } else {
+
       // Show failed message if no downloadHandler found
-      if (!downloadHandler) {
-        console.log("Download failed, response " + data.statusCode);
-      }
+      util.output("Download failed, response " + data.statusCode, outputHandler);
 
       // Trigger doneHandle if statusCode is an invalid download code
       if (doneHandler) {
@@ -78,6 +75,7 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 
         doneHandler(error);
       }
+
     }
   });
 
@@ -88,14 +86,16 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 
       if (downloadHandler) {
         downloadHandler(receivedBytes, totalBytes);
-      } else {
-        // Default progress
-        progressHandler.showProgressChange(receivedBytes);
       }
+
+      // Default progress
+      progressHandler.showProgressChange(receivedBytes, null, null, outputHandler);
+
     }
   });
 
   req.on("error", function (error) {
+    
     // Make sure we return something
     if (!error || error == "") {
       error = "true";
@@ -103,8 +103,9 @@ exports.download = function (url, dest, downloadHandler, doneHandler) {
 
     if (doneHandler) {
       doneHandler(error);
-    } else {
-      console.log(error);
     }
+
+    util.output(error, outputHandler);
+
   });
 };

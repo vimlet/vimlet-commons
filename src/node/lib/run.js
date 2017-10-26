@@ -1,17 +1,13 @@
 var spawn = require("child_process").spawn;
 var os = require("./os.js");
 
-exports.encoding = "utf8";
-
-exports.exec = function(
-  command,
-  args,
-  workingDirectory,
-  execHandler,
-  doneHandler
-) {
+exports.exec = function (command, args, workingDirectory, execHandler, doneHandler) {
   var p;
 
+  var config = {
+    stdio: execHandler ? "pipe" : "inherit"
+  };
+  
   if (os.isWindows()) {
     var winArgs = ["/C", command];
 
@@ -19,46 +15,45 @@ exports.exec = function(
       winArgs = winArgs.concat(args);
     }
 
-    p = runCommand("cmd", winArgs, workingDirectory);
+    p = runCommand("cmd", winArgs, workingDirectory, config);
   } else {
-    p = runCommand(command, args, workingDirectory);
+    p = runCommand(command, args, workingDirectory, config);
   }
 
+
   // Register spawn execHandlers
-  p.stdout.on("data", function(data) {
-    if (execHandler) {
-      execHandler(data.toString(exports.encoding));
-    } else {
-      console.log(data.toString(exports.encoding));
-    }
-  });
+  if (execHandler) {
 
-  p.stderr.on("data", function(data) {
-    if (execHandler) {
-      execHandler(null, data.toString(exports.encoding));
-    } else {
-      console.log(data.toString(exports.encoding));
-    }
-  });
+    p.stdout.on("data", function (data) {
+      execHandler(data.toString());
+    });
 
-  p.on("exit", function(exit) {
+    p.stderr.on("data", function (data) {
+      execHandler(null, data.toString());
+    });
+
+  }
+
+  p.on("exit", function (exit) {
     // Exit code to string
     exit = exit + "";
 
     if (doneHandler) {
       doneHandler(null, exit);
     }
+
   });
+
 };
 
-exports.fetch = function(command, args, workingDirectory, doneHandler) {
+exports.fetch = function (command, args, workingDirectory, doneHandler) {
   var stringOutput = "";
 
   exports.exec(
     command,
     args,
     workingDirectory,
-    function(out, error) {
+    function (out, error) {
       if (out) {
         stringOutput += out;
       }
@@ -67,7 +62,7 @@ exports.fetch = function(command, args, workingDirectory, doneHandler) {
         stringOutput += error;
       }
     },
-    function() {
+    function () {
       if (doneHandler) {
         doneHandler(null, stringOutput);
       }
@@ -75,10 +70,11 @@ exports.fetch = function(command, args, workingDirectory, doneHandler) {
   );
 };
 
-function runCommand(command, args, workingDirectory, execHandler) {
-  var config = {
-    encoding: exports.encoding
-  };
+function runCommand(command, args, workingDirectory, config) {
+
+  if(!config) {
+    config = {};
+  }
 
   if (!args) {
     args = [];

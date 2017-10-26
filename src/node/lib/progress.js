@@ -1,8 +1,11 @@
+var util = require("./util.js");
+
 exports.paintSimple = false;
 
-exports.paintProgress = function(value) {
+exports.paintProgress = function (value, outputHandler) {
+
   if (exports.paintSimple) {
-    console.log(value + "%");
+    util.output(value + "%", outputHandler);
   } else {
     var bar = "";
     var max = 50;
@@ -16,24 +19,24 @@ exports.paintProgress = function(value) {
       bar += "-";
     }
 
-    process.stdout.write("[" + bar + "] " + value + "%\r");
+    util.output("[" + bar + "] " + value + "%\r", outputHandler);
 
     if (value == 100) {
-      process.stdout.write("\n");
+      util.output("\n", outputHandler);
     }
   }
 };
 
-exports.showProgress = function(value, total, paintProgress) {
+exports.showProgress = function (value, total, paintProgress, outputHandler) {
   if (value && total) {
     value = calcPercent(value, total);
   }
 
   if (value > 0 && value <= 100) {
     if (paintProgress) {
-      paintProgress(value);
+      paintProgress(value, outputHandler);
     } else {
-      exports.paintProgress(value);
+      exports.paintProgress(value, outputHandler);
     }
 
     return value;
@@ -42,13 +45,13 @@ exports.showProgress = function(value, total, paintProgress) {
   return -1;
 };
 
-exports.progressHandler = function(total, max, paintProgress) {
+exports.progressHandler = function (total, max, paintProgress, outputHandler) {
   var handlerObject = {
     total: total,
     max: max,
     progress: -1,
     paintProgress: paintProgress,
-    showProgressChange: function(value, total, paintProgress) {
+    showProgressChange: function (value, total, paintProgress, outputHandler) {
       if (!total) {
         total = this.total;
       }
@@ -58,26 +61,22 @@ exports.progressHandler = function(total, max, paintProgress) {
       }
 
       if (!this.paintProgress) {
-        this.paintProgress = paintProgress
-          ? paintProgress
-          : exports.paintProgress;
+        this.paintProgress = paintProgress ? paintProgress : exports.paintProgress;
       }
 
       var percent = calcPercent(value, total);
 
       if (this.progress != percent && percent <= max) {
         this.progress = percent;
-        return exports.showProgress(this.progress, null, this.paintProgress);
+        return exports.showProgress(this.progress, null, this.paintProgress, outputHandler);
       }
     },
-    showProgress: function(value, total, paintProgress) {
-      if (!this.paintProgress) {
-        this.paintProgress = paintProgress
-          ? paintProgress
-          : exports.paintProgress;
+    showProgress: function (value, total, paintProgress, outputHandler) {
+      if (!this.paintProgress) { 
+        this.paintProgress = paintProgress ? paintProgress : exports.paintProgress;
       }
 
-      return exports.showProgress(value, total, this.paintProgress);
+      return exports.showProgress(value, total, this.paintProgress, outputHandler);
     }
   };
 
