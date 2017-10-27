@@ -241,7 +241,7 @@ function matchBin(binary, binPaths) {
         file = files[fileIndx];
         filename = file.split(".")[0].toLowerCase();
         // Check binary name
-        if(filename === binary){
+        if(filename === binary && binPath){
           match = path.join(binPath, file);
           break;
         }
