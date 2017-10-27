@@ -168,6 +168,39 @@ exports.createSymlink = function(dest, src, execHandler, callback) {
 
 };
 
+exports.findExec = function(binary, callback) {
+  
+  var command = "echo";
+  var args = exports.isWindows() ? ["%PATH%"] : ["$PATH"];
+  
+  run.exec(command, args, null, function(out, error){
+
+    if (!error) {
+      // Binary paths array
+      var binPaths = out.trim().split(";");
+      var match;
+
+      // Match binary
+      match = matchBin(binary, binPaths);
+
+      if(match){
+        process.stdout.write(binary + " is already installed\n");
+      } else {
+        process.stdout.write(binary + " not found\n");
+      }
+
+    } else {
+      process.stdout.write(binary + " not found\n");
+    }
+
+    if (callback) {
+      callback(error, match);
+    }
+
+  });
+
+};
+
 function isInWindowsPath(windowsPath, value) {
   windowsPath = windowsPath.toLowerCase();
   value = value.toLowerCase();
@@ -191,4 +224,36 @@ function isInWindowsPath(windowsPath, value) {
   }
 
   return false;
+}
+
+function matchBin(binary, binPaths) {
+  
+  var binPath, files, fileIndx, file, filename, match;
+
+  // Loop through paths
+  for (var i = 0; i < binPaths.length; i++) {
+    binPath = binPaths[i];
+    try {
+      // Match binary with path directory binaries
+      files = fs.readdirSync(path.resolve(binPath));
+
+      for (fileIndx = 0; fileIndx < files.length; fileIndx++) {
+        file = files[fileIndx];
+        filename = file.split(".")[0].toLowerCase();
+        // Check binary name
+        if(filename === binary){
+          match = path.join(binPath, file);
+          break;
+        }
+      }
+      if (match) { break; }
+
+    } catch (err) {
+      //do nothing
+    }
+
+  }
+
+  return match;
+
 }
