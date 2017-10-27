@@ -186,6 +186,7 @@ exports.findExec = function(binary, callback) {
       if(match){
         process.stdout.write(binary + " is already installed\n");
       } else {
+        error = binary + " not found\n";
         process.stdout.write(binary + " not found\n");
       }
 
