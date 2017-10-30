@@ -4,6 +4,15 @@ var request = require("request");
 var progress = require("./progress.js");
 var util = require("./util.js");
 
+/*
+@function download
+@description Downloads a file
+@param {string} url [The URL source to download]
+@param {string} dest [The place where the downloaded file will be stored]
+@param-optional {function} downloadHandler [A progress callback function(received, total, statusCode)]
+@param-optional {function} outputHandler [Default output callback function(out), redirects stdout when provided]
+@param-optional {function} doneHandler [Default done callback function(error, status)]
+*/
 exports.download = function (url, dest, downloadHandler, outputHandler, doneHandler) {
   var progressHandler;
 

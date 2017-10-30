@@ -44,7 +44,7 @@ commons.compress.pack(src, dst, "zip", null, null, function(error) {
 --------------------------------------------------------------------------
 
 ## Documentation
-Documentation is an ongoing effort, hopefully it will get better and better over time, feel free to open 
+Documentation is an ongoing effort, hopefully it will get better and better over time.
 
 To view the documentation page [click here!](https://rawgit.com/vimlet/VimletCommons/master/docs/node/api/index.html)
 

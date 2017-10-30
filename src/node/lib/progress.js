@@ -1,7 +1,14 @@
 var util = require("./util.js");
 
+// @property {boolean} paintSimple [Enables or disables simple output mode]
 exports.paintSimple = false;
 
+/*
+@function paintProgress
+@description Prints progress at a given percent
+@param {number} value [Progress percent]
+@param-optional {function} outputHandler [Default output callback function(out), redirects stdout when provided]
+*/
 exports.paintProgress = function (value, outputHandler) {
 
   if (exports.paintSimple) {
@@ -27,6 +34,14 @@ exports.paintProgress = function (value, outputHandler) {
   }
 };
 
+/*
+@function {number} showProgress
+@description Prints progress percent by value and total and returns the percent
+@param {number} value [Current progress value]
+@param {number} total [Total progress value]
+@param-optional {function} paintProgress [Function that actually does the painting]
+@param-optional {function} outputHandler [Default output callback function(out), redirects stdout when provided]
+*/
 exports.showProgress = function (value, total, paintProgress, outputHandler) {
   if (value && total) {
     value = calcPercent(value, total);
@@ -45,6 +60,14 @@ exports.showProgress = function (value, total, paintProgress, outputHandler) {
   return -1;
 };
 
+/*
+@function {object} progressHandler
+@description Handle progress painting avoiding duplicated output of the same progress
+@param {number} total [Total percent value]
+@param {number} max [Provide a virtual limit that avoids printing over this value]
+@param-optional {function} paintProgress [Function that actually does the painting]
+@param-optional {function} mainOutputHandler [Default output callback function(out), redirects stdout when provided]
+*/
 exports.progressHandler = function (total, max, paintProgress, mainOutputHandler) {
   var handlerObject = {
     total: total,

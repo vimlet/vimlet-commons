@@ -1,6 +1,15 @@
 var spawn = require("child_process").spawn;
 var os = require("./os.js");
 
+/*
+@function exec
+@description Runs a file or command and streams its output
+@param {string} command [File or command to be executed]
+@param {string[]} args [Executable arguments]
+@param {string} workingDirectory [The path from where the executable will run]
+@param-optional {function} execHandler [Default output callback function(out, error), redirects stdout when provided]
+@param-optional {function} doneHandler [Default done callback function(error, exitCode)]
+*/
 exports.exec = function (command, args, workingDirectory, execHandler, doneHandler) {
   var p;
 
@@ -46,6 +55,14 @@ exports.exec = function (command, args, workingDirectory, execHandler, doneHandl
 
 };
 
+/*
+@function {string} fetch
+@description Runs a file or command and buffers its output
+@param {string} command [File or command to be executed]
+@param {string[]} args [Executable arguments]
+@param {string} workingDirectory [The path from where the executable will run]
+@param-optional {function} doneHandler [Default done callback function(error, exitCode)]
+*/
 exports.fetch = function (command, args, workingDirectory, doneHandler) {
   var stringOutput = "";
 
