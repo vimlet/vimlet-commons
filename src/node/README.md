@@ -1,7 +1,7 @@
 [//]: # (badges)
 
-![build](https://raw.githubusercontent.com/vimlet/VimletCommons/master/badges/build.svg?raw=true "Build")
-![test](https://raw.githubusercontent.com/vimlet/VimletCommons/master/badges/test.svg?raw=true "Test")
+![build](https://cdn.rawgit.com/vimlet/VimletCommons/master/badges/build.svg?raw=true "Build")
+![test](https://cdn.rawgit.com/vimlet/VimletCommons/master/badges/test.svg?raw=true "Test")
 
 [//]: # (badges)
 
@@ -28,10 +28,10 @@ You can access the source code at [https://github.com/vimlet/VimletCommons](http
 
 const commons = require("@vimlet/commons");
 
-var pack = require("path").join(__dirname, "resources/compress/pack");
-var out = require("path").join(__dirname, "resources/compress/file.zip");
+var src = require("path").join(__dirname, "resources/compress/pack");
+var dst = require("path").join(__dirname, "resources/compress/file.zip");
 
-commons.compress.pack(pack, out, "zip", null, function(error) {
+commons.compress.pack(src, dst, "zip", null, null, function(error) {
     if(error) {
         console.log("Fail");
     } else {
