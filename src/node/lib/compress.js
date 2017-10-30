@@ -23,6 +23,16 @@ function hookOnEntryFinish(stream, fn) {
   };
 }
 
+/*
+@function pack
+@description Packs files
+@param {string} file [Source file or directory]
+@param {string} dest [Destination file]
+@param {string} format [The compression format, must exactly match one of these "zip", "tar", "tgz"]
+@param-optional {function} packHandler [Entry callback function(error, entry, entrySize, totalSize, totalCount)]
+@param-optional {function} outputHandler [Default output callback function(out), redirects stdout when provided]
+@param-optional {function} doneHandler [Default done callback function(error, data)]
+*/
 exports.pack = function (file, dest, format, packHandler, outputHandler, doneHandler) {
   if (isValidFormat(format)) {
     packHelper(file, dest, format, packHandler, outputHandler, doneHandler);
@@ -31,6 +41,16 @@ exports.pack = function (file, dest, format, packHandler, outputHandler, doneHan
   }
 };
 
+/*
+@function unpack
+@description Unpack files
+@param {string} file [Source file or directory]
+@param {string} dest [Destination file]
+@param {string} format [The compression format, must exactly match one of these "zip", "tar", "tgz"]
+@param-optional {function} unpackHandler [Entry callback function(error, entry, entrySize, totalSize, totalCount)]
+@param-optional {function} outputHandler [Default output callback function(out), redirects stdout when provided]
+@param-optional {function} doneHandler [Default done callback function(error)]
+*/
 exports.unpack = function (file, dest, format, unpackHandler, outputHandler, doneHandler) {
   if (isValidFormat(format)) {
     unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHandler);
@@ -215,7 +235,7 @@ function unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHand
           totalCount
         );
       }
-      
+
       // File count fallback
       if (sizeObject.useFileCount) {
         totalProgress += 1;

@@ -1,0 +1,204 @@
+      <!DOCTYPE html>
+    <html>
+
+    <head>
+      <meta charset="utf-8"
+           name="viewport"
+           content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet"
+           href="style.css">
+    </head>
+
+    <body>
+      <div id="main">
+        <div id="menu">
+          <div class="button"
+               onclick="goTo('header');">Header</div>
+          <div class="button"
+               id="menuPropertiesButton"
+               onclick="activeMenu('menuPropertiesH');">Properties
+            <div class="menuHover"
+                 id="menuPropertiesH"><input class="searchInput"
+                   id="propertySearchInput"
+                   type="search"
+                   placeholder="Search"
+                   onsearch="searchProperties(this.value);"
+                   onkeyup="searchProperties(this.value);">
+
+              <div class="menuSearchData">
+                              </div>
+            </div>
+          </div>
+          <div class="button"
+               id="menuFunctionsButton"
+               onclick="activeMenu('menuFunctionsH');">Functions
+            <div class="menuHover"
+                 id="menuFunctionsH"><input class="searchInput"
+                   id="functionSearchInput"
+                   type="search"
+                   placeholder="Search"
+                   onsearch="searchFunctions(this.value);"
+                   onkeyup="searchFunctions(this.value);">
+
+              <div class="menuSearchData">
+                <div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcpack&quot;)'>pack</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcunpack&quot;)'>unpack</div>              </div>
+            </div>
+          </div>
+          <div class="button"
+               id="togglePrivate"
+               onclick="showPrivate()">Show private API</div>
+
+        </div>
+
+        <div id="content">
+          <div id="header">
+            <h1>compress.js</h1>
+                      </div>
+
+
+          <div class="box"
+               id="properties">
+            <div class="subBoxTitle">
+              <h2>Properties</h2></div>
+            <div class="table">
+              <div class="row tableHeader">
+                <div class="rowColumn rowColumn100">Property</div>
+                <div class="rowColumn rowColumn100">Type</div>
+                <div class="rowColumn">Description</div>
+              </div>
+                          </div>
+          </div>
+
+          <div class="box privateElement hidePrivate"
+               id="propertiesPriv">
+            <div class="subBoxTitle">
+              <h2>Private Properties</h2></div>
+            <div class="table">
+              <div class="row tableHeader">
+                <div class="rowColumn rowColumn100">Property</div>
+                <div class="rowColumn rowColumn100">Type</div>
+                <div class="rowColumn">Description</div>
+              </div>
+                          </div>
+          </div>
+
+
+          <div class="box"
+               id="functions">
+            <div class="subBoxTitle">
+              <h2>Functions</h2>
+              <h4 class="hideOnSmallS">Summary</h4></div>
+            <div>
+              <div class="table hideOnSmallS">
+                <div class="row tableHeader">
+                  <div class="rowColumn rowColumn100">Return</div>
+                  <div class="rowColumn">Function</div>
+                </div>
+                <div class = "row rowBack0"><div class = "rowColumn rowColumn100"></div><div class = "rowColumn link textColorFunction" onclick="goTo('funcpack')">pack</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100"></div><div class = "rowColumn link textColorFunction" onclick="goTo('funcunpack')">unpack</div></div>              </div>
+              <div class="margin10">
+                <h4 class="hideOnSmallS">Details</h4></div>
+              <div>
+                <div class="subBox" id="funcpack"><div class="subBoxTitle textColorFunction"><h3>pack(<span class="textColorName">file</span>, <span class="textColorName">dest</span>, <span class="textColorName">format</span>, <span class="textColorName">packHandler*</span>, <span class="textColorName">outputHandler*</span>, <span class="textColorName">doneHandler*</span>)</h3></div><div class="functionDetails"><div class="margin10">Packs files</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Parameter</div><div class="rowColumn rowColumn100">Type</div><div class="rowColumn">Description</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">file</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Source file or directory</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">dest</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Destination file</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">format</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">The compression format, must exactly match one of these "zip", "tar", "tgz"</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">packHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Entry callback function(error, entry, entrySize, totalSize, totalCount)</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">outputHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default output callback function(out), redirects stdout when provided</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">doneHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default done callback function(error, data)</div></div></div></div></div><div class="subBox" id="funcunpack"><div class="subBoxTitle textColorFunction"><h3>unpack(<span class="textColorName">file</span>, <span class="textColorName">dest</span>, <span class="textColorName">format</span>, <span class="textColorName">unpackHandler*</span>, <span class="textColorName">outputHandler*</span>, <span class="textColorName">doneHandler*</span>)</h3></div><div class="functionDetails"><div class="margin10">Unpack files</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Parameter</div><div class="rowColumn rowColumn100">Type</div><div class="rowColumn">Description</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">file</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Source file or directory</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">dest</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Destination file</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">format</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">The compression format, must exactly match one of these "zip", "tar", "tgz"</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">unpackHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Entry callback function(error, entry, entrySize, totalSize, totalCount)</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">outputHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default output callback function(out), redirects stdout when provided</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">doneHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default done callback function(error)</div></div></div></div></div>              </div>
+            </div>
+          </div>
+
+
+
+          <div class="box privateElement hidePrivate"
+               id="functionsPriv">
+            <div class="subBoxTitle">
+              <h2>Private Functions</h2>
+              <h4>Summary</h4></div>
+            <div>
+              <div class="table">
+                <div class="row tableHeader">
+                  <div class="rowColumn rowColumn100">Return</div>
+                  <div class="rowColumn">Function</div>
+                </div>
+                              </div>
+              <div class="margin10">
+                <h4>Details</h4></div>
+              <div>
+                              </div>
+            </div>
+          </div>
+
+
+
+
+
+        </div>
+      </div>
+
+      <script>
+        function showPrivate() {
+          var privates = document.querySelectorAll(".privateElement");
+          var showButton = document.querySelector("#togglePrivate");
+          if (showButton.innerHTML.indexOf("Show") > -1) {
+            privates.forEach(function(priv) {
+              priv.classList.remove("hidePrivate");
+            });
+            showButton.innerHTML = "Hide private API";
+          } else {
+            privates.forEach(function(priv) {
+              priv.classList.add("hidePrivate");
+            });
+            showButton.innerHTML = "Show private API";
+          }
+        }
+
+        function searchProperties(value) {
+          val = value.toLowerCase().toLowerCase();
+          var elements = document.querySelectorAll(".propertyMenuSearch");
+          elements.forEach(function(elem) {
+            elem.classList.remove("menuSearchHide");
+            if (elem.innerHTML.toLowerCase().indexOf(val) === -1) {
+              elem.classList.add("menuSearchHide")
+            }
+          });
+        }
+
+        function searchFunctions(value) {
+          val = value.toLowerCase().toLowerCase();
+          var elements = document.querySelectorAll(".functionMenuSearch");
+          elements.forEach(function(elem) {
+            elem.classList.remove("menuSearchHide");
+            if (elem.innerHTML.toLowerCase().indexOf(val) === -1) {
+              elem.classList.add("menuSearchHide")
+            }
+          });
+        }
+
+        function goTo(id) {
+          location.href = "#" + id;
+          window.scrollBy(0, -50);
+        }
+
+        function activeMenu(id) {
+          var menuElement = document.querySelector('#' + id);
+          menuElement.classList.add('showMenuFlex');
+          menuElement.parentElement.classList.add('showMenuActive');
+        }
+
+        function deactiveMenu(id) {
+          var menuElement = document.querySelector('#' + id);
+          menuElement.classList.remove('showMenuFlex');
+          menuElement.parentElement.classList.remove('showMenuActive');
+        }
+
+        /* Detect click for closing menus */
+        document.onclick = function(event) {
+          if (event === undefined) event = window.event;
+          var target = 'target' in event ? event.target : event.srcElement;
+
+          if (target.id != "menuPropertiesButton" && !target.classList.contains("searchInput")) {
+            deactiveMenu("menuPropertiesH");
+          }
+          if (target.id != "menuFunctionsButton" && !target.classList.contains("searchInput")) {
+            deactiveMenu("menuFunctionsH");
+          }
+        };
+      </script>
+    </body>
+
+    </html>

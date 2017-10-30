@@ -4,7 +4,10 @@ var fs = require("fs-extra");
 var run = require("./run.js");
 
 // Platform variables
+
+// @property {string} linuxUserProfile [Linux user profile path]
 exports.linuxUserProfile = path.join(os.homedir(), ".profile");
+// @property {string} macUserProfile [Mac user profile path]
 exports.macUserProfile = path.join(os.homedir(), ".bash_profile");
 
 // Platform binaries
@@ -13,18 +16,34 @@ var windowsEnvironment = path.join(
   "platform/windows_environment.exe"
 );
 
+/*
+@function {boolean} isWindows
+@description Asserts if platform is Windows
+*/
 exports.isWindows = function() {
   return os.platform() === "win32";
 };
 
+/*
+@function {boolean} isLinux
+@description Asserts if platform is Linux
+*/
 exports.isLinux = function() {
   return os.platform() === "linux";
 };
 
+/*
+@function {boolean} isMac
+@description Asserts if platform is Mac
+*/
 exports.isMac = function() {
   return os.platform() === "darwin";
 };
 
+/*
+@function {boolean} is64Bit
+@description Asserts if architecture is 64-bit
+*/
 exports.is64Bit = function() {
   return (
     process.arch === "x64" ||
@@ -32,6 +51,10 @@ exports.is64Bit = function() {
   );
 };
 
+/*
+@function {string} getUnixUserProfile
+@description Returns Unix based system user profile path
+*/
 exports.getUnixUserProfile = function() {
   if (exports.isWindows()) {
     return null;
@@ -40,6 +63,13 @@ exports.getUnixUserProfile = function() {
   }
 };
 
+/*
+@function setUserEnvironmentVariable
+@description Sets environment variables without admin privileges
+@param {string} key [Environment variable key]
+@param {string} value [Environment variable value]
+@param-optional {function} callback [Default done callback function(error, data)]
+*/
 exports.setUserEnvironmentVariable = function(key, value, callback) {
   // Check os
   if (exports.isWindows()) {
@@ -75,6 +105,12 @@ exports.setUserEnvironmentVariable = function(key, value, callback) {
   }
 };
 
+/*
+@function addToUserPath
+@description Sets path variables without admin privileges
+@param {string} value [Path value to append]
+@param-optional {function} callback [Default done callback function(error, data)]
+*/
 exports.addToUserPath = function(value, callback) {
   if (exports.isWindows()) {
     run.fetch(
@@ -128,6 +164,13 @@ exports.addToUserPath = function(value, callback) {
   }
 };
 
+/*
+@function killProcessByName 
+@description Kill a process by its name
+@param {string} name [Name of the process to be killed]
+@param-optional {function} execHandler [Default output callback function(out), redirects stdout when provided]
+@param-optional {function} callback [Default done callback function(error, data)]
+*/
 exports.killProcessByName = function(name, execHandler, callback) {
   var command;
   var args;
@@ -145,6 +188,14 @@ exports.killProcessByName = function(name, execHandler, callback) {
   run.exec(command, args, null, execHandler, callback);
 };
 
+/*
+@function killProcessByName 
+@description Creates a symbolic link without admin privileges
+@param {string} dest [Symlink destination path]
+@param {string} src [Symlink source path]
+@param-optional {function} execHandler [Default output callback function(out), redirects stdout when provided]
+@param-optional {function} callback [Default done callback function(error, data)]
+*/
 exports.createSymlink = function(dest, src, execHandler, callback) {
 
   // Windows symbolic link
@@ -168,6 +219,12 @@ exports.createSymlink = function(dest, src, execHandler, callback) {
 
 };
 
+/*
+@function findExec
+@description Asserts if a command is accessible from the command line
+@param {string} binary [Symlink destination path]
+@param-optional {function} callback [Default done callback function(error, data)]
+*/
 exports.findExec = function(binary, callback) {
   
   var command = "echo";
