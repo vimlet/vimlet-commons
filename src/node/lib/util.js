@@ -11,7 +11,7 @@ exports.isDirectory = function(filePath) {
 };
 
 /*
-@function {numbter} getFileSize
+@function {number} getFileSize
 @description Returns the size of a file
 @param {string} filePath [Path of the file]
 */
