@@ -1,7 +1,7 @@
 [//]: # (badges)
 
-![build](https://cdn.rawgit.com/vimlet/VimletCommons/master/badges/build.svg?raw=true "Build")
-![test](https://cdn.rawgit.com/vimlet/VimletCommons/master/badges/test.svg?raw=true "Test")
+![build](https://cdn.rawgit.com/vimlet/VimletCommons/master/docs/badges/build.svg?raw=true "Build")
+![test](https://cdn.rawgit.com/vimlet/VimletCommons/master/docs/badges/test.svg?raw=true "Test")
 
 [//]: # (badges)
 
