@@ -7,6 +7,7 @@
            content="width=device-width, initial-scale=1.0">
       <link rel="stylesheet"
            href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
 
     <body>
@@ -41,18 +42,18 @@
                    onkeyup="searchFunctions(this.value);">
 
               <div class="menuSearchData">
-                <div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcpack&quot;)'>pack</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcunpack&quot;)'>unpack</div>              </div>
+                <div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcgetFileSize&quot;)'>getFileSize</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcisDirectory&quot;)'>isDirectory</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcoutput&quot;)'>output</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcresolveObject&quot;)'>resolveObject</div>              </div>
             </div>
           </div>
-          <div class="button"
+          <div class="button fa fa-eye"
                id="togglePrivate"
-               onclick="showPrivate()">Show private API</div>
+               onclick="showPrivate(this);">Private API</div>
 
         </div>
 
         <div id="content">
           <div id="header">
-            <h1>compress.js</h1>
+            <h1>util.js</h1>
                       </div>
 
 
@@ -94,11 +95,11 @@
                   <div class="rowColumn rowColumn100">Return</div>
                   <div class="rowColumn">Function</div>
                 </div>
-                <div class = "row rowBack0"><div class = "rowColumn rowColumn100"></div><div class = "rowColumn link textColorFunction" onclick="goTo('funcpack')">pack</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100"></div><div class = "rowColumn link textColorFunction" onclick="goTo('funcunpack')">unpack</div></div>              </div>
+                <div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorType">number</div><div class = "rowColumn link textColorFunction" onclick="goTo('funcgetFileSize')">getFileSize</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorType">boolean</div><div class = "rowColumn link textColorFunction" onclick="goTo('funcisDirectory')">isDirectory</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100"></div><div class = "rowColumn link textColorFunction" onclick="goTo('funcoutput')">output</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorType">object</div><div class = "rowColumn link textColorFunction" onclick="goTo('funcresolveObject')">resolveObject</div></div>              </div>
               <div class="margin10">
                 <h4 class="hideOnSmallS">Details</h4></div>
               <div>
-                <div class="subBox" id="funcpack"><div class="subBoxTitle textColorFunction"><h3>pack(<span class="textColorName">file</span>, <span class="textColorName">dest</span>, <span class="textColorName">format</span>, <span class="textColorName">packHandler*</span>, <span class="textColorName">outputHandler*</span>, <span class="textColorName">doneHandler*</span>)</h3></div><div class="functionDetails"><div class="margin10">Packs files</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Parameter</div><div class="rowColumn rowColumn100">Type</div><div class="rowColumn">Description</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">file</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Source file or directory</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">dest</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Destination file</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">format</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">The compression format, must exactly match one of these "zip", "tar", "tgz"</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">packHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Entry callback function(error, entry, entrySize, totalSize, totalCount)</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">outputHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default output callback function(out), redirects stdout when provided</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">doneHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default done callback function(error, data)</div></div></div></div></div><div class="subBox" id="funcunpack"><div class="subBoxTitle textColorFunction"><h3>unpack(<span class="textColorName">file</span>, <span class="textColorName">dest</span>, <span class="textColorName">format</span>, <span class="textColorName">unpackHandler*</span>, <span class="textColorName">outputHandler*</span>, <span class="textColorName">doneHandler*</span>)</h3></div><div class="functionDetails"><div class="margin10">Unpack files</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Parameter</div><div class="rowColumn rowColumn100">Type</div><div class="rowColumn">Description</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">file</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Source file or directory</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">dest</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Destination file</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">format</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">The compression format, must exactly match one of these "zip", "tar", "tgz"</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">unpackHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Entry callback function(error, entry, entrySize, totalSize, totalCount)</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">outputHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default output callback function(out), redirects stdout when provided</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">doneHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default done callback function(error)</div></div></div></div></div>              </div>
+                <div class="subBox" id="funcgetFileSize"><div class="subBoxTitle textColorFunction"><h3>getFileSize(<span class="textColorName">filePath</span>)</h3></div><div class="functionDetails"><div class="margin10">Returns the size of a file</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Parameter</div><div class="rowColumn rowColumn100">Type</div><div class="rowColumn">Description</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">filePath</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Path of the file</div></div></div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Return</div><div class="rowColumn">Description</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorType">number</div><div class = "rowColumn"></div></div></div></div></div><div class="subBox" id="funcisDirectory"><div class="subBoxTitle textColorFunction"><h3>isDirectory(<span class="textColorName">filePath</span>)</h3></div><div class="functionDetails"><div class="margin10">Asserts if a path is a directory</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Parameter</div><div class="rowColumn rowColumn100">Type</div><div class="rowColumn">Description</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">filePath</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Path of the file</div></div></div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Return</div><div class="rowColumn">Description</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorType">boolean</div><div class = "rowColumn"></div></div></div></div></div><div class="subBox" id="funcoutput"><div class="subBoxTitle textColorFunction"><h3>output(<span class="textColorName">s</span>, <span class="textColorName">outputHandler*</span>)</h3></div><div class="functionDetails"><div class="margin10">Outputs a string to the stdout unless an outputHandle is provided</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Parameter</div><div class="rowColumn rowColumn100">Type</div><div class="rowColumn">Description</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">s</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">The string to output</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">outputHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">The callback(out) that will receive output instead of stdout</div></div></div></div></div><div class="subBox" id="funcresolveObject"><div class="subBoxTitle textColorFunction"><h3>resolveObject(<span class="textColorName">path</span>, <span class="textColorName">obj</span>)</h3></div><div class="functionDetails"><div class="margin10">Access nested object properties by path</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Parameter</div><div class="rowColumn rowColumn100">Type</div><div class="rowColumn">Description</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">path</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Path of the property</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">obj</div><div class = "rowColumn rowColumn100 textColorType">object</div><div class = "rowColumn">The object that contains the property</div></div></div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Return</div><div class="rowColumn">Description</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorType">object</div><div class = "rowColumn"></div></div></div></div></div>              </div>
             </div>
           </div>
 
@@ -131,20 +132,22 @@
       </div>
 
       <script>
-        function showPrivate() {
+        function showPrivate(btn) {
           var privates = document.querySelectorAll(".privateElement");
           var showButton = document.querySelector("#togglePrivate");
-          if (showButton.innerHTML.indexOf("Show") > -1) {
+          if (showButton.classList.contains('fa-eye')) {
             privates.forEach(function(priv) {
               priv.classList.remove("hidePrivate");
             });
-            showButton.innerHTML = "Hide private API";
+            showButton.innerHTML = "Private API";
           } else {
             privates.forEach(function(priv) {
               priv.classList.add("hidePrivate");
             });
-            showButton.innerHTML = "Show private API";
+            showButton.innerHTML = "Private API";
           }
+          btn.classList.toggle("fa-eye");
+          btn.classList.toggle("fa-eye-slash");
         }
 
         function searchProperties(value) {

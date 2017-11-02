@@ -7,6 +7,7 @@
            content="width=device-width, initial-scale=1.0">
       <link rel="stylesheet"
            href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
 
     <body>
@@ -41,18 +42,18 @@
                    onkeyup="searchFunctions(this.value);">
 
               <div class="menuSearchData">
-                <div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcdownload&quot;)'>download</div>              </div>
+                <div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcexec&quot;)'>exec</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcfetch&quot;)'>fetch</div>              </div>
             </div>
           </div>
-          <div class="button"
+          <div class="button fa fa-eye"
                id="togglePrivate"
-               onclick="showPrivate()">Show private API</div>
+               onclick="showPrivate(this);">Private API</div>
 
         </div>
 
         <div id="content">
           <div id="header">
-            <h1>request.js</h1>
+            <h1>run.js</h1>
                       </div>
 
 
@@ -94,11 +95,11 @@
                   <div class="rowColumn rowColumn100">Return</div>
                   <div class="rowColumn">Function</div>
                 </div>
-                <div class = "row rowBack0"><div class = "rowColumn rowColumn100"></div><div class = "rowColumn link textColorFunction" onclick="goTo('funcdownload')">download</div></div>              </div>
+                <div class = "row rowBack0"><div class = "rowColumn rowColumn100"></div><div class = "rowColumn link textColorFunction" onclick="goTo('funcexec')">exec</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn link textColorFunction" onclick="goTo('funcfetch')">fetch</div></div>              </div>
               <div class="margin10">
                 <h4 class="hideOnSmallS">Details</h4></div>
               <div>
-                <div class="subBox" id="funcdownload"><div class="subBoxTitle textColorFunction"><h3>download(<span class="textColorName">url</span>, <span class="textColorName">dest</span>, <span class="textColorName">downloadHandler*</span>, <span class="textColorName">outputHandler*</span>, <span class="textColorName">doneHandler*</span>)</h3></div><div class="functionDetails"><div class="margin10">Downloads a file</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Parameter</div><div class="rowColumn rowColumn100">Type</div><div class="rowColumn">Description</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">url</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">The URL source to download</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">dest</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">The place where the downloaded file will be stored</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">downloadHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">A progress callback function(received, total, statusCode)</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">outputHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default output callback function(out), redirects stdout when provided</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">doneHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default done callback function(error, status)</div></div></div></div></div>              </div>
+                <div class="subBox" id="funcexec"><div class="subBoxTitle textColorFunction"><h3>exec(<span class="textColorName">command</span>, <span class="textColorName">args</span>, <span class="textColorName">workingDirectory</span>, <span class="textColorName">execHandler*</span>, <span class="textColorName">doneHandler*</span>)</h3></div><div class="functionDetails"><div class="margin10">Runs a file or command and streams its output</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Parameter</div><div class="rowColumn rowColumn100">Type</div><div class="rowColumn">Description</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">command</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">File or command to be executed</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">args</div><div class = "rowColumn rowColumn100 textColorType">string[]</div><div class = "rowColumn">Executable arguments</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">workingDirectory</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">The path from where the executable will run</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">execHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default output callback function(out, error), redirects stdout when provided</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">doneHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default done callback function(error, exitCode)</div></div></div></div></div><div class="subBox" id="funcfetch"><div class="subBoxTitle textColorFunction"><h3>fetch(<span class="textColorName">command</span>, <span class="textColorName">args</span>, <span class="textColorName">workingDirectory</span>, <span class="textColorName">doneHandler*</span>)</h3></div><div class="functionDetails"><div class="margin10">Runs a file or command and buffers its output</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Parameter</div><div class="rowColumn rowColumn100">Type</div><div class="rowColumn">Description</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">command</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">File or command to be executed</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">args</div><div class = "rowColumn rowColumn100 textColorType">string[]</div><div class = "rowColumn">Executable arguments</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">workingDirectory</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">The path from where the executable will run</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">doneHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default done callback function(error, exitCode)</div></div></div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Return</div><div class="rowColumn">Description</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn"></div></div></div></div></div>              </div>
             </div>
           </div>
 
@@ -131,20 +132,22 @@
       </div>
 
       <script>
-        function showPrivate() {
+        function showPrivate(btn) {
           var privates = document.querySelectorAll(".privateElement");
           var showButton = document.querySelector("#togglePrivate");
-          if (showButton.innerHTML.indexOf("Show") > -1) {
+          if (showButton.classList.contains('fa-eye')) {
             privates.forEach(function(priv) {
               priv.classList.remove("hidePrivate");
             });
-            showButton.innerHTML = "Hide private API";
+            showButton.innerHTML = "Private API";
           } else {
             privates.forEach(function(priv) {
               priv.classList.add("hidePrivate");
             });
-            showButton.innerHTML = "Show private API";
+            showButton.innerHTML = "Private API";
           }
+          btn.classList.toggle("fa-eye");
+          btn.classList.toggle("fa-eye-slash");
         }
 
         function searchProperties(value) {

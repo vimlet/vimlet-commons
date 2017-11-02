@@ -1,6 +1,5 @@
 html, body {
   width: 100%;
-  min-width: 400px !important;
   height: 100%;
   margin: 0;
   padding: 0;
@@ -13,13 +12,13 @@ h1, h2, h3, h4 {
 }
 
 #menu {
+box-sizing: border-box;
   display:flex;
   position: fixed;
   top: 0;
   width: 100%;
   padding-left: 5px;
   color: white;
-  min-width: 400px !important;
   background-color: #923b3b;
   -webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.75);
      -moz-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.75);
@@ -80,6 +79,16 @@ h1, h2, h3, h4 {
 
 #togglePrivate {
   margin-left:auto;
+    line-height: 50px !important;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  min-width:auto !important;
+}
+#togglePrivate::before{
+font: normal normal normal 14px/1 FontAwesome;
+visibility:visible;
+    float: right;
+    line-height: 50px;
+    margin-left: 5px;
 }
 
 /*
@@ -120,7 +129,6 @@ h1, h2, h3, h4 {
   height: 50px;
   margin-right: 5px;
   padding-right: 5px;
-  padding-right: 5px;
   padding-left: 5px;
   cursor: pointer;
   /*
@@ -130,6 +138,7 @@ h1, h2, h3, h4 {
   border-radius: 10px 10px 10px 10px;
   */
 }
+
 .button:hover {
   color: #da7878;
 }
@@ -176,6 +185,8 @@ h1, h2, h3, h4 {
     background-color: #4a4646;
 }
 .rowColumn {
+overflow:hidden;
+    word-wrap: break-word;
   padding: 5px;
     flex: 1;
 }
@@ -229,4 +240,16 @@ h1, h2, h3, h4 {
   .hideOnSmallS{
     display:none;
   }
+}
+@media only screen and (max-width: 720px) {
+#menu{
+  padding-left: 30px;
+}
+}
+
+
+@media only screen and (max-width: 383px) {
+#togglePrivate {
+    line-height: 25px !important;
+}
 }

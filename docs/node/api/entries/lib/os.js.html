@@ -7,6 +7,7 @@
            content="width=device-width, initial-scale=1.0">
       <link rel="stylesheet"
            href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
 
     <body>
@@ -44,9 +45,9 @@
                 <div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcaddToUserPath&quot;)'>addToUserPath</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcfindExec&quot;)'>findExec</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcgetUnixUserProfile&quot;)'>getUnixUserProfile</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcis64Bit&quot;)'>is64Bit</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcisLinux&quot;)'>isLinux</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcisMac&quot;)'>isMac</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcisWindows&quot;)'>isWindows</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funckillProcessByName&quot;)'>killProcessByName</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funckillProcessByName&quot;)'>killProcessByName</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcsetUserEnvironmentVariable&quot;)'>setUserEnvironmentVariable</div>              </div>
             </div>
           </div>
-          <div class="button"
+          <div class="button fa fa-eye"
                id="togglePrivate"
-               onclick="showPrivate()">Show private API</div>
+               onclick="showPrivate(this);">Private API</div>
 
         </div>
 
@@ -131,20 +132,22 @@
       </div>
 
       <script>
-        function showPrivate() {
+        function showPrivate(btn) {
           var privates = document.querySelectorAll(".privateElement");
           var showButton = document.querySelector("#togglePrivate");
-          if (showButton.innerHTML.indexOf("Show") > -1) {
+          if (showButton.classList.contains('fa-eye')) {
             privates.forEach(function(priv) {
               priv.classList.remove("hidePrivate");
             });
-            showButton.innerHTML = "Hide private API";
+            showButton.innerHTML = "Private API";
           } else {
             privates.forEach(function(priv) {
               priv.classList.add("hidePrivate");
             });
-            showButton.innerHTML = "Show private API";
+            showButton.innerHTML = "Private API";
           }
+          btn.classList.toggle("fa-eye");
+          btn.classList.toggle("fa-eye-slash");
         }
 
         function searchProperties(value) {
