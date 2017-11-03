@@ -1,6 +1,6 @@
 {
   "name": "@vimlet/commons",
-  "version": "2.5.5",
+  "version": "2.5.6",
   "description": "Provide utilities for common tasks such as, file compression, file download, OS integration, exec, etc",
   "main": "index.js",
   "dependencies": {
@@ -11,7 +11,7 @@
     "glob":"^7.1.2"
   },
   "devDependencies": {
-    "@vimlet/alpha": "0.0.18"
+    "@vimlet/alpha": "0.0.19"
   },
   "author": "Vimlet",
   "repository": {
