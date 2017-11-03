@@ -15,6 +15,8 @@ var files = commons.io.getFiles(includeFolder);
 
 
 
-console.log(files);
+//console.log(files);
 
-console.log("TEST");
+
+console.log("Estoy en pattern", commons.io.isInPattern("resources/io/test1/folder2.js.md", "resources/io/test1/**/*.*"));
+console.log("NO estoy en pattern", commons.io.isInPattern("resources/io/test1/peter.md", "resources/io/test1/**/*.*"));

@@ -4,9 +4,9 @@ var glob = require("glob");
 var fs = require("fs-extra");
 
 /*
-@function getFiles {[object]} [Get included files, returns an object wich contains relative path and root folder]
-@param dir {[string]} [Array of patterns to search or single pattern]
-@param exclude {[string]} [Patterns to exclude]
+@function getFiles {object[]} [Get included files, returns an object wich contains relative path and root folder]
+@param dir {string[]} [Array of patterns to search or single pattern]
+@param exclude {string[]} [Patterns to exclude]
  */
 exports.getFiles = function(dir, exclude) {
   var result = [];
@@ -30,10 +30,26 @@ exports.getFiles = function(dir, exclude) {
   return result;
 };
 
+
 /*
-@function (private) getFileList [Get files recursively from directory] {[string]}
+@function absoluteFiles {string[]} (public) [Return an array of absolute paths from a file index]
+@param index {object} [Object with folders and relative paths]
+ */
+exports.absoluteFiles = function(index){
+  var result = [];
+  index.forEach(function(folder){
+    folder.files.forEach(function(file){
+      var currentF = path.join(folder.root, file);
+      result.push(currentF);
+    });
+  });
+  return result;
+};
+
+/*
+@function (private) getFileList [Get files recursively from directory] {string[]}
 @param dir {string} [Directory to search]
-@param exclude {[string]} [[string] of patterns to exclude from search]
+@param exclude {string[]} [string[] of patterns to exclude from search]
  */
 function getFileList(dir, exclude) {
   //If it gets a fonder instead of a pattern, take all files in folder
@@ -93,4 +109,24 @@ exports.deleteFolderRecursive = function(folderPath) {
     });
     fs.rmdirSync(folderPath);
   }
+};
+
+/*
+@function isInPattern {boolean} (public) [Check if a given path belongs to a pattern]
+@param filePath {string} [Path to file]
+@param pattern {string}
+ */
+exports.isInPattern = function(filePath, pattern){
+  var result = false;
+  filePath = path.resolve(filePath);
+  var filesInPattern = exports.getFiles(pattern);
+  filesInPattern.forEach(function(files){
+    files.files.forEach(function(file){
+      var currentFile = path.resolve(path.join(files.root, file));
+      if(currentFile === filePath){
+        result = true;
+      }
+    });
+  });
+  return result;
 };
