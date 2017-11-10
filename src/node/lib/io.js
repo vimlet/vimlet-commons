@@ -130,3 +130,33 @@ exports.isInPattern = function(filePath, pattern){
   });
   return result;
 };
+
+/*
+@function writeToDisk (private)
+@param output {string} [Output folder]
+@param result {string} [Data to write]
+@param callback
+ */
+exports.writeToDisk = function(output, result, callback) {
+  fs.mkdirp(path.dirname("" + output), function(err) {
+    if (err) {
+      if (callback) {
+        callback(err);
+      }
+      return console.log(err);
+    }
+
+    fs.writeFile("" + output, result, function(err) {
+      if (err) {
+        if (callback) {
+          callback(err);
+        }
+        return console.log(err);
+      } else {
+        if (callback) {
+          callback();
+        }
+      }
+    });
+  });
+};
