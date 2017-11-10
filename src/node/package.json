@@ -1,6 +1,6 @@
 {
   "name": "@vimlet/commons",
-  "version": "2.5.6",
+  "version": "2.5.7",
   "description": "Provide utilities for common tasks such as, file compression, file download, OS integration, exec, etc",
   "main": "index.js",
   "dependencies": {
@@ -8,10 +8,10 @@
     "request": "^2.81.0",
     "multipipe": "^1.0.2",
     "compressing": "1.2.3",
-    "glob":"^7.1.2"
+    "glob": "^7.1.2"
   },
   "devDependencies": {
-    "@vimlet/alpha": "0.0.19"
+    "@vimlet/alpha": "0.0.23"
   },
   "author": "Vimlet",
   "repository": {
@@ -38,8 +38,9 @@
     "format": "run-s format:js format:html format:css",
     "test": "alpha test",
     "doc:api": "alpha doc api -i **/*.js,**/*.html -o ../../docs/node/api",
-    "doc:article": "alpha doc article -i ../docs/md/**/*.md -o ../../docs/node/article",
+    "doc:article": "alpha doc article -i ../../docs/md/**/*.md -o ../../docs/node/article",
     "doc": "run-s doc:api doc:article",
-    "badges": "alpha badges -o ../../docs/badges"
+    "readme": "alpha readme",
+    "meta": "alpha meta -i **/*.vmt"
   }
 }

@@ -4,7 +4,7 @@ html, body {
   margin: 0;
   padding: 0;
 font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-background-color: #353535;
+    background-color: #e4e4e4;
 }
 
 h1, h2, h3, h4 {
@@ -60,7 +60,7 @@ box-sizing: border-box;
   padding-top: 50px;
   padding-right: 10px;
   padding-left: 10px;
-  color:white;
+  color: #6b6b6b;
 }
 
 #header {
@@ -144,17 +144,16 @@ visibility:visible;
 }
 
 .box {
-  /*  background-color: #d0d2d3;*/
   overflow: hidden;
   box-sizing: border-box;
   width: 100%;
   margin-bottom: 10px;
-  border: 2px solid #525252;
 }
 
 .subBox {
   margin: 10px;
-  border: 2px solid #525252;
+  border: 2px solid #717171;
+  border-radius:4px;
 }
 .subBoxTitle {
   padding-top: 10px;
@@ -169,7 +168,8 @@ visibility:visible;
 }
 .table {
   margin: 10px;
-  border: 2px solid #525252;
+  border: 2px solid #717171;
+  border-radius:4px;
 }
 
 .row {
@@ -179,10 +179,10 @@ visibility:visible;
 }
 
 .rowBack0 {
-    background-color: #585353;
+    background-color: #e4e4e4;
 }
 .rowBack1 {
-    background-color: #4a4646;
+    background-color: #d2d2d2;
 }
 .rowColumn {
 overflow:hidden;
@@ -226,13 +226,13 @@ overflow:hidden;
 }
 
 .textColorType{
-    color: #deaf6a;
+    color: #ad7a02;
 }
 .textColorFunction{
-    color: #ba6bc7;
+    color: #383838;
 }
 .textColorName{
-    color: #c35542;
+    color: #3c509c;
 }
 
 
