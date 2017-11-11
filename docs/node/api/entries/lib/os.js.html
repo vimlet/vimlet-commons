@@ -1,0 +1,233 @@
+      <!DOCTYPE html>
+    <html>
+
+    <head>
+      <meta charset="utf-8"
+           name="viewport"
+           content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet"
+           href="..\style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+
+    <body>
+      <div id="main">
+        <div id="menu">
+          <div class="button"
+               onclick="goTo('header');">Header</div>
+          <div class="button"
+               id="menuPropertiesButton"
+               onclick="activeMenu('menuPropertiesH');">Properties
+            <div class="menuHover"
+                 id="menuPropertiesH"><input class="searchInput"
+                   id="propertySearchInput"
+                   type="search"
+                   placeholder="Search"
+                   onsearch="searchProperties(this.value);"
+                   onkeyup="searchProperties(this.value);">
+
+              <div class="menuSearchData">
+                <div class='subMenuHover propertyMenuSearch' onclick='goTo(&quot;proplinuxUserProfile&quot;)'>linuxUserProfile</div><div class='subMenuHover propertyMenuSearch' onclick='goTo(&quot;propmacUserProfile&quot;)'>macUserProfile</div>              </div>
+            </div>
+          </div>
+          <div class="button"
+               id="menuFunctionsButton"
+               onclick="activeMenu('menuFunctionsH');">Functions
+            <div class="menuHover"
+                 id="menuFunctionsH"><input class="searchInput"
+                   id="functionSearchInput"
+                   type="search"
+                   placeholder="Search"
+                   onsearch="searchFunctions(this.value);"
+                   onkeyup="searchFunctions(this.value);">
+
+              <div class="menuSearchData">
+                <div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcaddToUserPath&quot;)'>addToUserPath</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcfindExec&quot;)'>findExec</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcgetUnixUserProfile&quot;)'>getUnixUserProfile</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcis64Bit&quot;)'>is64Bit</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcisLinux&quot;)'>isLinux</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcisMac&quot;)'>isMac</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcisWindows&quot;)'>isWindows</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funckillProcessByName&quot;)'>killProcessByName</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funckillProcessByName&quot;)'>killProcessByName</div><div class='subMenuHover functionMenuSearch' onclick='goTo(&quot;funcsetUserEnvironmentVariable&quot;)'>setUserEnvironmentVariable</div>              </div>
+            </div>
+          </div>
+          <div class="button fa fa-eye"
+               id="togglePrivate"
+               onclick="showPrivate(this);">Private API</div>
+
+        </div>
+
+        <div id="content">
+          <div id="header">
+            <h1>os.js</h1>
+                      </div>
+
+
+          <div class="box"
+               id="properties">
+            <div class="subBoxTitle">
+              <h2>Properties</h2></div>
+            <div id="propertiesNotFound" class="notFound">None</div>
+            <div class="table" id="propertiesTable">
+              <div class="row tableHeader">
+                <div class="rowColumn rowColumn100">Property</div>
+                <div class="rowColumn rowColumn100">Type</div>
+                <div class="rowColumn">Description</div>
+              </div>
+              <div class = "row rowBack0" id="proplinuxUserProfile"><div class = "rowColumn rowColumn100 textColorName">linuxUserProfile</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Linux user profile path</div></div><div class = "row rowBack1" id="propmacUserProfile"><div class = "rowColumn rowColumn100 textColorName">macUserProfile</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Mac user profile path</div></div>            </div>
+          </div>
+
+          <div class="box privateElement hidePrivate"
+               id="propertiesPriv">
+            <div class="subBoxTitle">
+              <h2>Private Properties</h2></div>
+            <div id="privatePropertiesNotFound" class="notFound">None</div>
+            <div class="table" id="privatePropertiesTable">
+              <div class="row tableHeader">
+                <div class="rowColumn rowColumn100">Property</div>
+                <div class="rowColumn rowColumn100">Type</div>
+                <div class="rowColumn">Description</div>
+              </div>
+                          </div>
+          </div>
+
+
+          <div class="box"
+               id="functions">
+            <div class="subBoxTitle">
+              <h2>Functions</h2></div>
+            <div id="functionsNotFound" class="notFound">None</div>
+            <div id="functionsTable">
+            <h4 class="hideOnSmallS" style="margin-left:10px;">Summary</h4>
+              <div class="table hideOnSmallS">
+                <div class="row tableHeader">
+                  <div class="rowColumn rowColumn100">Function</div>
+                    <div class="rowColumn rowColumn100">Return</div>
+                      <div class="rowColumn">Description</div>
+                </div>
+                <div class = "row rowBack0"><div class = "rowColumn rowColumn100 link textColorFunction" onclick="goTo('funcaddToUserPath')">addToUserPath</div><div class = "rowColumn rowColumn100">void</div><div class = "rowColumn rowColumn100">Sets path variables without admin privileges</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 link textColorFunction" onclick="goTo('funcfindExec')">findExec</div><div class = "rowColumn rowColumn100">void</div><div class = "rowColumn rowColumn100">Asserts if a command is accessible from the command line</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 link textColorFunction" onclick="goTo('funcgetUnixUserProfile')">getUnixUserProfile</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn rowColumn100">Returns Unix based system user profile path</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 link textColorFunction" onclick="goTo('funcis64Bit')">is64Bit</div><div class = "rowColumn rowColumn100 textColorType">boolean</div><div class = "rowColumn rowColumn100">Asserts if architecture is 64-bit</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 link textColorFunction" onclick="goTo('funcisLinux')">isLinux</div><div class = "rowColumn rowColumn100 textColorType">boolean</div><div class = "rowColumn rowColumn100">Asserts if platform is Linux</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 link textColorFunction" onclick="goTo('funcisMac')">isMac</div><div class = "rowColumn rowColumn100 textColorType">boolean</div><div class = "rowColumn rowColumn100">Asserts if platform is Mac</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 link textColorFunction" onclick="goTo('funcisWindows')">isWindows</div><div class = "rowColumn rowColumn100 textColorType">boolean</div><div class = "rowColumn rowColumn100">Asserts if platform is Windows</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 link textColorFunction" onclick="goTo('funckillProcessByName')">killProcessByName</div><div class = "rowColumn rowColumn100">void</div><div class = "rowColumn rowColumn100">Kill a process by its name</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 link textColorFunction" onclick="goTo('funckillProcessByName')">killProcessByName</div><div class = "rowColumn rowColumn100">void</div><div class = "rowColumn rowColumn100">Creates a symbolic link without admin privileges</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 link textColorFunction" onclick="goTo('funcsetUserEnvironmentVariable')">setUserEnvironmentVariable</div><div class = "rowColumn rowColumn100">void</div><div class = "rowColumn rowColumn100">Sets environment variables without admin privileges</div></div>              </div>
+              <div class="margin10">
+                <h4 class="hideOnSmallS">Details</h4></div>
+              <div>
+                <div class="subBox" id="funcaddToUserPath"><div class="subBoxTitle textColorFunction"><h3>addToUserPath(<span class="textColorName">value</span>, <span class="textColorName">callback*</span>)</h3></div><div class="functionDetails"><div class="margin10">Sets path variables without admin privileges</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Parameter</div><div class="rowColumn rowColumn100">Type</div><div class="rowColumn">Description</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">value</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Path value to append</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">callback (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default done callback function(error, data)</div></div></div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Return</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorType">void</div></div></div></div></div><div class="subBox" id="funcfindExec"><div class="subBoxTitle textColorFunction"><h3>findExec(<span class="textColorName">binary</span>, <span class="textColorName">callback*</span>)</h3></div><div class="functionDetails"><div class="margin10">Asserts if a command is accessible from the command line</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Parameter</div><div class="rowColumn rowColumn100">Type</div><div class="rowColumn">Description</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">binary</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Symlink destination path</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">callback (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default done callback function(error, data)</div></div></div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Return</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorType">void</div></div></div></div></div><div class="subBox" id="funcgetUnixUserProfile"><div class="subBoxTitle textColorFunction"><h3>getUnixUserProfile</h3></div><div class="functionDetails"><div class="margin10">Returns Unix based system user profile path</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Return</div><div class="rowColumn">Description</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn"></div></div></div></div></div><div class="subBox" id="funcis64Bit"><div class="subBoxTitle textColorFunction"><h3>is64Bit</h3></div><div class="functionDetails"><div class="margin10">Asserts if architecture is 64-bit</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Return</div><div class="rowColumn">Description</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorType">boolean</div><div class = "rowColumn"></div></div></div></div></div><div class="subBox" id="funcisLinux"><div class="subBoxTitle textColorFunction"><h3>isLinux</h3></div><div class="functionDetails"><div class="margin10">Asserts if platform is Linux</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Return</div><div class="rowColumn">Description</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorType">boolean</div><div class = "rowColumn"></div></div></div></div></div><div class="subBox" id="funcisMac"><div class="subBoxTitle textColorFunction"><h3>isMac</h3></div><div class="functionDetails"><div class="margin10">Asserts if platform is Mac</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Return</div><div class="rowColumn">Description</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorType">boolean</div><div class = "rowColumn"></div></div></div></div></div><div class="subBox" id="funcisWindows"><div class="subBoxTitle textColorFunction"><h3>isWindows</h3></div><div class="functionDetails"><div class="margin10">Asserts if platform is Windows</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Return</div><div class="rowColumn">Description</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorType">boolean</div><div class = "rowColumn"></div></div></div></div></div><div class="subBox" id="funckillProcessByName"><div class="subBoxTitle textColorFunction"><h3>killProcessByName(<span class="textColorName">name</span>, <span class="textColorName">execHandler*</span>, <span class="textColorName">callback*</span>)</h3></div><div class="functionDetails"><div class="margin10">Kill a process by its name</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Parameter</div><div class="rowColumn rowColumn100">Type</div><div class="rowColumn">Description</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">name</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Name of the process to be killed</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">execHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default output callback function(out), redirects stdout when provided</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">callback (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default done callback function(error, data)</div></div></div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Return</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorType">void</div></div></div></div></div><div class="subBox" id="funckillProcessByName"><div class="subBoxTitle textColorFunction"><h3>killProcessByName(<span class="textColorName">dest</span>, <span class="textColorName">src</span>, <span class="textColorName">execHandler*</span>, <span class="textColorName">callback*</span>)</h3></div><div class="functionDetails"><div class="margin10">Creates a symbolic link without admin privileges</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Parameter</div><div class="rowColumn rowColumn100">Type</div><div class="rowColumn">Description</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">dest</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Symlink destination path</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">src</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Symlink source path</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">execHandler (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default output callback function(out), redirects stdout when provided</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">callback (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default done callback function(error, data)</div></div></div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Return</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorType">void</div></div></div></div></div><div class="subBox" id="funcsetUserEnvironmentVariable"><div class="subBoxTitle textColorFunction"><h3>setUserEnvironmentVariable(<span class="textColorName">key</span>, <span class="textColorName">value</span>, <span class="textColorName">callback*</span>)</h3></div><div class="functionDetails"><div class="margin10">Sets environment variables without admin privileges</div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Parameter</div><div class="rowColumn rowColumn100">Type</div><div class="rowColumn">Description</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">key</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Environment variable key</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorName">value</div><div class = "rowColumn rowColumn100 textColorType">string</div><div class = "rowColumn">Environment variable value</div></div><div class = "row rowBack0"><div class = "rowColumn rowColumn100 textColorName">callback (optional)</div><div class = "rowColumn rowColumn100 textColorType">function</div><div class = "rowColumn">Default done callback function(error, data)</div></div></div><div class="table"><div class="row tableHeader"><div class="rowColumn rowColumn100">Return</div></div><div class = "row rowBack1"><div class = "rowColumn rowColumn100 textColorType">void</div></div></div></div></div>              </div>
+            </div>
+          </div>
+
+
+
+          <div class="box privateElement hidePrivate"
+               id="functionsPriv">
+            <div class="subBoxTitle">
+              <h2>Private Functions</h2></div>
+            <div id="privateFunctionsNotFound" class="notFound">None</div>
+            <div id="privateFunctionsTable">
+            <h4 style="margin-left:10px;">Summary</h4>
+              <div class="table">
+                <div class="row tableHeader">
+                <div class="rowColumn rowColumn100">Function</div>
+                  <div class="rowColumn rowColumn100">Return</div>
+                    <div class="rowColumn">Description</div>
+                </div>
+                              </div>
+              <div class="margin10">
+                <h4>Details</h4></div>
+              <div>
+                              </div>
+            </div>
+          </div>
+
+
+
+
+
+        </div>
+      </div>
+
+      <script>
+      var hasProperties=true;      var hasPrivateProperties=false;      var hasFunctions=true;      var hasPrivateFunctions=false;        function showPrivate(btn) {
+          var privates = document.querySelectorAll(".privateElement");
+          var showButton = document.querySelector("#togglePrivate");
+          if (showButton.classList.contains('fa-eye')) {
+            privates.forEach(function(priv) {
+              priv.classList.remove("hidePrivate");
+            });
+            showButton.innerHTML = "Private API";
+          } else {
+            privates.forEach(function(priv) {
+              priv.classList.add("hidePrivate");
+            });
+            showButton.innerHTML = "Private API";
+          }
+          btn.classList.toggle("fa-eye");
+          btn.classList.toggle("fa-eye-slash");
+        }
+
+        function searchProperties(value) {
+          val = value.toLowerCase().toLowerCase();
+          var elements = document.querySelectorAll(".propertyMenuSearch");
+          elements.forEach(function(elem) {
+            elem.classList.remove("menuSearchHide");
+            if (elem.innerHTML.toLowerCase().indexOf(val) === -1) {
+              elem.classList.add("menuSearchHide")
+            }
+          });
+        }
+
+        function searchFunctions(value) {
+          val = value.toLowerCase().toLowerCase();
+          var elements = document.querySelectorAll(".functionMenuSearch");
+          elements.forEach(function(elem) {
+            elem.classList.remove("menuSearchHide");
+            if (elem.innerHTML.toLowerCase().indexOf(val) === -1) {
+              elem.classList.add("menuSearchHide")
+            }
+          });
+        }
+
+        function goTo(id) {
+          location.href = "#" + id;
+          window.scrollBy(0, -50);
+        }
+
+        function activeMenu(id) {
+          var menuElement = document.querySelector('#' + id);
+          menuElement.classList.add('showMenuFlex');
+          menuElement.parentElement.classList.add('showMenuActive');
+        }
+
+        function deactiveMenu(id) {
+          var menuElement = document.querySelector('#' + id);
+          menuElement.classList.remove('showMenuFlex');
+          menuElement.parentElement.classList.remove('showMenuActive');
+        }
+
+        /* Detect click for closing menus */
+        document.onclick = function(event) {
+          if (event === undefined) event = window.event;
+          var target = 'target' in event ? event.target : event.srcElement;
+
+          if (target.id != "menuPropertiesButton" && !target.classList.contains("searchInput")) {
+            deactiveMenu("menuPropertiesH");
+          }
+          if (target.id != "menuFunctionsButton" && !target.classList.contains("searchInput")) {
+            deactiveMenu("menuFunctionsH");
+          }
+        };
+
+        function setNotFound(){
+          if(!hasProperties){
+            document.querySelector("#propertiesNotFound").setAttribute("style", "display:block;");
+            document.querySelector("#propertiesTable").setAttribute("style", "display:none;");
+          }
+            if(!hasPrivateProperties){
+              document.querySelector("#privatePropertiesNotFound").setAttribute("style", "display:block;");
+              document.querySelector("#privatePropertiesTable").setAttribute("style", "display:none;");
+            }
+              if(!hasFunctions){
+                document.querySelector("#functionsNotFound").setAttribute("style", "display:block;");
+                document.querySelector("#functionsTable").setAttribute("style", "display:none;");
+              }
+                if(!hasPrivateFunctions){
+                  document.querySelector("#privateFunctionsNotFound").setAttribute("style", "display:block;");
+                  document.querySelector("#privateFunctionsTable").setAttribute("style", "display:none;");
+                }
+        }
+        setNotFound();
+      </script>
+    </body>
+
+    </html>
