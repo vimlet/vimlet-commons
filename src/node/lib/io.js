@@ -7,8 +7,20 @@ var fs = require("fs-extra");
 @function getFiles {object[]} [Get included files, returns an object wich contains relative path and root folder]
 @param dir {string[]} [Array of patterns to search or single pattern]
 @param exclude {string[]} [Patterns to exclude]
+@param ignoreExtension {boolean} [Get all files no mather extension in patterns]
  */
-exports.getFiles = function(dir, exclude) {
+exports.getFiles = function(dir, exclude, ignoreExtension) {
+  if (ignoreExtension) {
+    var noExtensionDir = [];
+    if (Array.isArray(dir)) {
+      dir.forEach(function(d) {
+        noExtensionDir.push(getRootFromPattern(d));
+      });
+      dir = noExtensionDir;
+    }else{
+      dir = getRootFromPattern(dir);
+    }
+  }
   var result = [];
   if (!Array.isArray(dir)) {
     var fileObj = {
