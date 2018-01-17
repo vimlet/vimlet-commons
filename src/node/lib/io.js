@@ -81,15 +81,15 @@ function getFileList(dir, exclude) {
 }
 
 /*
-@function (private) getRootFromPattern {string} [Get root from a pattern.] @param pattern {string}
+@function (public) getRootFromPattern {string} [Get root from a pattern.] @param pattern {string}
  */
-function getRootFromPattern(pattern) {
+exports.getRootFromPattern = function(pattern) {
   if (!exports.isDirectory(pattern)) {
     return pattern.substring(0, pattern.indexOf("*"));
   } else {
     return pattern;
   }
-}
+};
 
 /*
 @function isDirectory (public) [Check if a path is directory or file]
