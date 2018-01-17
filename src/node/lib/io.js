@@ -14,17 +14,17 @@ exports.getFiles = function(dir, exclude, ignoreExtension) {
     var noExtensionDir = [];
     if (Array.isArray(dir)) {
       dir.forEach(function(d) {
-        noExtensionDir.push(getRootFromPattern(d));
+        noExtensionDir.push(exports.getRootFromPattern(d));
       });
       dir = noExtensionDir;
     }else{
-      dir = getRootFromPattern(dir);
+      dir = exports.getRootFromPattern(dir);
     }
   }
   var result = [];
   if (!Array.isArray(dir)) {
     var fileObj = {
-      root: getRootFromPattern(dir),
+      root: exports.getRootFromPattern(dir),
       files: []
     };
     fileObj.files = getFileList(dir, exclude);
@@ -32,7 +32,7 @@ exports.getFiles = function(dir, exclude, ignoreExtension) {
   } else {
     dir.forEach(function(d) {
       var fileObj = {
-        root: getRootFromPattern(d),
+        root: exports.getRootFromPattern(d),
         files: []
       };
       fileObj.files = getFileList(d, exclude);
@@ -75,7 +75,7 @@ function getFileList(dir, exclude) {
   });
   var clean = [];
   result.forEach(function(res) {
-    clean.push(path.relative(getRootFromPattern(dir), res));
+    clean.push(path.relative(exports.getRootFromPattern(dir), res));
   });
   return clean;
 }
