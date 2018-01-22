@@ -85,7 +85,11 @@ function getFileList(dir, exclude) {
  */
 exports.getRootFromPattern = function(pattern) {
   if (!exports.isDirectory(pattern)) {
-    return pattern.substring(0, pattern.indexOf("*"));
+    if(glob.hasMagic(pattern)){
+      return pattern.substring(0, pattern.indexOf("*"));
+    }else{
+      return path.dirname(pattern);
+    }
   } else {
     return pattern;
   }
