@@ -13,6 +13,9 @@ var util = require("./util.js");
 @param-optional {function} outputHandler [Default output callback function(out), redirects stdout when provided]
 @param-optional {function} doneHandler [Default done callback function(error, status)]
 */
+
+exports.headers = {};
+
 exports.download = function (url, dest, downloadHandler, outputHandler, doneHandler) {
   var progressHandler;
 
@@ -22,7 +25,8 @@ exports.download = function (url, dest, downloadHandler, outputHandler, doneHand
 
   var req = request({
     method: "GET",
-    uri: url
+    uri: url,
+    headers: exports.headers
   });
 
   var destPath = path.resolve(dest);
