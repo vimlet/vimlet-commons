@@ -1,17 +1,17 @@
 {
   "name": "@vimlet/commons",
-  "version": "2.5.13",
+  "version": "2.5.14",
   "description": "Provide utilities for common tasks such as, file compression, file download, OS integration, exec, etc",
   "main": "index.js",
   "dependencies": {
-    "fs-extra": "^4.0.1",
-    "request": "^2.81.0",
-    "multipipe": "^1.0.2",
+    "fs-extra": "5.0.0",
+    "request": "2.85.0",
+    "multipipe": "1.0.2",
     "compressing": "1.2.3",
-    "glob": "^7.1.2"
+    "glob": "7.1.2"
   },
   "devDependencies": {
-    "@vimlet/alpha": "0.0.30"
+    "@vimlet/alpha": "0.4.0"
   },
   "author": "Vimlet",
   "repository": {
