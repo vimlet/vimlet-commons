@@ -176,3 +176,46 @@ exports.writeToDisk = function(output, result, callback) {
     });
   });
 };
+
+
+// @function getCommonBasePath (public) {string} [Return base path, what all have in common, for given paths] @param paths {string[]} [String with multiple path to compare]
+exports.getCommonBasePath = function (paths) {
+  var separator = path.sep;
+  for(var pathI = 0; pathI < paths.length; pathI++){
+      paths[pathI] = paths[pathI].replace(new RegExp("(\\/+|\\\\+)","g"), path.sep);
+    } 
+  while (paths.length > 1) {  // While there are more than 1 paths we keep mixing them
+    for (var pathIndex = 1; pathIndex < paths.length; pathIndex = pathIndex + 1) {  // We start on index 1 in order to take always index and the previous one
+      // We need the path to end with "/" to take as folders
+      var s1 = paths[pathIndex - 1];
+      if (s1[s1.length - 1] != separator) {
+        s1 += separator;
+      }
+      var s2 = paths[pathIndex];
+      if (s2[s2.length - 1] != separator) {
+        s2 += separator;
+      }      
+      var result = "";
+      // While we have folders in both paths keep comparing
+      while (s1.indexOf(separator) >= 0 && s2.indexOf(separator) >= 0) {
+        var s1NextDir = s1.substring(0, s1.indexOf(separator));  // First folder
+        s1 = s1.substring(s1.indexOf(separator), s1.length); // Path without first folder        
+        if (s1[0] === separator) {
+          s1 = s1.substring(1, s1.length);
+        }
+        var s2NextDir = s2.substring(0, s2.indexOf(separator));  // First folder
+        s2 = s2.substring(s2.indexOf(separator), s2.length); // Path without first folder
+        if (s2[0] === separator) {
+          s2 = s2.substring(1, s2.length);
+        }
+
+        if (s1NextDir === s2NextDir) {  // If both folders are equals, we add them
+          result = path.join(result, s1NextDir);
+        }
+      }
+      paths[pathIndex - 1] = result;  // Replace the first one at paths array
+      paths.splice(pathIndex, 1); // Delete the last one because we mix them both
+    }
+  }
+  return paths[0];
+};
