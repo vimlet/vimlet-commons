@@ -1,0 +1,12 @@
+{
+  "name": "@vimlet/run",
+  "version": "0.0.1",
+  "description": "Platform independent exec",
+  "main": "index.js",
+  "author": "Vimlet",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vimlet/VimletCommons.git"
+  },
+  "license": "MIT"
+}
