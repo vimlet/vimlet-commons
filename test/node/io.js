@@ -1,4 +1,4 @@
-var commons = require("../../src/node");
+var commons = require("../../src/node/commons");
 
 
 var include = "resources/io/test1/**/*.*";

@@ -1,0 +1,48 @@
+{
+  "name": "@vimlet/commons",
+  "version": "2.6.1",
+  "description": "Provide utilities for common tasks such as, file compression, file download, OS integration, exec, etc",
+  "main": "index.js",
+  "dependencies": {
+    "@vimlet/io":"0.0.1",
+    "@vimlet/compress":"0.0.1",
+    "@vimlet/os":"0.0.1",
+    "@vimlet/progress":"0.0.1",
+    "@vimlet/request":"0.0.1",
+    "@vimlet/run":"0.0.1"
+  },
+  "devDependencies": {
+    "@vimlet/alpha": "0.4.0"
+  },
+  "author": "Vimlet",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vimlet/VimletCommons.git"
+  },
+  "license": "BSD-2-Clause-FreeBSD",
+  "keywords": [
+    "zip",
+    "tar",
+    "tgz",
+    "compress",
+    "uncompress",
+    "spawn",
+    "exec",
+    "run",
+    "download",
+    "os"
+  ],
+  "scripts": {
+    "format:js": "alpha format-js",
+    "format:html": "alpha format-html",
+    "format:css": "alpha format-css",
+    "format": "run-s format:js format:html format:css",
+    "test": "alpha test",
+    "doc:api": "alpha doc api -i **/*.js,**/*.html -o ../../docs/node/api",
+    "doc:article": "alpha doc article -i ../../docs/md/**/*.md -o ../../docs/node/article",
+    "doc:main": "alpha doc main -p ../../docs/node/api -r ../../docs/node/article -o ../../docs",
+    "doc": "run-s doc:api doc:article doc:main",
+    "readme": "alpha readme",
+    "meta": "alpha meta -i **/*.vmt"
+  }
+}
