@@ -1,4 +1,4 @@
-var commons = require("../../src/node");
+var commons = require("../../src/node/commons");
 var path = require("path");
 
 var pack = path.join(__dirname, "resources/compress/pack");

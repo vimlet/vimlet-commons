@@ -107,6 +107,24 @@ exports.isDirectory = function(filePath) {
   }
 };
 
+
+/*
+@function {number} getFileSize
+@description Returns the size of a file
+@param {string} filePath [Path of the file]
+*/
+exports.getFileSize = function(filePath) {
+  try {
+    if (!exports.isDirectory(filePath)) {
+      return fs.statSync(filePath).size;
+    }
+  } catch (error) {
+    return -1;
+  }
+
+  return 0;
+};
+
 /*
 @function (public) deleteFolderRecursive [Delete a folder and its content] @param folderPath {string} [Folder path]
  */

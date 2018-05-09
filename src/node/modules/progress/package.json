@@ -8,5 +8,8 @@
     "type": "git",
     "url": "https://github.com/vimlet/VimletCommons.git"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "keywords": [
+    "download"
+  ]
 }

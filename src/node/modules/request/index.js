@@ -2,7 +2,6 @@ var path = require("path");
 var fs = require("fs-extra");
 var request = require("request");
 var progress = require("@vimlet/progress");
-var util = require("./lib/util.js");
 
 /*
 @function download
@@ -43,7 +42,7 @@ exports.download = function (url, dest, downloadHandler, outputHandler, doneHand
     if (data.statusCode >= 200 && data.statusCode < 400) {
       doDownload = true;
 
-      util.output("\nDownloading " + url + "\n", outputHandler);
+      output("\nDownloading " + url + "\n", outputHandler);
 
       // Change the total bytes value to get progress later
       totalBytes = parseInt(data.headers["content-length"]);
@@ -59,7 +58,7 @@ exports.download = function (url, dest, downloadHandler, outputHandler, doneHand
         if (doDownload) {
 
           progressHandler.showProgress(100);
-          util.output("\n", outputHandler);
+          output("\n", outputHandler);
 
           if (doneHandler) {
             doneHandler();
@@ -75,7 +74,7 @@ exports.download = function (url, dest, downloadHandler, outputHandler, doneHand
     } else {
 
       // Show failed message if no downloadHandler found
-      util.output("Download failed, response " + data.statusCode, outputHandler);
+      output("Download failed, response " + data.statusCode, outputHandler);
 
       // Trigger doneHandle if statusCode is an invalid download code
       if (doneHandler) {
@@ -118,7 +117,21 @@ exports.download = function (url, dest, downloadHandler, outputHandler, doneHand
       doneHandler(error);
     }
 
-    util.output(error, outputHandler);
+    output(error, outputHandler);
 
   });
 };
+
+/*
+@function output
+@description Outputs a string to the stdout unless an outputHandle is provided
+@param {string} s [The string to output]
+@param-optional {function} outputHandler [The callback(out) that will receive output instead of stdout]
+*/
+function output (s, outputHandler) {
+  if (outputHandler) {
+    outputHandler(s);
+  } else {
+    process.stdout.write(s);
+  }
+}

@@ -2,8 +2,8 @@ var fs = require("fs-extra");
 var path = require("path");
 var compressing = require("compressing");
 var pipe = require("multipipe");
-var util = require("./lib/util.js");
 var progress = require("@vimlet/progress");
+var io = require("@vimlet/io");
 
 // Hook _onEntryFinish(err) of stream.js
 function hookOnEntryFinish(stream, fn) {
@@ -37,7 +37,7 @@ exports.pack = function (file, dest, format, packHandler, outputHandler, doneHan
   if (isValidFormat(format)) {
     packHelper(file, dest, format, packHandler, outputHandler, doneHandler);
   } else {
-    util.output("Unsupported format", outputHandler);
+    output("Unsupported format", outputHandler);
   }
 };
 
@@ -55,7 +55,7 @@ exports.unpack = function (file, dest, format, unpackHandler, outputHandler, don
   if (isValidFormat(format)) {
     unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHandler);
   } else {
-    util.output("Unsupported format", outputHandler);
+    output("Unsupported format", outputHandler);
   }
 };
 
@@ -76,7 +76,7 @@ function getStreamObject(stream) {
 }
 
 function packHelper(file, dest, format, packHandler, outputHandler, doneHandler) {
-  util.output("\nPacking " + file + "\n", outputHandler);
+  output("\nPacking " + file + "\n", outputHandler);
 
   var sizeObject = getPackSizeObject(getFileList(file));
   var fileStream = new compressing[format].Stream();
@@ -92,7 +92,7 @@ function packHelper(file, dest, format, packHandler, outputHandler, doneHandler)
   var progressHandler = packHandler ? null : progress.progressHandler(totalSize, 99, null, outputHandler);
 
   hookOnEntryFinish(streamObject, function (entry) {
-    if (!util.isDirectory(entry)) {
+    if (!io.isDirectory(entry)) {
       // Store currentEntry
       currentEntry = entry;
 
@@ -119,7 +119,7 @@ function packHelper(file, dest, format, packHandler, outputHandler, doneHandler)
   });
 
   // Add file or directories
-  if (util.isDirectory(file)) {
+  if (io.isDirectory(file)) {
     fileStream.addEntry(file, {
       ignoreBase: true
     });
@@ -140,7 +140,7 @@ function packHelper(file, dest, format, packHandler, outputHandler, doneHandler)
         packHandler(error);
       }
 
-      util.output(error, outputHandler);
+      output(error, outputHandler);
 
     } else {
       if (packHandler) {
@@ -149,7 +149,7 @@ function packHelper(file, dest, format, packHandler, outputHandler, doneHandler)
 
       // Show 100%;
       progressHandler.showProgress(100);
-      util.output("\n", outputHandler);
+      output("\n", outputHandler);
 
     }
 
@@ -162,7 +162,7 @@ function packHelper(file, dest, format, packHandler, outputHandler, doneHandler)
 
 function unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHandler) {
 
-  util.output("\nUnpacking " + file + "\n", outputHandler);
+  output("\nUnpacking " + file + "\n", outputHandler);
 
   // Make dest directory
   fs.mkdirsSync(dest);
@@ -188,7 +188,7 @@ function unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHand
 
       // Show 100%;
       progressHandler.showProgress(100);
-      util.output("\n", outputHandler);
+      output("\n", outputHandler);
 
 
       if (doneHandler) {
@@ -207,7 +207,7 @@ function unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHand
         unpackHandler(error);
       }
 
-      util.output(error, outputHandler);
+      output(error, outputHandler);
 
 
       if (doneHandler) {
@@ -262,7 +262,7 @@ function getEntryUncompressedSize(header) {
     sizeProperty = "yauzl.uncompressedSize";
   }
 
-  size = util.resolveObject(sizeProperty, header);
+  size = resolveObject(sizeProperty, header);
 
   return size == null || typeof size == "undefined" ? -1 : size;
 }
@@ -287,7 +287,7 @@ function getUpackSizeObject(file, format, callback, outputHandler) {
 
   fileStream.on("error", function (error) {
     sizeObject.count = -1;
-    util.output(error, outputHandler);
+    output(error, outputHandler);
   });
 
   fileStream.on("entry", function (header, stream, next) {
@@ -313,7 +313,7 @@ function getFileList(dir, fileList) {
   files = fs.readdirSync(dir);
 
   files.forEach(function (file) {
-    if (util.isDirectory(path.join(dir, file))) {
+    if (io.isDirectory(path.join(dir, file))) {
       fileList = getFileList(path.join(dir, file), fileList);
     } else {
       fileList.push(path.join(dir, file));
@@ -336,7 +336,7 @@ function getPackSizeObject(fileList) {
 
   for (var i = 0; i < fileList.length; i++) {
     file = fileList[i];
-    size = util.getFileSize(file);
+    size = io.getFileSize(file);
 
     if (size == -1) {
       sizeObject.useFileCount = true;
@@ -372,4 +372,30 @@ function onUnpackEntryWrite(header, stream, next, dest) {
     fs.mkdirsSync(path.join(dest, header.name));
     stream.resume();
   }
+}
+
+/*
+@function output
+@description Outputs a string to the stdout unless an outputHandle is provided
+@param {string} s [The string to output]
+@param-optional {function} outputHandler [The callback(out) that will receive output instead of stdout]
+*/
+function output (s, outputHandler) {
+  if (outputHandler) {
+    outputHandler(s);
+  } else {
+    process.stdout.write(s);
+  }
+}
+
+/*
+@function {object} resolveObject
+@description Access nested object properties by path
+@param {string} path [Path of the property]
+@param {object} obj [The object that contains the property]
+*/
+function resolveObject (path, obj) {
+  return path.split(".").reduce(function(prev, curr) {
+    return prev ? prev[curr] : undefined;
+  }, obj || self);
 }

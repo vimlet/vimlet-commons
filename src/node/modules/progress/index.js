@@ -1,5 +1,3 @@
-var util = require("./lib/util.js");
-
 // @property {boolean} paintSimple [Enables or disables simple output mode]
 exports.paintSimple = false;
 
@@ -12,7 +10,7 @@ exports.paintSimple = false;
 exports.paintProgress = function (value, outputHandler) {
 
   if (exports.paintSimple) {
-    util.output(value + "%", outputHandler);
+    output(value + "%", outputHandler);
   } else {
     var bar = "";
     var max = 50;
@@ -26,10 +24,10 @@ exports.paintProgress = function (value, outputHandler) {
       bar += "-";
     }
 
-    util.output("[" + bar + "] " + value + "%\r", outputHandler);
+    output("[" + bar + "] " + value + "%\r", outputHandler);
 
     if (value == 100) {
-      util.output("\n", outputHandler);
+      output("\n", outputHandler);
     }
   }
 };
@@ -118,4 +116,18 @@ exports.progressHandler = function (total, max, paintProgress, mainOutputHandler
 
 function calcPercent(value, total) {
   return Math.ceil(value * 100 / total);
+}
+
+/*
+@function output
+@description Outputs a string to the stdout unless an outputHandle is provided
+@param {string} s [The string to output]
+@param-optional {function} outputHandler [The callback(out) that will receive output instead of stdout]
+*/
+function output (s, outputHandler) {
+  if (outputHandler) {
+    outputHandler(s);
+  } else {
+    process.stdout.write(s);
+  }
 }

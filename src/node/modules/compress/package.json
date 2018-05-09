@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@vimlet/progress": "0.0.1",
+    "@vimlet/io": "0.0.1",
     "fs-extra": "5.0.0",
     "compressing": "1.2.3",
     "multipipe": "1.0.2"
@@ -14,5 +15,12 @@
     "type": "git",
     "url": "https://github.com/vimlet/VimletCommons.git"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "keywords": [
+    "zip",
+    "tar",
+    "tgz",
+    "compress",
+    "uncompress"
+  ]
 }
