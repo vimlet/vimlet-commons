@@ -51,7 +51,7 @@ To view the documentation page [click here!](https://rawgit.com/vimlet/VimletCom
 --------------------------------------------------------------------------
 
 ## License 
-This project is licensed under [FreeBSD 2 clause license](https://spdx.org/licenses/BSD-2-Clause-FreeBSD.html#licenseText)
+This project is under MIT License. See [LICENSE](https://github.com/vimlet/VimletCommons/blob/master/LICENSE) for details.
 
 --------------------------------------------------------------------------
 
