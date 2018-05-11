@@ -11,7 +11,7 @@
     "@vimlet/request":"0.0.2",
     "@vimlet/run":"0.0.2"
   },
-  "devDependencies": {
+  "optionalDependencies": {
     "@vimlet/alpha": "0.4.0"
   },
   "author": "Vimlet",
