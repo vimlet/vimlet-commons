@@ -168,10 +168,11 @@ exports.addToUserPath = function(value, callback) {
 @function killProcessByName 
 @description Kill a process by its name
 @param {string} name [Name of the process to be killed]
-@param-optional {function} execHandler [Default output callback function(out), redirects stdout when provided]
+@param-optional {object} options [execHandler: Default output callback function(out), redirects stdout when provided]
 @param-optional {function} callback [Default done callback function(error, data)]
 */
-exports.killProcessByName = function(name, execHandler, callback) {
+exports.killProcessByName = function(name, options, callback) {
+  options = options ||{};
   var command;
   var args;
 
@@ -185,7 +186,7 @@ exports.killProcessByName = function(name, execHandler, callback) {
   }
 
   // Execute command
-  run.exec(command, args, null, execHandler, callback);
+  run.exec(command, args, null, options.execHandler, callback);
 };
 
 /*
@@ -193,10 +194,11 @@ exports.killProcessByName = function(name, execHandler, callback) {
 @description Creates a symbolic link without admin privileges
 @param {string} dest [Symlink destination path]
 @param {string} src [Symlink source path]
-@param-optional {function} execHandler [Default output callback function(out), redirects stdout when provided]
+@param-optional {object} options [execHandler: Default output callback function(out), redirects stdout when provided]
 @param-optional {function} callback [Default done callback function(error, data)]
 */
-exports.createSymlink = function(dest, src, execHandler, callback) {
+exports.createSymlink = function(dest, src, options, callback) {
+  options = options ||{};
 
   // Windows symbolic link
   if (exports.isWindows()) {
@@ -209,7 +211,7 @@ exports.createSymlink = function(dest, src, execHandler, callback) {
       args[0] = "/j";
     }
     
-    run.exec(command, args, null, execHandler, callback);
+    run.exec(command, args, null, options.execHandler, callback);
 
   } else {
     // UNIX symbolic link

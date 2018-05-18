@@ -2,15 +2,16 @@
 var path = require("path");
 var glob = require("glob");
 var fs = require("fs-extra");
+var rimraf = require("rimraf");
 
 /*
 @function getFiles {object[]} [Get included files, returns an object wich contains relative path and root folder]
 @param dir {string[]} [Array of patterns to search or single pattern]
-@param exclude {string[]} [Patterns to exclude]
-@param ignoreExtension {boolean} [Get all files no mather extension in patterns]
+@param options [exclude: patterns to exclude from search, ignoreExtension: ignore file extensions]
  */
-exports.getFiles = function(dir, exclude, ignoreExtension) {
-  if (ignoreExtension) {
+exports.getFiles = function(dir, options) {
+  options = options || {};
+  if (options.ignoreExtension) {
     var noExtensionDir = [];
     if (Array.isArray(dir)) {
       dir.forEach(function(d) {
@@ -27,7 +28,7 @@ exports.getFiles = function(dir, exclude, ignoreExtension) {
       root: exports.getRootFromPattern(dir),
       files: []
     };
-    fileObj.files = getFileList(dir, exclude);
+    fileObj.files = getFileList(dir, options.exclude);
     result.push(fileObj);
   } else {
     dir.forEach(function(d) {
@@ -35,7 +36,7 @@ exports.getFiles = function(dir, exclude, ignoreExtension) {
         root: exports.getRootFromPattern(d),
         files: []
       };
-      fileObj.files = getFileList(d, exclude);
+      fileObj.files = getFileList(d, options.exclude);
       result.push(fileObj);
     });
   }
@@ -126,24 +127,19 @@ exports.getFileSize = function(filePath) {
 };
 
 /*
-@function (public) deleteFolderRecursive [Delete a folder and its content] @param folderPath {string} [Folder path]
+@function (public) deleteFolderRecursive [Delete a folder and its content] @param folderPath {string} [Folder path] @param callback
  */
-exports.deleteFolderRecursive = function(folderPath) {
-  folderPath = path.resolve(folderPath);
-  if (fs.existsSync(folderPath)) {
-    fs.readdirSync(folderPath).forEach(function(file, index) {
-      var curPath = folderPath + "/" + file;
-      if (fs.lstatSync(curPath).isDirectory()) {
-        // recurse
-        exports.deleteFolderRecursive(curPath);
-      } else {
-        // delete file
-        fs.unlinkSync(curPath);
-      }
-    });
-    fs.rmdirSync(folderPath);
-  }
+exports.deleteFolderRecursive = function(folderPath, callback) {
+  callback = callback || function(){};  // rimraf doesn't accept null options nor null callback
+  rimraf(folderPath, {}, callback);
 };
+/*
+@function (public) deleteFolderRecursiveSync [Delete a folder and its content] @param folderPath {string} [Folder path]
+ */
+exports.deleteFolderRecursiveSync = function(folderPath) {
+  rimraf.sync(folderPath);
+};
+
 
 /*
 @function isInPattern {boolean} (public) [Check if a given path belongs to a pattern]
@@ -168,10 +164,10 @@ exports.isInPattern = function(filePath, pattern){
 /*
 @function writeToDisk (private)
 @param output {string} [Output folder]
-@param result {string} [Data to write]
+@param data {string} [Data to write]
 @param callback
  */
-exports.writeToDisk = function(output, result, callback) {
+exports.writeToDisk = function(output, data, callback) {
   fs.mkdirp(path.dirname("" + output), function(err) {
     if (err) {
       if (callback) {
@@ -180,7 +176,7 @@ exports.writeToDisk = function(output, result, callback) {
       return console.log(err);
     }
 
-    fs.writeFile("" + output, result, function(err) {
+    fs.writeFile("" + output, data, function(err) {
       if (err) {
         if (callback) {
           callback(err);

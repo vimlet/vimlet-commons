@@ -37,17 +37,18 @@ exports.paintProgress = function (value, outputHandler) {
 @description Prints progress percent by value and total and returns the percent
 @param {number} value [Current progress value]
 @param {number} total [Total progress value]
-@param-optional {function} paintProgress [Function that actually does the painting]
+@param-optional {object} options [paintProgress: Function that actually does the painting]
 @param-optional {function} outputHandler [Default output callback function(out), redirects stdout when provided]
 */
-exports.showProgress = function (value, total, paintProgress, outputHandler) {
+exports.showProgress = function (value, total, options, outputHandler) {
+  options = options || {};
   if (value && total) {
     value = calcPercent(value, total);
   }
 
   if (value > 0 && value <= 100) {
-    if (paintProgress) {
-      paintProgress(value, outputHandler);
+    if (options.paintProgress) {
+      options.paintProgress(value, outputHandler);
     } else {
       exports.paintProgress(value, outputHandler);
     }
@@ -63,15 +64,16 @@ exports.showProgress = function (value, total, paintProgress, outputHandler) {
 @description Handle progress painting avoiding duplicated output of the same progress
 @param {number} total [Total percent value]
 @param {number} max [Provide a virtual limit that avoids printing over this value]
-@param-optional {function} paintProgress [Function that actually does the painting]
+@param-optional {object} options [paintProgress: Function that actually does the painting]
 @param-optional {function} mainOutputHandler [Default output callback function(out), redirects stdout when provided]
 */
-exports.progressHandler = function (total, max, paintProgress, mainOutputHandler) {
+exports.progressHandler = function (total, max, options, mainOutputHandler) {
+  options = options || {};
   var handlerObject = {
     total: total,
     max: max,
     progress: -1,
-    paintProgress: paintProgress,
+    paintProgress: options.paintProgress,
     showProgressChange: function (value, total, paintProgress, outputHandler) {
 
       if(!outputHandler) {

@@ -1,6 +1,6 @@
 var spawn = require("child_process").spawn;
 // var os = require("@vimlet/os");
-var os = require("../os");
+var os = require("@vimlet/os");
 
 /*
 @function exec
@@ -8,14 +8,15 @@ var os = require("../os");
 @param {string} command [File or command to be executed]
 @param {string[]} args [Executable arguments]
 @param {string} workingDirectory [The path from where the executable will run]
-@param-optional {function} execHandler [Default output callback function(out, error), redirects stdout when provided]
+@param-optional {object} options [execHandler: Default output callback function(out, error), redirects stdout when provided]
 @param-optional {function} doneHandler [Default done callback function(error, exitCode)]
 */
-exports.exec = function (command, args, workingDirectory, execHandler, doneHandler) {
+exports.exec = function (command, args, workingDirectory, options, doneHandler) {
+  options = options || {};
   var p;
 
   var config = {
-    stdio: execHandler ? "pipe" : "inherit"
+    stdio: options.execHandler ? "pipe" : "inherit"
   };
   
   if (os.isWindows()) {
@@ -32,14 +33,14 @@ exports.exec = function (command, args, workingDirectory, execHandler, doneHandl
 
 
   // Register spawn execHandlers
-  if (execHandler) {
+  if (options.execHandler) {
 
     p.stdout.on("data", function (data) {
-      execHandler(data.toString());
+      options.execHandler(data.toString());
     });
 
     p.stderr.on("data", function (data) {
-      execHandler(null, data.toString());
+      options.execHandler(null, data.toString());
     });
 
   }

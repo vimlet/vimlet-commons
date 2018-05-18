@@ -4,7 +4,7 @@
   "description": "OS integration",
   "main": "index.js",
   "dependencies": {
-    "@vimlet/run": "0.0.1",
+    "@vimlet/run": "0.0.2",
     "fs-extra": "5.0.0"
   },
   "author": "Vimlet",

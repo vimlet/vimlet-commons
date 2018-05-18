@@ -8,14 +8,14 @@ var progress = require("@vimlet/progress");
 @description Downloads a file
 @param {string} url [The URL source to download]
 @param {string} dest [The place where the downloaded file will be stored]
-@param-optional {function} downloadHandler [A progress callback function(received, total, statusCode)]
-@param-optional {function} outputHandler [Default output callback function(out), redirects stdout when provided]
+@param-optional {object} options [downloadHandler: A progress callback function(received, total, statusCode), outputHandler: Default output callback function(out), redirects stdout when provided]
 @param-optional {function} doneHandler [Default done callback function(error, status)]
 */
 
 exports.headers = {};
 
-exports.download = function (url, dest, downloadHandler, outputHandler, doneHandler) {
+exports.download = function (url, dest, options, doneHandler) {
+  options = options || {};
   var progressHandler;
 
   // Save variable to know progress
@@ -35,18 +35,18 @@ exports.download = function (url, dest, downloadHandler, outputHandler, doneHand
 
   req.on("response", function (data) {
     // Handle the statusCode
-    if (downloadHandler) {
-      downloadHandler(null, null, data.statusCode);
+    if (options.downloadHandler) {
+      options.downloadHandler(null, null, data.statusCode);
     }
 
     if (data.statusCode >= 200 && data.statusCode < 400) {
       doDownload = true;
 
-      output("\nDownloading " + url + "\n", outputHandler);
+      output("\nDownloading " + url + "\n", options.outputHandler);
 
       // Change the total bytes value to get progress later
       totalBytes = parseInt(data.headers["content-length"]);
-      progressHandler = progress.progressHandler(totalBytes, 99, null, outputHandler);
+      progressHandler = progress.progressHandler(totalBytes, 99, null, options.outputHandler);
 
       // Make parent directories
       fs.mkdirsSync(destDirectory);
@@ -58,7 +58,7 @@ exports.download = function (url, dest, downloadHandler, outputHandler, doneHand
         if (doDownload) {
 
           progressHandler.showProgress(100);
-          output("\n", outputHandler);
+          output("\n", options.outputHandler);
 
           if (doneHandler) {
             doneHandler();
@@ -74,7 +74,7 @@ exports.download = function (url, dest, downloadHandler, outputHandler, doneHand
     } else {
 
       // Show failed message if no downloadHandler found
-      output("Download failed, response " + data.statusCode, outputHandler);
+      output("Download failed, response " + data.statusCode, options.outputHandler);
 
       // Trigger doneHandle if statusCode is an invalid download code
       if (doneHandler) {
@@ -96,8 +96,8 @@ exports.download = function (url, dest, downloadHandler, outputHandler, doneHand
       // Update the received bytes
       receivedBytes += chunk.length;
 
-      if (downloadHandler) {
-        downloadHandler(receivedBytes, totalBytes);
+      if (options.downloadHandler) {
+        options.downloadHandler(receivedBytes, totalBytes);
       }
 
       // Default progress
@@ -117,7 +117,7 @@ exports.download = function (url, dest, downloadHandler, outputHandler, doneHand
       doneHandler(error);
     }
 
-    output(error, outputHandler);
+    output(error, options.outputHandler);
 
   });
 };
