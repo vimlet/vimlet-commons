@@ -190,7 +190,9 @@ function unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHand
 
 
       if (doneHandler) {
-        doneHandler();
+        setTimeout(function () {
+          doneHandler();
+        }, 0);
       }
 
     });
@@ -378,7 +380,7 @@ function onUnpackEntryWrite(header, stream, next, dest) {
 @param {string} s [The string to output]
 @param-optional {function} outputHandler [The callback(out) that will receive output instead of stdout]
 */
-function output (s, outputHandler) {
+function output(s, outputHandler) {
   if (outputHandler) {
     outputHandler(s);
   } else {
@@ -392,8 +394,8 @@ function output (s, outputHandler) {
 @param {string} path [Path of the property]
 @param {object} obj [The object that contains the property]
 */
-function resolveObject (path, obj) {
-  return path.split(".").reduce(function(prev, curr) {
+function resolveObject(path, obj) {
+  return path.split(".").reduce(function (prev, curr) {
     return prev ? prev[curr] : undefined;
   }, obj || self);
 }
