@@ -1,10 +1,10 @@
 {
   "name": "@vimlet/request",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Request utils",
   "main": "index.js",
   "dependencies": {
-    "@vimlet/progress":"0.0.2",
+    "@vimlet/progress":"0.0.3",
     "fs-extra": "5.0.0",
     "request": "2.85.0",
     "glob": "7.1.2"

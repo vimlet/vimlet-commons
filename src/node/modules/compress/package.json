@@ -1,11 +1,11 @@
 {
   "name": "@vimlet/compress",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "File compression",
   "main": "index.js",
   "dependencies": {
-    "@vimlet/progress": "0.0.1",
-    "@vimlet/io": "0.0.2",
+    "@vimlet/progress": "0.0.3",
+    "@vimlet/io": "0.0.3",
     "fs-extra": "5.0.0",
     "compressing": "1.2.3",
     "multipipe": "1.0.2"
