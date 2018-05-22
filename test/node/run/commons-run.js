@@ -1,4 +1,4 @@
-var commons = require("../../src/node/commons");
+var commons = require("../../../src/node/commons");
 
 // commons.run.exec("dir", "/a");
 
