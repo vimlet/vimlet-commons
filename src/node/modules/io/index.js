@@ -145,11 +145,12 @@ exports.deleteFolderRecursiveSync = function(folderPath) {
 @function isInPattern {boolean} (public) [Check if a given path belongs to a pattern]
 @param filePath {string} [Path to file]
 @param pattern {string}
+@param options {object} [exlude:files to exclude from search]
  */
-exports.isInPattern = function(filePath, pattern){
+exports.isInPattern = function(filePath, pattern, options){
   var result = false;
   filePath = path.resolve(filePath);
-  var filesInPattern = exports.getFiles(pattern);
+  var filesInPattern = exports.getFiles(pattern, options);
   filesInPattern.forEach(function(files){
     files.files.forEach(function(file){
       var currentFile = path.resolve(path.join(files.root, file));

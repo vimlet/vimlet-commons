@@ -1,6 +1,6 @@
 {
   "name": "@vimlet/io",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "IO utils",
   "main": "index.js",
   "dependencies": {
