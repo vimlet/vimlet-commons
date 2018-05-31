@@ -1,24 +1,12 @@
 {
-  "name": "@vimlet/commons",
-  "version": "2.6.4",
+  "name": "commons",
+  "version": "0.0.1",
   "description": "Provide utilities for common tasks such as, file compression, file download, OS integration, exec, etc",
-  "main": "index.js",
-  "dependencies": {
-    "@vimlet/io": "0.0.4",
-    "@vimlet/compress": "0.0.3",
-    "@vimlet/os": "0.0.3",
-    "@vimlet/progress": "0.0.3",
-    "@vimlet/request": "0.0.3",
-    "@vimlet/run": "0.0.3"
-  },
+  "main": "",
   "optionalDependencies": {
     "@vimlet/alpha": "0.4.34"
   },
   "author": "Vimlet",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/vimlet/VimletCommons.git"
-  },
   "license": "MIT",
   "keywords": [
     "zip",
