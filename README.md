@@ -1,9 +1,9 @@
 [//]: # (badges)
 
-[![license](https://vimlet.com/vimlet/VimletCommons/master/docs/readme/1528074137497/license.svg?raw=true "License")](https://github.com/vimlet/VimletCommons/blob/master/LICENSE)
-![build](https://vimlet.com/vimlet/VimletCommons/master/docs/readme/1528074137497/build.svg?raw=true "Build")
-![semver](https://vimlet.com/vimlet/VimletCommons/master/docs/readme/1528074137497/semver.svg?raw=true "Semver")
-[![docs](https://vimlet.com/vimlet/VimletCommons/master/docs/readme/1528074137497/docs.svg?raw=true "Docs")](https://rawgit.com/vimlet/VimletCommons/master/docs/release/index.html)
+[![license](https://vimlet.com/vimlet/VimletCommons/master/docs/readme/1528132684659/license.svg?raw=true "License")](https://github.com/vimlet/VimletCommons/blob/master/LICENSE)
+![build](https://vimlet.com/vimlet/VimletCommons/master/docs/readme/1528132684659/build.svg?raw=true "Build")
+![semver](https://vimlet.com/vimlet/VimletCommons/master/docs/readme/1528132684659/semver.svg?raw=true "Semver")
+[![docs](https://vimlet.com/vimlet/VimletCommons/master/docs/readme/1528132684659/docs.svg?raw=true "Docs")](https://vimlet.com/vimlet/VimletCommons/master/docs/release/index.html)
 
 [//]: # (badges)
 
@@ -46,7 +46,7 @@ commons.compress.pack(src, dst, "zip", null, null, function(error) {
 ## Documentation
 Documentation is an ongoing effort, hopefully it will get better and better over time.
 
-To view the documentation page click [here](https://rawgit.com/vimlet/VimletCommons/master/docs/release/index.html)
+To view the documentation page click [here](https://vimlet.com/vimlet/VimletCommons/master/docs/release/index.html)
 
 ## License
 This project is under MIT License. See [LICENSE](https://github.com/vimlet/VimletCommons/blob/master/LICENSE) for details.
