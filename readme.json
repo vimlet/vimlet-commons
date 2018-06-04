@@ -17,7 +17,7 @@
     "docs": {
       "value": "documentation",
       "color": "orange",
-      "link": "https://rawgit.com/vimlet/VimletCommons/master/docs/node/api/index.html"
+      "link": "https://rawgit.com/vimlet/VimletCommons/master/docs/release/index.html"
     }
   },
   "package": "src/node/commons/package.json",
@@ -25,5 +25,5 @@
   "readme": [
     "README.md"
   ],
-  "timestamp": 1527792324771
+  "timestamp": 1528074137497
 }
