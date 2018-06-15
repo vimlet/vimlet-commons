@@ -1,4 +1,5 @@
 {
+  "private":true,
   "name": "commons",
   "version": "0.0.1",
   "description": "Provide utilities for common tasks such as, file compression, file download, OS integration, exec, etc",
