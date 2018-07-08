@@ -36,14 +36,13 @@ exports.paintProgress = function (value, outputHandler) {
 @function {number} showProgress
 @description Prints progress percent by value and total and returns the percent
 @param {number} value [Current progress value]
-@param {number} total [Total progress value]
-@param-optional {object} options [paintProgress: Function that actually does the painting]
+@param-optional {object} options [paintProgress: Function that actually does the painting. total: Total progress value]
 @param-optional {function} outputHandler [Default output callback function(out), redirects stdout when provided]
 */
-exports.showProgress = function (value, total, options, outputHandler) {
+exports.showProgress = function (value, options, outputHandler) {
   options = options || {};
-  if (value && total) {
-    value = calcPercent(value, total);
+  if (value && options.total) {
+    value = calcPercent(value, options.total);
   }
 
   if (value > 0 && value <= 100) {
@@ -96,7 +95,7 @@ exports.progressHandler = function (total, max, options, mainOutputHandler) {
 
       if (this.progress != percent && percent <= max) {
         this.progress = percent;
-        return exports.showProgress(this.progress, null, this.paintProgress, outputHandler);
+        return exports.showProgress(this.progress, {"paintProgress":this.paintProgress}, outputHandler);
       }
     },
     showProgress: function (value, total, paintProgress, outputHandler) {
@@ -109,7 +108,7 @@ exports.progressHandler = function (total, max, options, mainOutputHandler) {
         this.paintProgress = paintProgress ? paintProgress : exports.paintProgress;
       }
 
-      return exports.showProgress(value, total, this.paintProgress, outputHandler);
+      return exports.showProgress(value, {"total":total,"paintProgress":this.paintProgress}, outputHandler);
     }
   };
 

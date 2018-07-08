@@ -6,12 +6,10 @@ var os = require("@vimlet/os");
 @function exec
 @description Runs a file or command and streams its output
 @param {string} command [File or command to be executed]
-@param {string[]} args [Executable arguments]
-@param {string} workingDirectory [The path from where the executable will run]
-@param-optional {object} options [execHandler: Default output callback function(out, error), redirects stdout when provided]
+@param-optional {object} options [execHandler: Default output callback function(out, error), redirects stdout when provided. args: Executable arguments(string[]). workingDirectory: The path from where the executable will run]
 @param-optional {function} doneHandler [Default done callback function(error, exitCode)]
 */
-exports.exec = function (command, args, workingDirectory, options, doneHandler) {
+exports.exec = function (command, options, doneHandler) {
   options = options || {};
   var p;
 
@@ -22,13 +20,13 @@ exports.exec = function (command, args, workingDirectory, options, doneHandler) 
   if (os.isWindows()) {
     var winArgs = ["/C", command];
 
-    if (args) {
-      winArgs = winArgs.concat(args);
+    if (options.args) {
+      winArgs = winArgs.concat(options.args);
     }
 
-    p = runCommand("cmd", winArgs, workingDirectory, config);
+    p = runCommand("cmd", winArgs, options.workingDirectory, config);
   } else {
-    p = runCommand(command, args, workingDirectory, config);
+    p = runCommand(command, options.args, options.workingDirectory, config);
   }
 
 
@@ -61,17 +59,15 @@ exports.exec = function (command, args, workingDirectory, options, doneHandler) 
 @function {string} fetch
 @description Runs a file or command and buffers its output
 @param {string} command [File or command to be executed]
-@param {string[]} args [Executable arguments]
-@param {string} workingDirectory [The path from where the executable will run]
+@param-optional {object} options [args: Executable arguments(string[]). workingDirectory: The path from where the executable will run]
 @param-optional {function} doneHandler [Default done callback function(error, exitCode)]
 */
-exports.fetch = function (command, args, workingDirectory, doneHandler) {
+exports.fetch = function (command, options, doneHandler) {
   var stringOutput = "";
 
   exports.exec(
     command,
-    args,
-    workingDirectory,
+    options,
     function (out, error) {
       if (out) {
         stringOutput += out;
