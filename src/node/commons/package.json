@@ -7,9 +7,9 @@
     "@vimlet/io": "0.0.4",
     "@vimlet/compress": "0.0.3",
     "@vimlet/os": "0.0.3",
-    "@vimlet/progress": "0.0.3",
+    "@vimlet/progress": "0.0.4",
     "@vimlet/request": "0.0.3",
-    "@vimlet/run": "0.0.3"
+    "@vimlet/run": "0.0.4"
   },
   "optionalDependencies": {
     "@vimlet/alpha": "0.4.34"
