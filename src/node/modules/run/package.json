@@ -4,7 +4,7 @@
   "description": "Platform independent exec",
   "main": "index.js",
   "dependencies": {
-    "@vimlet/os": "0.0.3"
+    "@vimlet/os": "0.0.4"
   },
   "author": "Vimlet",
   "repository": {
