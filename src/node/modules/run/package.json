@@ -1,10 +1,10 @@
 {
   "name": "@vimlet/run",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Platform independent exec",
   "main": "index.js",
   "dependencies": {
-    "@vimlet/os": "0.0.4"
+    "@vimlet/os": "0.0.3"
   },
   "author": "Vimlet",
   "repository": {
