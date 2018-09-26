@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "name": "commons-tests",
+  "version": "0.0.1",
+  "main": "",
+  "dependencies": {
+    "fs-extra": "7.0.0"
+  }
+}
