@@ -68,7 +68,12 @@ function getFileList(dir, exclude) {
   //If it gets a fonder instead of a pattern, take all files in folder
   if(!glob.hasMagic(dir)){
     if(exports.isDirectory(dir)){
-    dir = path.join(dir, "**/*.*");
+    dir = path.join(dir, "**/*");
+    }
+  }
+  if(!glob.hasMagic(exclude)){
+    if(exports.isDirectory(exclude)){
+      exclude = path.join(exclude, "**/*");
     }
   }
   result = glob.sync(dir, {
