@@ -1,12 +1,3 @@
-[//]: # (badges)
-
-[![license](https://vimlet.com/vimlet/VimletCommons/master/docs/readme/1528132684659/license.svg?raw=true "License")](https://github.com/vimlet/VimletCommons/blob/master/LICENSE)
-![build](https://vimlet.com/vimlet/VimletCommons/master/docs/readme/1528132684659/build.svg?raw=true "Build")
-![semver](https://vimlet.com/vimlet/VimletCommons/master/docs/readme/1528132684659/semver.svg?raw=true "Semver")
-[![docs](https://vimlet.com/vimlet/VimletCommons/master/docs/readme/1528132684659/docs.svg?raw=true "Docs")](https://vimlet.com/vimlet/VimletCommons/master/docs/release/index.html)
-
-[//]: # (badges)
-
 # Vimlet Commons Modules:
 
 ## Provides a cross environment standardized API for common used functions.
