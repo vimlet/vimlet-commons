@@ -1,10 +1,10 @@
 {
-  "url": "https://vimlet.com/vimlet/VimletCommons/master",
+  "url": "https://vimlet.com/vimlet/vimlet-commons/master",
   "badges": {
     "license": {
       "value": "MIT",
       "color": "blue",
-      "link": "https://github.com/vimlet/VimletCommons/blob/master/LICENSE"
+      "link": "https://github.com/vimlet/vimlet-commons/blob/master/LICENSE"
     },
     "build": {
       "value": "passing",
@@ -17,7 +17,7 @@
     "docs": {
       "value": "documentation",
       "color": "orange",
-      "link": "https://vimlet.com/vimlet/VimletCommons/master/docs/release/index.html"
+      "link": "https://vimlet.com/vimlet/vimlet-commons/master/docs/release/index.html"
     }
   },
   "package": "src/node/commons/package.json",
