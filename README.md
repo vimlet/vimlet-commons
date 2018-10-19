@@ -1,5 +1,5 @@
 <p align='center'>
-<img src='https://vimlet.com/resources/img/commons-txt.png' title='Vimlet Cli' alt='Vimlet Commons'>
+<img src='https://vimlet.com/resources/img/commons-txt.png' title='Vimlet Commons' alt='Vimlet Commons'>
 </p>
 
 ## Provides a cross environment standardized API for common used functions.
