@@ -190,7 +190,7 @@ exports.killProcessByName = function(name, options, callback) {
 };
 
 /*
-@function killProcessByName 
+@function createSymlink 
 @description Creates a symbolic link without admin privileges
 @param {string} dest [Symlink destination path]
 @param {string} src [Symlink source path]

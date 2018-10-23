@@ -7,12 +7,13 @@ This module is a constant effort of improvement to achieve a stable and flexible
 
 **Currently supporting:**
 
-OS
-Run
-Request
-Compress
-Util
-Progress
+* OS
+* Run
+* Request
+* Compress
+* Util
+* Progress
+
 You can access the source code at [vimlet/commons](https://github.com/vimlet/vimlet-commons)
 
 ## Instalation:
@@ -36,10 +37,202 @@ commons.compress.pack(src, dst, "zip", null, null, function(error) {
 });
 ```
 
-## Documentation
-Documentation is an ongoing effort, hopefully it will get better and better over time.
+## Compress
 
-To view the documentation page click [here](https://vimlet.com/vimlet/vimlet-commons/master/docs/release/index.html)
+`compress.pack(file, dest, format, options)`
+
+Compress.
+
+* file: Source file or directory.
+* dest: Destination file.
+* format: Compression format (zip, tar, tgz).
+* options: 
+1. packHandler: Progression callback. `function(error, entry, entrySize, totalSize, totalCount)`.
+2. outputHandler: Default output callback `function(out)`, redirects stdout when provided.
+3. doneHandler: Default done callback `function(error, data)`.
+
+
+`compress.unpack(file, dest, format, options)`
+
+Uncompress.
+
+* file: Source file or directory.
+* dest: Destination folder.
+* format: Compression format (zip, tar, tgz).
+* options: 
+1. unpackHandler: Progression callback. `function(error, entry, entrySize, totalSize, totalCount)`.
+2. outputHandler: Default output callback `function(out)`, redirects stdout when provided.
+3. doneHandler: Default done callback `function(error, data)`.
+
+## Io
+
+`io.getFiles(dir, options)`
+
+Get files from directory. Return an array of objects like:
+```
+{
+    root: "Root path",
+    files: "Array with paths to files"
+}
+```
+* dir: Array of patterns to search or single pattern.
+* options:
+1. exclude: patterns to exclude from search.
+3. ignoreExtension: ignore file extensions.
+
+`io.absoluteFiles(index)`
+
+Get files from index object. Return an array of absolute paths.
+
+* index: Object with root and relative paths.
+
+`io.getRootFromPattern(pattern)`
+
+Get root folder from a given pattern.
+
+`io.isDirectory(path)`
+
+Return true if path is a path to a directory, false if it is a path to a file.
+
+`io.getFileSize(path)`
+
+Return the size of the file in bytes.
+
+`io.deleteFolderRecursive(folderPath, callback)`
+`io.deleteFolderRecursiveSync(folderPath)`
+
+Delete a folder and all its content.
+
+`io.isInPattern(filePath, pattern, options)`
+
+Return true if given file belongs to given pattern. False if not.
+
+* options:
+1. exlude: files to exclude from search.
+
+`io.writeToDisk(output, data, callback)`
+
+Write data to disk.
+
+* output: Path to write the file.
+* data: Data to write.
+
+`io.getCommonBasePath(paths)`
+
+Return a path that all given paths have in common.
+
+* paths: String with multiple paths to compare.
+
+## Os
+
+`os.isWindows()`
+
+`os.isLinux()`
+
+`os.isMac()`
+
+`os.is64Bit()`
+
+`os.getUnixUserProfile()`
+
+`os.setUserEnvironmentVariable(key, value, callback)`
+
+Sets environment variables without admin privileges.
+* key: Enviroment variable key.
+* value: Enviroment variable value.
+* callback
+
+`os.addToUserPath(value, callback)`
+
+Sets path variables without admin privileges.
+* value: Path value to append.
+* callback
+
+`os.killProcessByName(name, options, callback)`
+
+Kill a process by its name.
+* name: Name of the process to be killed.
+* options:
+1. execHandler: Default output callback `function(out)`, redirects stdout when provided.
+* callback
+
+`os.createSymlink(dest, src, options, callback)`
+
+Creates a symbolic link without admin privileges.
+* dest: Symlink destination path.
+* src: Symlink source path.
+* options:
+2. execHandler: Default output callback `function(out)`, redirects stdout when provided.
+* callback
+
+`os.findExec(binary, callback)`
+
+Asserts if a command is accessible from the command line.
+
+* binary: Symlink destination path.
+* callback
+
+## Progress
+
+`progress.paintProgress(value, outputHandler)`
+
+Prints progress at a given percent.
+
+* value: Progress percent.
+* outputHandler: Default output callback `function(out)`, redirects stdout when provided.
+
+`progress.showProgress(value, options, outputHandler)`
+
+Prints progress percent by value and total and returns the percent.
+
+* value: Current progress value.
+* options:
+1. paintProgress: Function that actually does the painting. 
+2. total: Total progress value.
+* outputHandler: Default output callback `function(out)`, redirects stdout when provided.
+
+`progress.progressHandler(total, max, options, mainOutputHandler)`
+
+Handle progress painting avoiding duplicated output of the same progress.
+* total: Total percent value.
+* max:Provide a virtual limit that avoids printing over this value.
+* options:
+1. paintProgress: Function that actually does the painting.
+* mainOutputHandler: Default output callback `function(out)`, redirects stdout when provided.
+
+## Request
+
+`request.download(url, dest, options, doneHandler)`
+
+Downloads a file.
+* url: The URL source to download. 
+* dest: he place where the downloaded file will be stored.
+* options:
+1. downloadHandler: A progress callback `function(received, total, statusCode)`.
+2. outputHandler: Default output callback `function(out)`, redirects stdout when provided.
+* doneHandler: Default done callback `function(error, status)`.
+
+## Run
+
+`run.exec(command, options, doneHandler)`
+
+Runs a file or command and streams its output.
+* command: File or command to be executed.
+* options:
+1. execHandler: Default output callback `function(out, error)`, redirects stdout when provided.
+2. args: Executable arguments(string[]).
+3. workingDirectory: The path from where the executable will run.
+* doneHandler: Default done callback `function(error, exitCode)`.
+
+`run.fetch(command, options, doneHandler)`
+
+Runs a file or command and buffers its output.
+* command: File or command to be executed.
+* options:
+1. args: Executable arguments(string[]).
+2. workingDirectory: The path from where the executable will run.
+* doneHandler: Default done callback `function(error, exitCode)`.
+
 
 ## License
 This project is under MIT License. See [LICENSE](https://github.com/vimlet/vimlet-commons/blob/master/LICENSE) for details.
