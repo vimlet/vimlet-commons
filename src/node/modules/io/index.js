@@ -7,7 +7,7 @@ var rimraf = require("rimraf");
 /*
 @function getFiles {object[]} [Get included files, returns an object wich contains relative path and root folder]
 @param dir {string[]} [Array of patterns to search or single pattern]
-@param options [exclude: patterns to exclude from search, ignoreExtension: ignore file extensions]
+@param options [exclude: patterns to exclude from search, ignoreExtension: ignore file extensions, includeFolders: Boolean to include folders as paths, default false]
  */
 exports.getFiles = function (dir, options) {
   options = options || {};
@@ -28,7 +28,7 @@ exports.getFiles = function (dir, options) {
       root: exports.getRootFromPattern(dir),
       files: []
     };
-    fileObj.files = getFileList(dir, options.exclude);
+    fileObj.files = getFileList(dir, options.exclude, options);
     result.push(fileObj);
   } else {
     dir.forEach(function (d) {
@@ -36,7 +36,7 @@ exports.getFiles = function (dir, options) {
         root: exports.getRootFromPattern(d),
         files: []
       };
-      fileObj.files = getFileList(d, options.exclude);
+      fileObj.files = getFileList(d, options.exclude, options);
       result.push(fileObj);
     });
   }
@@ -63,8 +63,10 @@ exports.absoluteFiles = function (index) {
 @function (private) getFileList [Get files recursively from directory] {string[]}
 @param dir {string} [Directory to search]
 @param exclude {string[]} [string[] of patterns to exclude from search]
+@param options [includeFolders: Boolean to include folders as paths, default false]
  */
-function getFileList(dir, exclude) {
+function getFileList(dir, exclude, options) {
+  options = options || {};
   //If it gets a fonder instead of a pattern, take all files in folder
   if (!glob.hasMagic(dir)) {
     if (exports.isDirectory(dir)) {
@@ -82,10 +84,16 @@ function getFileList(dir, exclude) {
       }
     }
   }
-  result = glob.sync(dir, {
-    ignore: exclude,
-    nodir:true
-  });
+  if(options.includeFolders){
+    result = glob.sync(dir, {
+      ignore: exclude
+    });
+  }else{
+    result = glob.sync(dir, {
+      ignore: exclude,
+      nodir:true
+    });
+  }
   var clean = [];
   
   result.forEach(function (res) {
@@ -161,9 +169,13 @@ exports.deleteFolderRecursiveSync = function (folderPath) {
 @param options {object} [exlude:files to exclude from search]
  */
 exports.isInPattern = function (filePath, pattern, options) {
+  options = options || {};
   var result = false;
-  filePath = path.resolve(filePath);
-  var filesInPattern = exports.getFiles(pattern, options);
+  if(exports.isDirectory(filePath)){
+    options.includeFolders = true;
+  }
+  filePath = path.resolve(filePath);    
+  var filesInPattern = exports.getFiles(pattern, options);  
   filesInPattern.forEach(function (files) {
     files.files.forEach(function (file) {
       var currentFile = path.resolve(path.join(files.root, file));
