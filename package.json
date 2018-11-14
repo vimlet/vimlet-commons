@@ -4,9 +4,6 @@
   "version": "0.0.1",
   "description": "Provide utilities for common tasks such as, file compression, file download, OS integration, exec, etc",
   "main": "",
-  "optionalDependencies": {
-    "@vimlet/alpha": "0.4.35"
-  },
   "author": "Vimlet",
   "license": "MIT",
   "keywords": [
@@ -22,13 +19,5 @@
     "os"
   ],
   "scripts": {
-    "format:js": "alpha format-js",
-    "format:html": "alpha format-html",
-    "format:css": "alpha format-css",
-    "format": "run-s format:js format:html format:css",
-    "test": "alpha test",
-    "doc": "alpha doc",
-    "readme": "alpha readme",
-    "meta": "alpha meta -i **/*.vmt"
   }
 }

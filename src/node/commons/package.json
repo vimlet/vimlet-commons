@@ -11,9 +11,6 @@
     "@vimlet/request": "0.0.3",
     "@vimlet/run": "0.0.4"
   },
-  "optionalDependencies": {
-    "@vimlet/alpha": "0.4.34"
-  },
   "author": "Vimlet",
   "repository": {
     "type": "git",
@@ -31,18 +28,5 @@
     "run",
     "download",
     "os"
-  ],
-  "scripts": {
-    "format:js": "alpha format-js",
-    "format:html": "alpha format-html",
-    "format:css": "alpha format-css",
-    "format": "run-s format:js format:html format:css",
-    "test": "alpha test",
-    "doc:api": "alpha doc api -i **/*.js,**/*.html -o ../../docs/node/api",
-    "doc:article": "alpha doc article -i ../../docs/md/**/*.md -o ../../docs/node/article",
-    "doc:main": "alpha doc main -p ../../docs/node/api -r ../../docs/node/article -o ../../docs",
-    "doc": "run-s doc:api doc:article doc:main",
-    "readme": "alpha readme",
-    "meta": "alpha meta -i **/*.vmt"
-  }
+  ]
 }
