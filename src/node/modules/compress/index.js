@@ -420,19 +420,16 @@ if (!module.parent) {
 
   var include = cli.result.include || path.join(cwd, "**/*.*");
   var output = cli.result.output || cwd;
-  var clean = cli.result.clean || false;
   var format = cli.result.format || "zip";
 
 
   if (cli.result.help) {
     cli.printHelp();
   } else {
-    if (cli.result.pack) {   
-      exports.pack(include, output, format);
-    } else if (cli.result.unpack) {
+    if (cli.result.unpack) {   
       exports.unpack(include, output, format);
     } else {
-      console.log("Use -p for pack or -u for unpack. -h for help");
+      exports.pack(include, output, format);
     }
   }
 
