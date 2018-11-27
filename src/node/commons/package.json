@@ -1,11 +1,11 @@
 {
   "name": "@vimlet/commons",
-  "version": "2.6.10",
+  "version": "2.6.11",
   "description": "Provide utilities for common tasks such as, file compression, file download, OS integration, exec, etc",
   "main": "index.js",
   "dependencies": {
     "@vimlet/io": "0.0.7",
-    "@vimlet/compress": "0.0.4",
+    "@vimlet/compress": "0.0.5",
     "@vimlet/os": "0.0.3",
     "@vimlet/progress": "0.0.4",
     "@vimlet/request": "0.0.3",
