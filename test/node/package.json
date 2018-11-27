@@ -4,6 +4,8 @@
   "version": "0.0.1",
   "main": "",
   "dependencies": {
-    "fs-extra": "7.0.0"
+    "fs-extra": "7.0.0",
+    "@vimlet/commons": "2.6.9",
+    "@vimlet/compress": "file:../../src/node/modules/compress"
   }
 }

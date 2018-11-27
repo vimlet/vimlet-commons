@@ -4,6 +4,7 @@ var compressing = require("compressing");
 var pipe = require("multipipe");
 var progress = require("@vimlet/progress");
 var io = require("@vimlet/io");
+var cli = require("@vimlet/cli").instantiate();
 
 // Hook _onEntryFinish(err) of stream.js
 function hookOnEntryFinish(stream, fn) {
@@ -32,11 +33,16 @@ function hookOnEntryFinish(stream, fn) {
 @param {object} options [packHandler: Entry callback function(error, entry, entrySize, totalSize, totalCount), outputHandler: Default output callback function(out), redirects stdout when provided, doneHandler: Default done callback function(error, data)]
 */
 exports.pack = function (file, dest, format, options) {
+  console.log("include");
+  console.log(file);
+  console.log("output");
+  console.log(dest);
+  console.log("Format",format);
   options = options || {};
   if (isValidFormat(format)) {
     packHelper(file, dest, format, options.packHandler, options.outputHandler, options.doneHandler);
   } else {
-    output("Unsupported format", options.outputHandler);
+    outputStdout("Unsupported format", options.outputHandler);
   }
 };
 
@@ -53,7 +59,7 @@ exports.unpack = function (file, dest, format, options) {
   if (isValidFormat(format)) {
     unpackHelper(file, dest, format, options.unpackHandler, options.outputHandler, options.doneHandler);
   } else {
-    output("Unsupported format", options.outputHandler);
+    outputStdout("Unsupported format", options.outputHandler);
   }
 };
 
@@ -74,7 +80,7 @@ function getStreamObject(stream) {
 }
 
 function packHelper(file, dest, format, packHandler, outputHandler, doneHandler) {
-  output("\nPacking " + file + "\n", outputHandler);
+  outputStdout("\nPacking " + file + "\n", outputHandler);
 
   var sizeObject = getPackSizeObject(getFileList(file));
   var fileStream = new compressing[format].Stream();
@@ -138,7 +144,7 @@ function packHelper(file, dest, format, packHandler, outputHandler, doneHandler)
         packHandler(error);
       }
 
-      output(error, outputHandler);
+      outputStdout(error, outputHandler);
 
     } else {
       if (packHandler) {
@@ -147,7 +153,7 @@ function packHelper(file, dest, format, packHandler, outputHandler, doneHandler)
 
       // Show 100%;
       progressHandler.showProgress(100);
-      output("\n", outputHandler);
+      outputStdout("\n", outputHandler);
 
     }
 
@@ -160,7 +166,7 @@ function packHelper(file, dest, format, packHandler, outputHandler, doneHandler)
 
 function unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHandler) {
 
-  output("\nUnpacking " + file + "\n", outputHandler);
+  outputStdout("\nUnpacking " + file + "\n", outputHandler);
 
   // Make dest directory
   fs.mkdirsSync(dest);
@@ -186,7 +192,7 @@ function unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHand
 
       // Show 100%;
       progressHandler.showProgress(100);
-      output("\n", outputHandler);
+      outputStdout("\n", outputHandler);
 
 
       if (doneHandler) {
@@ -207,7 +213,7 @@ function unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHand
         unpackHandler(error);
       }
 
-      output(error, outputHandler);
+      outputStdout(error, outputHandler);
 
 
       if (doneHandler) {
@@ -287,7 +293,7 @@ function getUpackSizeObject(file, format, callback, outputHandler) {
 
   fileStream.on("error", function (error) {
     sizeObject.count = -1;
-    output(error, outputHandler);
+    outputStdout(error, outputHandler);
   });
 
   fileStream.on("entry", function (header, stream, next) {
@@ -310,16 +316,10 @@ function getUpackSizeObject(file, format, callback, outputHandler) {
 // Recursive function
 function getFileList(dir, fileList) {
   fileList = fileList || [];
-  files = fs.readdirSync(dir);
-
+  var files = io.absoluteFiles(io.getFiles(dir));
   files.forEach(function (file) {
-    if (io.isDirectory(path.join(dir, file))) {
-      fileList = getFileList(path.join(dir, file), fileList);
-    } else {
-      fileList.push(path.join(dir, file));
-    }
+    fileList.push(file);
   });
-
   return fileList;
 }
 
@@ -375,12 +375,12 @@ function onUnpackEntryWrite(header, stream, next, dest) {
 }
 
 /*
-@function output
+@function outputStdout
 @description Outputs a string to the stdout unless an outputHandle is provided
 @param {string} s [The string to output]
 @param-optional {function} outputHandler [The callback(out) that will receive output instead of stdout]
 */
-function output(s, outputHandler) {
+function outputStdout(s, outputHandler) {
   if (outputHandler) {
     outputHandler(s);
   } else {
@@ -398,4 +398,40 @@ function resolveObject(path, obj) {
   return path.split(".").reduce(function (prev, curr) {
     return prev ? prev[curr] : undefined;
   }, obj || self);
+}
+
+
+
+// Command mode
+if (!module.parent) {
+
+  cli
+    .value("-i", "--include", "Include file or directory")
+    .value("-o", "--output", "Output path")
+    .value("-f", "--format", "Compression format")
+    .flag("-p", "--pack", "Pack files")
+    .flag("-u", "--unpack", "Unpack files")
+    .flag("-h", "--help", "Shows help")
+    .parse(process.argv);
+
+  var cwd = process.cwd();
+
+  var include = cli.result.include || path.join(cwd, "**/*.*");
+  var output = cli.result.output || cwd;
+  var clean = cli.result.clean || false;
+  var format = cli.result.format || "zip";
+
+
+  if (cli.result.help) {
+    cli.printHelp();
+  } else {
+    if (cli.result.pack) {   
+      exports.pack(include, output, format);
+    } else if (cli.result.unpack) {
+      exports.unpack(include, output, format);
+    } else {
+      console.log("Use -p for pack or -u for unpack. -h for help");
+    }
+  }
+
 }

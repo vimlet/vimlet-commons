@@ -5,10 +5,14 @@
   "main": "index.js",
   "dependencies": {
     "@vimlet/progress": "0.0.3",
-    "@vimlet/io": "0.0.3",
+    "@vimlet/io": "0.0.7",
     "fs-extra": "5.0.0",
     "compressing": "1.2.3",
-    "multipipe": "1.0.2"
+    "multipipe": "1.0.2",
+    "@vimlet/cli": "1.2.4"
+  },
+  "bin": {
+    "vimlet-compress": "index.js"
   },
   "author": "Vimlet",
   "repository": {
