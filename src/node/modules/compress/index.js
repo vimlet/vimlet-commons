@@ -35,11 +35,7 @@ function hookOnEntryFinish(stream, fn) {
 @param {object} options [packHandler: Entry callback function(error, entry, entrySize, totalSize, totalCount), outputHandler: Default output callback function(out), redirects stdout when provided, doneHandler: Default done callback function(error, data)]
 */
 exports.pack = function (file, dest, format, options) {
-  console.log("include");
-  console.log(file);
-  console.log("output");
-  console.log(dest);
-  console.log("Format",format);
+  fs.ensureDirSync(path.dirname(dest));
   options = options || {};
   if (isValidFormat(format)) {
     packHelper(file, dest, format, options.packHandler, options.outputHandler, options.doneHandler);
