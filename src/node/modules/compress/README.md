@@ -47,10 +47,11 @@ Uncompress.
 
 > |Params|Shorcut|Description|Default|
 > |---|---|---|---|
-> |--include|-i|File or folder to pack / unpack|-|
+> |--include|-i|File, folder or pattern to pack / unpack|-|
+> |--exclude|-e|File, folder or pattern to exclude from packing|-|
 > |--output|-o|Destination file or folder|-|
 > |--format|-f|'zip', 'tar' or 'tgz'|'zip'|
-> |--pack|-p|Call pack function|-|
+> |--pack|-p|Call pack function|Pack is called by default if unpack is not specified|
 > |--unpack|-u|Call unpack function|-|
 > |--help|-h|Show help|-|
 * `Note that if not pack neither unpack is selected, it will pack by default.`
