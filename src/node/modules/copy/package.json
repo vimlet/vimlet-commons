@@ -1,0 +1,19 @@
+{
+  "name": "@vimlet/copy",
+  "version": "0.0.9",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "vimlet-copy": "index.js"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@vimlet/cli": "1.0.0",
+    "@vimlet/io": "0.0.7",
+    "fs-extra": "7.0.0",
+    "mkdirp": "0.5.1",
+    "glob-watcher": "5.0.1"
+  },
+  "author": "",
+  "license": "MIT"
+}

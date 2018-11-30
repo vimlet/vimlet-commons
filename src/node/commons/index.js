@@ -10,3 +10,5 @@ exports.compress = require("@vimlet/compress");
 exports.progress = require("@vimlet/progress");
 //@property io (public) {object} [Access to io lib]
 exports.io = require("@vimlet/io");
+//@property copy (public) {object} [Access to copy lib]
+exports.copy = require("@vimlet/copy");
