@@ -7,6 +7,11 @@ var pipe = require("multipipe");
 var progress = require("@vimlet/progress");
 var io = require("@vimlet/io");
 var cli = require("@vimlet/cli").instantiate();
+var os = require("os");
+var glob = require("glob");
+var copy = require("@vimlet/copy");
+
+var tmpFolder = path.join(os.tmpdir(), "compress");
 
 // Hook _onEntryFinish(err) of stream.js
 function hookOnEntryFinish(stream, fn) {
@@ -38,7 +43,7 @@ exports.pack = function (file, dest, format, options) {
   fs.ensureDirSync(path.dirname(dest));
   options = options || {};
   if (isValidFormat(format)) {
-    packHelper(file, dest, format, options.packHandler, options.outputHandler, options.doneHandler);
+    packHelper(file, dest, format, options.packHandler, options.outputHandler, options.doneHandler, options);
   } else {
     outputStdout("Unsupported format", options.outputHandler);
   }
@@ -77,9 +82,22 @@ function getStreamObject(stream) {
   return baseStream;
 }
 
-function packHelper(file, dest, format, packHandler, outputHandler, doneHandler) {
+function packHelper(file, dest, format, packHandler, outputHandler, doneHandler, options) {
   outputStdout("\nPacking " + file + "\n", outputHandler);
+  if (Array.isArray(file) && file.length === 1){
+    file = file[0];
+  }
+  if (Array.isArray(file) || glob.hasMagic(file)) {
+    copy.copy(file, tmpFolder, options, function () {
+      packFiles(tmpFolder, dest, format, packHandler, outputHandler, doneHandler, true);
+    });
+  } else {    
+    packFiles(file, dest, format, packHandler, outputHandler, doneHandler);
+  }
+}
 
+// @function packFiles (private) [Pack files]
+function packFiles(file, dest, format, packHandler, outputHandler, doneHandler, isTemporal) {
   var sizeObject = getPackSizeObject(getFileList(file));
   var fileStream = new compressing[format].Stream();
   var streamObject = getStreamObject(fileStream);
@@ -121,7 +139,7 @@ function packHelper(file, dest, format, packHandler, outputHandler, doneHandler)
   });
 
   // Add file or directories
-  if (io.isDirectory(file)) {
+  if (io.isDirectory(file) && isTemporal) {
     fileStream.addEntry(file, {
       ignoreBase: true
     });
@@ -157,10 +175,18 @@ function packHelper(file, dest, format, packHandler, outputHandler, doneHandler)
 
     if (doneHandler) {
       doneHandler(error);
+      if (isTemporal) {
+        io.deleteFolderRecursiveSync(tmpFolder);
+      }
+    } else {
+      if (isTemporal) {
+        io.deleteFolderRecursiveSync(tmpFolder);
+      }
     }
 
   });
 }
+
 
 function unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHandler) {
 
@@ -169,6 +195,27 @@ function unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHand
   // Make dest directory
   fs.mkdirsSync(dest);
 
+  if (Array.isArray(file)) {
+    unpackArray(file, dest, format, unpackHandler, outputHandler, doneHandler);
+  } else {
+    unpackFile(file, dest, format, unpackHandler, outputHandler, doneHandler);
+  }
+}
+
+// @function unpackArray (private) [Unpack files recursivelly]
+function unpackArray(file, dest, format, unpackHandler, outputHandler, doneHandler) {
+  var current = file.shift();
+  if(file.length > 0){
+    unpackFile(current, dest, format, unpackHandler, outputHandler, function(){
+      unpackArray(file, dest, format, unpackHandler, outputHandler, doneHandler);
+    });
+  }else{
+    unpackFile(current, dest, format, unpackHandler, outputHandler, doneHandler);
+  }
+}
+
+// @function unpackFile (private) [Unpack files]
+function unpackFile(file, dest, format, unpackHandler, outputHandler, doneHandler) {
   getUpackSizeObject(file, format, function (sizeObject) {
     var totalCount = sizeObject.count;
     var totalSize = sizeObject.totalSize;
@@ -403,8 +450,17 @@ function resolveObject(path, obj) {
 // Command mode
 if (!module.parent) {
 
+  function list(value) {
+    var result = value.split(",");
+    for (var i = 0; i < result.length; i++) {
+      result[i] = result[i].trim();
+    }
+    return result;
+  }
+
   cli
-    .value("-i", "--include", "Include file or directory")
+    .value("-i", "--include", "Include patterns", list)
+    .value("-e", "--exclude", "Exclude patterns", list)
     .value("-o", "--output", "Output path")
     .value("-f", "--format", "Compression format")
     .flag("-p", "--pack", "Pack files")
@@ -415,17 +471,20 @@ if (!module.parent) {
   var cwd = process.cwd();
 
   var include = cli.result.include || path.join(cwd, "**/*.*");
+  var exclude = cli.result.exclude || "**node_modules**";
   var output = cli.result.output || cwd;
   var format = cli.result.format || "zip";
 
+  var options = {};
+  options.exclude = exclude;
 
   if (cli.result.help) {
     cli.printHelp();
   } else {
-    if (cli.result.unpack) {   
+    if (cli.result.unpack) {
       exports.unpack(include, output, format);
     } else {
-      exports.pack(include, output, format);
+      exports.pack(include, output, format, options);
     }
   }
 
