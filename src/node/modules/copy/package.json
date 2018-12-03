@@ -1,6 +1,6 @@
 {
   "name": "@vimlet/copy",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -8,7 +8,7 @@
   },
   "scripts": {},
   "dependencies": {
-    "@vimlet/cli": "1.2.5",
+    "@vimlet/cli": "1.2.6",
     "@vimlet/io": "0.0.7",
     "fs-extra": "7.0.0",
     "mkdirp": "0.5.1",
