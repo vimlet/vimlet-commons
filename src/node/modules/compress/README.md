@@ -10,30 +10,30 @@ It will be also installed as a module within @vimlet/commons
 
 ## Usage
 
-`compress.pack(file, dest, format, options)`
+>## compress.pack(file, dest, format, options, doneHandler)
+>
+>Compress.
+>
+>* file: Source file or directory.
+>* dest: Destination file.
+>* format: Compression format (zip, tar, tgz).
+>* options: 
+>1. packHandler: Progression callback. `function(error, entry, entrySize, totalSize, totalCount)`.
+>2. outputHandler: Default output callback `function(out)`, redirects stdout when provided.
+>* doneHandler: Default done callback `function(error, data)`.
 
-Compress.
 
-* file: Source file or directory.
-* dest: Destination file.
-* format: Compression format (zip, tar, tgz).
-* options: 
-1. packHandler: Progression callback. `function(error, entry, entrySize, totalSize, totalCount)`.
-2. outputHandler: Default output callback `function(out)`, redirects stdout when provided.
-3. doneHandler: Default done callback `function(error, data)`.
-
-
-`compress.unpack(file, dest, format, options)`
-
-Uncompress.
-
-* file: Source file or directory.
-* dest: Destination folder.
-* format: Compression format (zip, tar, tgz).
-* options: 
-1. unpackHandler: Progression callback. `function(error, entry, entrySize, totalSize, totalCount)`.
-2. outputHandler: Default output callback `function(out)`, redirects stdout when provided.
-3. doneHandler: Default done callback `function(error, data)`.
+>## compress.unpack(file, dest, format, options, doneHandler)
+>
+>Uncompress.
+>
+>* file: Source file or directory.
+>* dest: Destination folder.
+>* format: Compression format (zip, tar, tgz).
+>* options: 
+>1. unpackHandler: Progression callback. `function(error, entry, entrySize, totalSize, totalCount)`.
+>2. outputHandler: Default output callback `function(out)`, redirects stdout when provided.
+>* doneHandler: Default done callback `function(error, data)`.
 
 ### Command mode:
 
@@ -55,3 +55,7 @@ Uncompress.
 > |--unpack|-u|Call unpack function|-|
 > |--help|-h|Show help|-|
 * `Note that if not pack neither unpack is selected, it will pack by default.`
+
+
+## License
+This project is under MIT License. See [LICENSE](https://github.com/vimlet/vimlet-commons/blob/master/LICENSE) for details.

@@ -28,6 +28,6 @@ console.log(files);
 // var detelePath = "resources/test3";
 // io.deleteFolderRecursive(detelePath);
 
-// var output = "output/output.txt";
-// var data = "Text to be saved";
-// io.writeToDisk(output, data);
+var output = "output/output.txt";
+var data = "Text to be saved";
+io.writeToDisk(output, data);

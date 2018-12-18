@@ -103,7 +103,7 @@ function getFileList(dir, exclude, options) {
 }
 
 /*
-@function (public) getRootFromPattern {string} [Get root from a pattern.] @param pattern {string}
+@function (public) getRootFromPattern {string} [Get root from a pattern] @param pattern {string}
  */
 exports.getRootFromPattern = function (pattern) {
   if (!exports.isDirectory(pattern)) {
@@ -119,7 +119,7 @@ exports.getRootFromPattern = function (pattern) {
 
 /*
 @function isDirectory (public) [Check if a path is directory or file]
-@param path {string}
+@param filePath {string}
  */
 exports.isDirectory = function (filePath) {
   try {

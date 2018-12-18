@@ -37,13 +37,14 @@ function hookOnEntryFinish(stream, fn) {
 @param {string} file [Source file or directory]
 @param {string} dest [Destination file]
 @param {string} format [The compression format, must exactly match one of these "zip", "tar", "tgz"]
-@param {object} options [packHandler: Entry callback function(error, entry, entrySize, totalSize, totalCount), outputHandler: Default output callback function(out), redirects stdout when provided, doneHandler: Default done callback function(error, data)]
+@param {object} options [packHandler: Entry callback function(error, entry, entrySize, totalSize, totalCount), outputHandler: Default output callback function(out), redirects stdout when provided]
+@param doneHandler [Default done callback function(error, data)]
 */
-exports.pack = function (file, dest, format, options) {
+exports.pack = function (file, dest, format, options, doneHandler) {
   fs.ensureDirSync(path.dirname(dest));
   options = options || {};
   if (isValidFormat(format)) {
-    packHelper(file, dest, format, options.packHandler, options.outputHandler, options.doneHandler, options);
+    packHelper(file, dest, format, options.packHandler, options.outputHandler, doneHandler, options);
   } else {
     outputStdout("Unsupported format", options.outputHandler);
   }
@@ -55,12 +56,13 @@ exports.pack = function (file, dest, format, options) {
 @param {string} file [Source file or directory]
 @param {string} dest [Destination file]
 @param {string} format [The compression format, must exactly match one of these "zip", "tar", "tgz"]
-@param {object} options [unpackHandler: Entry callback function(error, entry, entrySize, totalSize, totalCount), outputHandler: Default output callback function(out), redirects stdout when provided, doneHandler: Default done callback function(error, data)]
+@param {object} options [unpackHandler: Entry callback function(error, entry, entrySize, totalSize, totalCount), outputHandler: Default output callback function(out), redirects stdout when provided]
+@param doneHandler [Default done callback function(error, data)]
 */
-exports.unpack = function (file, dest, format, options) {
+exports.unpack = function (file, dest, format, options, doneHandler) {
   options = options || {};
   if (isValidFormat(format)) {
-    unpackHelper(file, dest, format, options.unpackHandler, options.outputHandler, options.doneHandler);
+    unpackHelper(file, dest, format, options.unpackHandler, options.outputHandler, doneHandler);
   } else {
     outputStdout("Unsupported format", options.outputHandler);
   }

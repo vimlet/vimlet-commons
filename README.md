@@ -28,7 +28,7 @@ const commons = require("@vimlet/commons");
 var src = require("path").join(__dirname, "resources/compress/pack");
 var dst = require("path").join(__dirname, "resources/compress/file.zip");
 
-commons.compress.pack(src, dst, "zip", null, null, function(error) {
+commons.compress.pack(src, dst, "zip", null, function(error) {
     if(error) {
         console.log("Fail");
     } else {
@@ -39,7 +39,7 @@ commons.compress.pack(src, dst, "zip", null, null, function(error) {
 
 ## Compress
 
-`compress.pack(file, dest, format, options)`
+`compress.pack(file, dest, format, options, doneHandler)`
 
 Compress.
 
@@ -49,10 +49,10 @@ Compress.
 * options: 
 1. packHandler: Progression callback. `function(error, entry, entrySize, totalSize, totalCount)`.
 2. outputHandler: Default output callback `function(out)`, redirects stdout when provided.
-3. doneHandler: Default done callback `function(error, data)`.
+* doneHandler: Default done callback `function(error, data)`.
 
 
-`compress.unpack(file, dest, format, options)`
+`compress.unpack(file, dest, format, options, doneHandler)`
 
 Uncompress.
 
@@ -62,7 +62,31 @@ Uncompress.
 * options: 
 1. unpackHandler: Progression callback. `function(error, entry, entrySize, totalSize, totalCount)`.
 2. outputHandler: Default output callback `function(out)`, redirects stdout when provided.
-3. doneHandler: Default done callback `function(error, data)`.
+* doneHandler: Default done callback `function(error, data)`.
+
+
+## Copy
+
+`copy.copy(include, output, options, callback);`
+
+Copy files in given pattern.
+* include: Directory to look for files.
+* output: Directory where files will be written.
+* options: 
+1. exclude: Used to skip files that you don't want to copy.
+2. clean: Empty output directory before copy.
+* callback.
+    
+`copy.watch(include, output, options);`
+
+Watch for file changes in given pattern.
+Watch for file changes in given pattern.
+* include: Directory to look for files.
+* output: Directory where files will be written.
+* options: 
+1. exclude: Used to skip files that you don't want to copy.
+2. clean: Empty output directory before copy.
+
 
 ## Io
 

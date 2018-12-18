@@ -15,25 +15,25 @@ npm install @vimlet/copy
 
 ## Usage
 
-* `copy.copy(include, output, options, callback);`
-
-    Copy files in given pattern.
+>## copy.copy(include, output, options, callback);
+>
+ >   Copy files in given pattern.
+  >  * include: Directory to look for files.
+   > * output: Directory where files will be written.
+>* options: 
+>1. exclude: Used to skip files that you don't want to copy.
+>2. clean: Empty output directory before copy.
+>* callback.
     
-* `copy.watch(include, output, options);`
+>## copy.watch(include, output, options);
+>
+ >   Watch for file changes in given pattern.
+  >  * include: Directory to look for files.
+   > * output: Directory where files will be written.
+>* options: 
+>1. exclude: Used to skip files that you don't want to copy.
+>2. clean: Empty output directory before copy.
 
-    Watch for file changes in given pattern.
-
-    **options**
-
-    `{
-        "exclude": "glob patterns",
-        "clean": false
-    }`
-
-    * include: Directory to look for files.
-    * exclude: Used to skip files that you don't want to copy.
-    * output: Directory where files will be written.
-    * clean: Empty output directory before copy.
 
 ### Command mode:
 
@@ -46,5 +46,6 @@ npm install @vimlet/copy
     Calls copy.watch
 
 
+
 ## License
-Vimlet Copy is released under MIT License. See [LICENSE](https://github.com/vimlet/vimlet-copy/blob/master/LICENSE) for details.
+This project is under MIT License. See [LICENSE](https://github.com/vimlet/vimlet-commons/blob/master/LICENSE) for details.
