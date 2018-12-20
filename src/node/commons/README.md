@@ -45,10 +45,10 @@ Compress.
 
 * file: Source file or directory.
 * dest: Destination file.
-* format: Compression format (zip, tar, tgz).
 * options: 
 1. packHandler: Progression callback. `function(error, entry, entrySize, totalSize, totalCount)`.
 2. outputHandler: Default output callback `function(out)`, redirects stdout when provided.
+3. format: Compression format (zip, tar, tgz).
 * doneHandler: Default done callback `function(error, data)`.
 
 
@@ -58,10 +58,10 @@ Uncompress.
 
 * file: Source file or directory.
 * dest: Destination folder.
-* format: Compression format (zip, tar, tgz).
 * options: 
 1. unpackHandler: Progression callback. `function(error, entry, entrySize, totalSize, totalCount)`.
 2. outputHandler: Default output callback `function(out)`, redirects stdout when provided.
+3. format: Compression format (zip, tar, tgz).
 * doneHandler: Default done callback `function(error, data)`.
 
 

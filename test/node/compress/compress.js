@@ -9,14 +9,14 @@ var unpack = path.join(__dirname, "resources/compress/unpack");
 var out = path.join(__dirname, "resources/compress/compress.zip");
 
 
-compress.pack(pack, out, "zip",null,  
+compress.pack(pack, out, null,  
   function (error) {
     if (!error) {
       console.log("Done Compress",io.absoluteFiles(io.getFiles(out)));
       
      
 
-      compress.unpack(out, unpack, "zip",null, function (error) {
+      compress.unpack(out, unpack, null, function (error) {
           console.log("Done upack", io.absoluteFiles(io.getFiles(unpack)));
         }
       );

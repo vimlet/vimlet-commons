@@ -37,12 +37,13 @@ function hookOnEntryFinish(stream, fn) {
 @param {string} file [Source file or directory]
 @param {string} dest [Destination file]
 @param {string} format [The compression format, must exactly match one of these "zip", "tar", "tgz"]
-@param {object} options [packHandler: Entry callback function(error, entry, entrySize, totalSize, totalCount), outputHandler: Default output callback function(out), redirects stdout when provided]
+@param {object} options [packHandler: Entry callback function(error, entry, entrySize, totalSize, totalCount), outputHandler: Default output callback function(out), redirects stdout when provided. format: The compression format, must exactly match one of these "zip", "tar", "tgz"]
 @param doneHandler [Default done callback function(error, data)]
 */
-exports.pack = function (file, dest, format, options, doneHandler) {
+exports.pack = function (file, dest, options, doneHandler) {
   fs.ensureDirSync(path.dirname(dest));
   options = options || {};
+  var format = options.format || "zip";
   if (isValidFormat(format)) {
     packHelper(file, dest, format, options.packHandler, options.outputHandler, doneHandler, options);
   } else {
@@ -55,12 +56,12 @@ exports.pack = function (file, dest, format, options, doneHandler) {
 @description Unpack files
 @param {string} file [Source file or directory]
 @param {string} dest [Destination file]
-@param {string} format [The compression format, must exactly match one of these "zip", "tar", "tgz"]
-@param {object} options [unpackHandler: Entry callback function(error, entry, entrySize, totalSize, totalCount), outputHandler: Default output callback function(out), redirects stdout when provided]
+@param {object} options [unpackHandler: Entry callback function(error, entry, entrySize, totalSize, totalCount), outputHandler: Default output callback function(out), redirects stdout when provided. format: The compression format, must exactly match one of these "zip", "tar", "tgz"]
 @param doneHandler [Default done callback function(error, data)]
 */
-exports.unpack = function (file, dest, format, options, doneHandler) {
+exports.unpack = function (file, dest, options, doneHandler) {
   options = options || {};
+  var format = options.format || "zip";
   if (isValidFormat(format)) {
     unpackHelper(file, dest, format, options.unpackHandler, options.outputHandler, doneHandler);
   } else {
@@ -479,14 +480,15 @@ if (!module.parent) {
 
   var options = {};
   options.exclude = exclude;
+  options.format = format;
 
   if (cli.result.help) {
     cli.printHelp();
   } else {
     if (cli.result.unpack) {
-      exports.unpack(include, output, format);
+      exports.unpack(include, output, options);
     } else {
-      exports.pack(include, output, format, options);
+      exports.pack(include, output, options);
     }
   }
 
