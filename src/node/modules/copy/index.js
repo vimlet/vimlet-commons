@@ -6,12 +6,13 @@ var glob = require("glob");
 var fs = require("fs-extra");
 var cli = require("@vimlet/cli").instantiate();
 var watch = require("./lib/watch");
+var deasync = require("deasync");
 
 
 
 module.exports.copy = function (include, output, options, callback) {
     options = options || {};
-    
+
     if (options.clean) {
         fs.removeSync(output);
     }
@@ -20,7 +21,6 @@ module.exports.copy = function (include, output, options, callback) {
     rootsArray.forEach(function (rootObject) {
         totalFiles += rootObject.files.length;
     });
-    var rootsArray = io.getFiles(include, options);
     rootsArray.forEach(function (rootObject) {
         rootObject.files.forEach(function (relativePath) {
             fs.copy(path.join(rootObject.root, relativePath), path.join(output, relativePath), function (err) {
@@ -32,6 +32,18 @@ module.exports.copy = function (include, output, options, callback) {
                 }
             });
         });
+    });
+};
+
+module.exports.copySync = function (include, output, options) {
+    var done = false;
+    var data;
+    module.exports.copy(include, output, options, function cb(res) {
+        data = res;
+        done = true;
+    });
+    deasync.loopWhile(function () {
+        return !done;
     });
 };
 
@@ -87,7 +99,7 @@ if (!module.parent) {
             }
             module.exports.watch(include, output, options);
         } else {
-            module.exports.copy(include, output, options);
+            module.exports.copySync(include, output, options);
         }
     }
 

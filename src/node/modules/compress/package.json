@@ -11,7 +11,8 @@
     "multipipe": "1.0.2",
     "@vimlet/cli": "1.2.6",
     "glob": "7.1.3",
-    "@vimlet/copy": "0.0.8"
+    "@vimlet/copy": "0.0.8",
+    "deasync": "0.1.14"
   },
   "bin": {
     "vimlet-compress": "index.js"

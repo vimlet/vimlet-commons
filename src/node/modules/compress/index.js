@@ -10,6 +10,7 @@ var cli = require("@vimlet/cli").instantiate();
 var os = require("os");
 var glob = require("glob");
 var copy = require("@vimlet/copy");
+var deasync = require("deasync");
 
 var tmpFolder = path.join(os.tmpdir(), "compress");
 
@@ -50,6 +51,24 @@ exports.pack = function (file, dest, options, doneHandler) {
     outputStdout("Unsupported format", options.outputHandler);
   }
 };
+/*
+@function packSync
+@description Packs files synchronous
+@param {string} file [Source file or directory]
+@param {string} dest [Destination file]
+@param {string} format [The compression format, must exactly match one of these "zip", "tar", "tgz"]
+@param {object} options [packHandler: Entry callback function(error, entry, entrySize, totalSize, totalCount), outputHandler: Default output callback function(out), redirects stdout when provided. format: The compression format, must exactly match one of these "zip", "tar", "tgz"]
+*/
+exports.packSync = function (file, dest, options) {
+  var done = false;
+  var data;
+  exports.pack(file, dest, options, function cb(res){
+    data = res;
+    done = true;
+  });
+  deasync.loopWhile(function(){return !done;});
+};
+
 
 /*
 @function unpack
@@ -68,6 +87,23 @@ exports.unpack = function (file, dest, options, doneHandler) {
     outputStdout("Unsupported format", options.outputHandler);
   }
 };
+/*
+@function unpackSync
+@description Unpack files syncronous
+@param {string} file [Source file or directory]
+@param {string} dest [Destination file]
+@param {object} options [unpackHandler: Entry callback function(error, entry, entrySize, totalSize, totalCount), outputHandler: Default output callback function(out), redirects stdout when provided. format: The compression format, must exactly match one of these "zip", "tar", "tgz"]
+*/
+exports.unpackSync = function (file, dest, options) {
+  var done = false;
+  var data;
+  exports.unpack(file, dest, options, function cb(res){
+    data = res;
+    done = true;
+  });
+  deasync.loopWhile(function(){return !done;});
+};
+
 
 function isValidFormat(format) {
   format = format.toLowerCase();
@@ -87,14 +123,14 @@ function getStreamObject(stream) {
 
 function packHelper(file, dest, format, packHandler, outputHandler, doneHandler, options) {
   outputStdout("\nPacking " + file + "\n", outputHandler);
-  if (Array.isArray(file) && file.length === 1){
+  if (Array.isArray(file) && file.length === 1) {
     file = file[0];
   }
   if (Array.isArray(file) || glob.hasMagic(file)) {
     copy.copy(file, tmpFolder, options, function () {
       packFiles(tmpFolder, dest, format, packHandler, outputHandler, doneHandler, true);
     });
-  } else {    
+  } else {
     packFiles(file, dest, format, packHandler, outputHandler, doneHandler);
   }
 }
@@ -188,8 +224,8 @@ function packFiles(file, dest, format, packHandler, outputHandler, doneHandler, 
     }
 
   });
-}
 
+}
 
 function unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHandler) {
 
@@ -208,14 +244,15 @@ function unpackHelper(file, dest, format, unpackHandler, outputHandler, doneHand
 // @function unpackArray (private) [Unpack files recursivelly]
 function unpackArray(file, dest, format, unpackHandler, outputHandler, doneHandler) {
   var current = file.shift();
-  if(file.length > 0){
-    unpackFile(current, dest, format, unpackHandler, outputHandler, function(){
+  if (file.length > 0) {
+    unpackFile(current, dest, format, unpackHandler, outputHandler, function () {
       unpackArray(file, dest, format, unpackHandler, outputHandler, doneHandler);
     });
-  }else{
+  } else {
     unpackFile(current, dest, format, unpackHandler, outputHandler, doneHandler);
   }
 }
+
 
 // @function unpackFile (private) [Unpack files]
 function unpackFile(file, dest, format, unpackHandler, outputHandler, doneHandler) {
@@ -306,6 +343,7 @@ function unpackFile(file, dest, format, unpackHandler, outputHandler, doneHandle
   }, outputHandler);
 
 }
+
 
 function getEntryUncompressedSize(header) {
   var sizeProperty = "size";
@@ -486,9 +524,9 @@ if (!module.parent) {
     cli.printHelp();
   } else {
     if (cli.result.unpack) {
-      exports.unpack(include, output, options);
+      exports.unpackSync(include, output, options);
     } else {
-      exports.pack(include, output, options);
+      exports.packSync(include, output, options);
     }
   }
 

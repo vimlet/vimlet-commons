@@ -28,10 +28,10 @@ commons.run.exec("vimlet-copy", {args:["-i", include, "-o", output]}, function (
   });
 
   
-commons.run.exec("vimlet-copy", {args:["-w", "-i", "resources/**/*.*", "-o", "output"]}, function (error, data) {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log("Watching!");
-  }
-});
+// commons.run.exec("vimlet-copy", {args:["-w", "-i", "resources/**/*.*", "-o", "output"]}, function (error, data) {
+//   if (error) {
+//     console.error(error);
+//   } else {
+//     console.log("Watching!");
+//   }
+// });
