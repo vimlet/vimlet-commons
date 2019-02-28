@@ -21,18 +21,24 @@ module.exports.copy = function (include, output, options, callback) {
     rootsArray.forEach(function (rootObject) {
         totalFiles += rootObject.files.length;
     });
-    rootsArray.forEach(function (rootObject) {
-        rootObject.files.forEach(function (relativePath) {
-            fs.copy(path.join(rootObject.root, relativePath), path.join(output, relativePath), function (err) {
-                totalFiles--;
-                if (totalFiles == 0) {
-                    if (callback) {
-                        callback();
+    if (totalFiles === 0) {
+        if (callback) {
+            callback();
+        }
+    } else {
+        rootsArray.forEach(function (rootObject) {
+            rootObject.files.forEach(function (relativePath) {
+                fs.copy(path.join(rootObject.root, relativePath), path.join(output, relativePath), function (err) {
+                    totalFiles--;
+                    if (totalFiles == 0) {
+                        if (callback) {
+                            callback();
+                        }
                     }
-                }
+                });
             });
         });
-    });
+    }
 };
 
 module.exports.copySync = function (include, output, options) {
