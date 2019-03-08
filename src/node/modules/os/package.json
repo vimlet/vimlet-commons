@@ -1,5 +1,5 @@
 {
-  "name": "@vimlet/os",
+  "name": "@vimlet/commons-os",
   "version": "0.0.4",
   "description": "OS integration",
   "main": "index.js",

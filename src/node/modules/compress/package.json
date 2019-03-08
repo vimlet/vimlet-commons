@@ -1,5 +1,5 @@
 {
-  "name": "@vimlet/compress",
+  "name": "@vimlet/commons-compress",
   "version": "0.1.0",
   "description": "File compression",
   "main": "index.js",

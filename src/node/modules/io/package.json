@@ -1,5 +1,5 @@
 {
-  "name": "@vimlet/io",
+  "name": "@vimlet/commons-io",
   "version": "0.0.8",
   "description": "IO utils",
   "main": "index.js",

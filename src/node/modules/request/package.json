@@ -1,5 +1,5 @@
 {
-  "name": "@vimlet/request",
+  "name": "@vimlet/commons-request",
   "version": "0.0.4",
   "description": "Request utils",
   "main": "index.js",

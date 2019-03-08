@@ -1,5 +1,5 @@
 {
-  "name": "@vimlet/run",
+  "name": "@vimlet/commons-run",
   "version": "0.0.5",
   "description": "Platform independent exec",
   "main": "index.js",

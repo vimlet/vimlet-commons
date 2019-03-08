@@ -1,5 +1,5 @@
 {
-  "name": "@vimlet/progress",
+  "name": "@vimlet/commons-progress",
   "version": "0.0.5",
   "description": "Cli progress display",
   "main": "index.js",
