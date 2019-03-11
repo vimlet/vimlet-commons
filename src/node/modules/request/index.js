@@ -1,7 +1,7 @@
 var path = require("path");
 var fs = require("fs-extra");
 var request = require("request");
-var progress = require("@vimlet/progress");
+var progress = require("@vimlet/commons-progress");
 
 /*
 @function download

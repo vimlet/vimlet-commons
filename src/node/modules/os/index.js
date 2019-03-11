@@ -1,7 +1,7 @@
 var os = require("os");
 var path = require("path");
 var fs = require("fs-extra");
-var run = require("@vimlet/run");
+var run = require("@vimlet/commons-run");
 
 // Platform variables
 

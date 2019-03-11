@@ -1,6 +1,6 @@
 var spawn = require("child_process").spawn;
 // var os = require("@vimlet/os");
-var os = require("@vimlet/os");
+var os = require("@vimlet/commons-os");
 
 /*
 @function exec

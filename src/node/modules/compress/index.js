@@ -4,12 +4,12 @@ var fs = require("fs-extra");
 var path = require("path");
 var compressing = require("compressing");
 var pipe = require("multipipe");
-var progress = require("@vimlet/progress");
-var io = require("@vimlet/io");
+var progress = require("@vimlet/commons-progress");
+var io = require("@vimlet/commons-io");
 var cli = require("@vimlet/cli").instantiate();
 var os = require("os");
 var glob = require("glob");
-var copy = require("@vimlet/copy");
+var copy = require("@vimlet/commons-copy");
 var deasync = require("deasync");
 
 var tmpFolder = path.join(os.tmpdir(), "compress");
