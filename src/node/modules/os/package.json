@@ -1,10 +1,10 @@
 {
   "name": "@vimlet/commons-os",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "OS integration",
   "main": "index.js",
   "dependencies": {
-    "@vimlet/commons-run": "0.0.8",
+    "@vimlet/commons-run": "0.0.9",
     "fs-extra": "5.0.0"
   },
   "author": "Vimlet",

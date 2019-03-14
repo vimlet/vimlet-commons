@@ -4,7 +4,7 @@ Request manager.
 
 ## Installation
 
-npm install @vimlet/request
+npm install @vimlet/commons-request
 
 It will be also installed as a module within @vimlet/commons
 

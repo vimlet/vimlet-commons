@@ -4,7 +4,7 @@ Files handler.
 
 ## Installation
 
-npm install @vimlet/io
+npm install @vimlet/commons-io
 
 It will be also installed as a module within @vimlet/io
 

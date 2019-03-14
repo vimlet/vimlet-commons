@@ -1,0 +1,8 @@
+{
+    "name": "John Doe",
+    "object": {
+        "var2.1": "1",
+        "var2.2": "2"
+    },
+    "array": ["2"]
+}

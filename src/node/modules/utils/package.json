@@ -1,12 +1,10 @@
 {
-  "name": "@vimlet/commons-io",
-  "version": "0.0.10",
-  "description": "IO utils",
+  "name": "@vimlet/commons-utils",
+  "version": "0.0.1",
+  "description": "Json and string utils",
   "main": "index.js",
   "dependencies": {
-    "fs-extra": "5.0.0",
-    "glob": "7.1.2",
-    "rimraf": "2.6.2"
+    
   },
   "author": "Vimlet",
   "repository": {
@@ -15,6 +13,8 @@
   },
   "license": "MIT",
   "keywords": [
-    "io"
+    "utils",
+    "json",
+    "string"
   ]
 }

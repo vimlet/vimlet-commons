@@ -4,7 +4,7 @@ Feedback of running progress to the user.
 
 ## Installation
 
-npm install @vimlet/progress
+npm install @vimlet/commons-progress
 
 It will be also installed as a module within @vimlet/commons
 

@@ -4,7 +4,7 @@ Tool that pack and unpack files or folders.
 
 ## Installation
 
-npm install @vimlet/compress
+npm install @vimlet/commons-compress
 
 It will be also installed as a module within @vimlet/commons
 

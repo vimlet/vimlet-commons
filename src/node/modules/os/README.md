@@ -4,7 +4,7 @@ Operating system tools.
 
 ## Installation
 
-npm install @vimlet/os
+npm install @vimlet/commons-os
 
 It will be also installed as a module within @vimlet/commons
 

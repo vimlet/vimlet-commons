@@ -11,7 +11,9 @@ This is a tool that copy files.
 
 ## Installation
 
-npm install @vimlet/copy
+npm install @vimlet/commons-copy
+
+It will be also installed as a module within @vimlet/commons
 
 ## Usage
 

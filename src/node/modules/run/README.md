@@ -4,7 +4,7 @@ Request manager.
 
 ## Installation
 
-npm install @vimlet/run
+npm install @vimlet/commons-run
 
 It will be also installed as a module within @vimlet/commons
 

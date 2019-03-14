@@ -12,3 +12,5 @@ exports.progress = require("@vimlet/commons-progress");
 exports.io = require("@vimlet/commons-io");
 //@property copy (public) {object} [Access to copy lib]
 exports.copy = require("@vimlet/commons-copy");
+//@property utils (public) {object} [Access to utils lib]
+exports.utils = require("@vimlet/commons-utils");
