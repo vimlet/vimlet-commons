@@ -160,6 +160,20 @@ exports.deleteFolderRecursive = function (folderPath, callback) {
 exports.deleteFolderRecursiveSync = function (folderPath) {
   rimraf.sync(folderPath);
 };
+/*
+@function (public) deleteFolderRecursiveAsync [Delete a folder and its content asynchronously] @param folderPath {string} [Folder path]
+ */
+exports.deleteFolderRecursiveAsync = function (folderPath) {
+  return new Promise(function (resolve, reject) {
+    rimraf(folderPath, {}, function(err){
+      if(err){
+        reject();
+      }else{
+        resolve();
+      }
+    });
+  });
+};
 
 
 /*

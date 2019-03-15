@@ -1,17 +1,17 @@
 {
   "name": "@vimlet/commons",
-  "version": "2.7.6",
+  "version": "2.7.7",
   "description": "Provide utilities for common tasks such as, file compression, file download, OS integration, exec, etc",
   "main": "index.js",
   "dependencies": {
     "@vimlet/commons-compress": "0.1.4",
     "@vimlet/commons-copy": "0.1.4",
-    "@vimlet/commons-io": "0.0.10",
+    "@vimlet/commons-io": "0.0.11",
     "@vimlet/commons-os": "0.0.7",
     "@vimlet/commons-progress": "0.0.7",
     "@vimlet/commons-request": "0.0.7",
     "@vimlet/commons-run": "0.0.9",
-    "@vimlet/commons-utils": "0.0.1"
+    "@vimlet/commons-utils": "0.0.2"
   },
   "author": "Vimlet",
   "repository": {
