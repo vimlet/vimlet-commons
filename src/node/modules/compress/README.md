@@ -23,7 +23,7 @@ It will be also installed as a module within @vimlet/commons
 >* doneHandler: Default done callback `function(error, data)`.
 
 
->## compress.unpack(file, dest, format, options, doneHandler)
+>## compress.unpack(file, dest, options, doneHandler)
 >
 >Uncompress.
 >

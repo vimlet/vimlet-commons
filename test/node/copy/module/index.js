@@ -4,7 +4,7 @@ var excludeFolder = "resources/exclude";
 var output = "output";
 
 
-copy.copy(include, output, {exclude: excludeFolder}, function(){
+copy.copy(include, output, {exclude: excludeFolder, clean:true}, function(){
     console.log("Done!");    
 });
 

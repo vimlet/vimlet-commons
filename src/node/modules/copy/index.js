@@ -10,11 +10,10 @@ var deasync = require("deasync");
 
 
 
-module.exports.copy = function (include, output, options, callback) {
+module.exports.copy = async function (include, output, options, callback) {
     options = options || {};
-
-    if (options.clean) {
-        fs.removeSync(output);
+    if (options.clean) {        
+        await io.deleteFolderRecursiveAsync(output);                    
     }
     var totalFiles = 0;
     var rootsArray = io.getFiles(include, options);

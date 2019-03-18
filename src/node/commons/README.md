@@ -39,7 +39,7 @@ commons.compress.pack(src, dst, "zip", null, function(error) {
 
 ## Compress
 
-`compress.pack(file, dest, format, options, doneHandler)`
+`compress.pack(file, dest, options, doneHandler)`
 
 Compress.
 
@@ -52,7 +52,7 @@ Compress.
 * doneHandler: Default done callback `function(error, data)`.
 
 
-`compress.unpack(file, dest, format, options, doneHandler)`
+`compress.unpack(file, dest, options, doneHandler)`
 
 Uncompress.
 

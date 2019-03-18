@@ -50,6 +50,15 @@ It will be also installed as a module within @vimlet/io
 > Delete a folder and its content.
 > * path.
 
+> ## deleteFolderRecursiveSync(path)
+>
+> Delete a folder and its content sync.
+> * path
+> ## deleteFolderRecursiveAsync(path)
+>
+> Delete a folder and its content async.
+> * path
+
 > ## isInPattern(path, pattern, options)
 > 
 > Check if a given path belongs to a pattern.

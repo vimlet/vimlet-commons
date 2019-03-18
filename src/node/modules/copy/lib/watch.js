@@ -35,10 +35,13 @@ exports.watch = function (include, output, options) {
       // Relative output is where the template will be saved after parsed
       var relativeOutput = getRelativeOutput(include, output, filePath, true);
       var parsedPath = path.join(relativeOutput, path.basename(filePath, ".vmt"));
-      if (fs.existsSync(parsedPath)) {
-        fs.unlinkSync(parsedPath);
-        console.log("Removed --> ", parsedPath);
-      }
+      fs.pathExists(parsedPath, function(err, exists) {
+        if(!err){
+          fs.remove(parsedPath, function(){
+            console.log("Removed --> ", parsedPath);
+          });
+        }
+      });
     }
   });
   watcher.on('addDir', function (filePath, stat) {
