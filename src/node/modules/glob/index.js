@@ -11,7 +11,7 @@ class Glob {
       return matches;
     }
 
-    // Avoid filtering patterns more than once
+    // Store in options filtered patterns
     var filtered = this.filterPatterns(patterns);
 
     var options = {
@@ -33,7 +33,7 @@ class Glob {
     options = options || {};
     options.caseSensitive = options.caseSensitive ? "" : "i";
 
-    // Avoid filtering patterns more than once
+    // Use stored filtered patterns to avoid filtering more than once
     var negatePatterns;
     if ("negatePatterns" in options) {
       patterns = options.patterns;
@@ -69,8 +69,8 @@ class Glob {
 
   patternToRegex(s) {
     s = this.escapeRegExp(s);
-    s = s.replace(/\\\*\\\*/g, ".*")
-    s = s.replace(/[^\.]\*/g, "[^/]*")
+    s = s.replace(/\\\*\\\*/g, ".*");
+    s = s.replace(/[^\.]\*/g, "[^/]*");
     return s;
   }
 
@@ -90,7 +90,6 @@ class Glob {
     // TODO: Use match against fs
     return [];
   }
-
 }
 
 module.exports = new Glob();
