@@ -1,0 +1,20 @@
+{
+  "name": "@vimlet/commons-matcher",
+  "version": "0.0.1",
+  "description": "Handle path patterns",
+  "main": "index.js",
+  "dependencies": {
+    "escape-string-regexp": "1.0.5"
+  },
+  "author": "Vimlet",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vimlet/VimletCommons.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "match",
+    "pattern",
+    "glob"
+  ]
+}
