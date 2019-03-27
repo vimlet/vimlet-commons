@@ -33,6 +33,7 @@
     "os",
     "utils",
     "json",
-    "string"
+    "string",
+    "glob"
   ]
 }
