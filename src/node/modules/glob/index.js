@@ -11,13 +11,13 @@ class Glob {
       return matches;
     }
 
-    // Store in options filtered patterns
+    // Store filtered patterns in options 
     var filtered = this.filterPatterns(patterns);
 
     var options = {
       patterns: filtered[0],
       negatePatterns: filtered[1]
-    }
+    };
 
     // Match against paths
     paths.forEach(function (p) {
