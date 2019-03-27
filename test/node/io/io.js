@@ -11,23 +11,94 @@ var includeFile = "resources/test1/js3.js.md";
 var less = "resources/less";
 
 
-var files = io.getFiles([include,include2], {exclude:[exclude,exclude2]});
-// var files = io.getFiles(include, {exclude:exclude});
-// var files = io.getFiles(includeFolder);
-// var files = io.getFiles(includeFile);
-// var files = io.getFiles(includemd, {exclude:exclude, ignoreExtension:true});
-// var files = io.getFiles(less);
-console.log(files);
+// var output = "output/output.txt";
+// var data = "Text to be saved";
+// io.writeToDisk(output, data).then(function(data){
+//     console.log("Written");    
+// });
+
+// setTimeout(() => {    
+//     io.deleteFolderRecursive("output").then(function(data){
+//         console.log("DELETE");            
+//     });
+// }, 1500);
 
 
-// console.log("Estoy en pattern", io.isInPattern("resources/test1/folder2.js.md", "resources/test1/**/*.*"));
-// console.log("NO estoy en pattern", io.isInPattern("resources/test1/peter.md", "resources/test1/**/*.*"));
+
+// io.isInPattern("resources/test1/folder2.js.md", "resources/test1/**/*.*",null,function(err,data){
+//     console.log("Estoy en pattern", data);
+// });
+// io.isInPattern("resources/test1/folder2.js.md", "resources/test1/**/*.*",null).then(function(data){
+//     console.log("Estoy en pattern", data);
+// });
+// io.isInPattern("resources/test1/peter.md", "resources/test1/**/*.*",null,function(err,data){
+//     console.log("NO estoy en pattern", data);
+// });
+// io.isInPattern("resources/test1/peter.md", "resources/test1/**/*.*",null).then(function(data){
+//     console.log("NO estoy en pattern", data);
+// });
 
 
-// Testing rimraf delte folder
-// var detelePath = "resources/test3";
-// io.deleteFolderRecursive(detelePath);
+// io.getFiles("resources/test1",null).then(function(data){
+//     console.log(io.absoluteFiles(data));
+// });
 
-var output = "output/output.txt";
-var data = "Text to be saved";
-io.writeToDisk(output, data);
+// io.getFiles("resources/test1",null).then(function(data){
+//     console.log("Files ", data);
+// });
+// io.getFiles("resources/test1", null, function(err,data){
+//     console.log("Files ", data);
+// });
+// io.getFiles(["resources/test1"], {ignoreExtension:true}, function(err,data){
+//     console.log("Files ", data);
+// });
+// io.getFiles("resources/test1/**/*.*", null, function(err,data){
+//     console.log("Files ", data);
+// });
+
+
+// io.getRootFromPattern("resources/test1/**/*.*",function(err,data){
+//     console.log("Root", data);
+// });
+
+// io.getRootFromPattern("resources/test1/**/*.*").then(function(data){
+//     console.log("Root", data);
+// });
+
+// async function rootFromPattern() {
+//     var data = await io.getRootFromPattern("resources/test1/**/*.*");
+//     console.log(data);
+
+// }
+// rootFromPattern();
+
+// io.getRootFromPattern("resources/test1/**/*.*").then(function(data){
+//     console.log("Root", data);
+// });
+
+
+// io.getFileSize("resources/test1/js3.js.md",function(err,data){
+//     console.log("FILE ",data);    
+// });
+// io.getFileSize("resources/test1",function(err,data){
+//     console.log("Folder ",data);    
+// });
+
+
+// io.isDirectory("resources/test1/js3.js.md",function(err,data){
+//     console.log(data);    
+// });
+// io.isDirectory("resources/test1",function(err,data){
+//     console.log(data);    
+// });
+// io.isDirectory("resources/test1/js3.js.md").then(function(data){
+//     console.log(data);    
+// });
+// io.isDirectory("resources/test1").then(function(data){
+//     console.log(data);    
+// });
+// async function testAwait(){
+//     var data = await io.isDirectory("resources/test1");
+//     console.log(data);
+// }
+// testAwait();

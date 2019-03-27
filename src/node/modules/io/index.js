@@ -3,44 +3,59 @@ var path = require("path");
 var glob = require("glob");
 var fs = require("fs-extra");
 var rimraf = require("rimraf");
+const universalify = require('universalify').fromCallback;
+var cwd = process.cwd();
+
+
+/*
+@function getFiles {object[]} [Universalify getFiles private function. Get included files, returns an object wich contains relative path and root folder]
+@param dir {string[]} [Array of patterns to search or single pattern]
+@param options [exclude: patterns to exclude from search, ignoreExtension: ignore file extensions, includeFolders: Boolean to include folders as paths, default false]
+@param callback
+ */
+exports.getFiles = universalify(getFiles);
 
 /*
 @function getFiles {object[]} [Get included files, returns an object wich contains relative path and root folder]
 @param dir {string[]} [Array of patterns to search or single pattern]
 @param options [exclude: patterns to exclude from search, ignoreExtension: ignore file extensions, includeFolders: Boolean to include folders as paths, default false]
+@param callback
  */
-exports.getFiles = function (dir, options) {
+async function getFiles(dir, options, callback) {
   options = options || {};
   if (options.ignoreExtension) {
     var noExtensionDir = [];
     if (Array.isArray(dir)) {
-      dir.forEach(function (d) {
-        noExtensionDir.push(exports.getRootFromPattern(d));
-      });
+      for (const d of dir) {
+        var r = await exports.getRootFromPattern(d);
+        noExtensionDir.push(r);
+      }
       dir = noExtensionDir;
     } else {
-      dir = exports.getRootFromPattern(dir);
+      dir = await exports.getRootFromPattern(dir);
     }
   }
   var result = [];
   if (!Array.isArray(dir)) {
+    var noArrayRoot = await exports.getRootFromPattern(dir);
     var fileObj = {
-      root: exports.getRootFromPattern(dir),
+      root: noArrayRoot,
       files: []
     };
-    fileObj.files = getFileList(dir, options.exclude, options);
+    fileObj.files = await getFileList(dir, options.exclude, options);
     result.push(fileObj);
   } else {
-    dir.forEach(function (d) {
+    for (const d of dir) {
+      var noArrayRoot = exports.getRootFromPattern(d);
       var fileObj = {
-        root: exports.getRootFromPattern(d),
+        root: noArrayRoot,
         files: []
       };
-      fileObj.files = getFileList(d, options.exclude, options);
+      fileObj.files = await getFileList(d, options.exclude, options);
       result.push(fileObj);
-    });
+    }
   }
-  return result;
+  callback(null, result);
 };
 
 
@@ -65,141 +80,208 @@ exports.absoluteFiles = function (index) {
 @param exclude {string[]} [string[] of patterns to exclude from search]
 @param options [includeFolders: Boolean to include folders as paths, default false]
  */
-function getFileList(dir, exclude, options) {
+async function getFileList(dir, exclude, options) {
   options = options || {};
-  //If it gets a fonder instead of a pattern, take all files in folder
+  //If it gets a folder instead of a pattern, take all files in folder
   if (!glob.hasMagic(dir)) {
-    if (exports.isDirectory(dir)) {
+    if (await exports.isDirectory(dir)) {
       dir = path.join(dir, "**/*");
     }
   }
   if (exclude && !Array.isArray(exclude) && !glob.hasMagic(exclude)) {
-    if (exports.isDirectory(exclude)) {
+    if (await exports.isDirectory(exclude)) {
       exclude = path.join(exclude, "**/*");
     }
-  } else if (exclude) {    
-    for(var excludeIndex = 0; excludeIndex<exclude.length;excludeIndex++){
-      if(!glob.hasMagic(exclude[excludeIndex])){
+  } else if (exclude) {
+    for (var excludeIndex = 0; excludeIndex < exclude.length; excludeIndex++) {
+      if (!glob.hasMagic(exclude[excludeIndex])) {
         exclude[excludeIndex] = path.join(exclude[excludeIndex], "**/*");
       }
     }
   }
-  if(options.includeFolders){
-    result = glob.sync(dir, {
-      ignore: exclude
-    });
-  }else{
-    result = glob.sync(dir, {
-      ignore: exclude,
-      nodir:true
-    });
+  if (options.includeFolders) {
+    result = await promisifyGlob(dir, {ignore: exclude});
+  } else {
+    result = await promisifyGlob(dir, {ignore: exclude,nodir: true});
   }
   var clean = [];
-  
-  result.forEach(function (res) {
-    clean.push(path.relative(exports.getRootFromPattern(dir), res));
-  });  
+  for (const res of result) {
+    var relative = await relativePath(dir, res);
+    clean.push(relative);
+  }
   return clean;
 }
 
+// @function promisifyGlob (private) [Return a promise from glob callback]
+function promisifyGlob(dir, options) {
+  return new Promise(function (resolve, reject) {
+    glob(dir, options, function (err, data) {
+      if (!err) {
+        resolve(data);
+      } else {
+        reject(err);
+      }
+    });
+  });
+}
+
+// @function relativePath (private) [Async return relative path joint to current path]
+async function relativePath(dir, currentPath) {
+  var currentRoot = await exports.getRootFromPattern(dir);
+  return path.relative(currentRoot, currentPath);
+}
+
+
 /*
-@function (public) getRootFromPattern {string} [Get root from a pattern] @param pattern {string}
+@function (public) getRootFromPattern {string} [Universalify getRootFromPattern private function. Get root from a pattern] @param pattern {string}
  */
-exports.getRootFromPattern = function (pattern) {
-  if (!exports.isDirectory(pattern)) {
-    if (glob.hasMagic(pattern)) {
-      return pattern.substring(0, pattern.indexOf("*"));
+exports.getRootFromPattern = universalify(getRootFromPattern);
+
+/*
+@function (public) getRootFromPattern {string} [Get root from a pattern] @param pattern {string} @param callback
+ */
+function getRootFromPattern(pattern, callback) {
+  isDirectory(pattern, function (error, data) {
+    if (!data) {
+      if (glob.hasMagic(pattern)) {
+        callback(null, pattern.substring(0, pattern.indexOf("*")));
+      } else {
+        callback(null, path.dirname(pattern));
+      }
     } else {
-      return path.dirname(pattern);
+      callback(null, pattern);
     }
-  } else {
-    return pattern;
-  }
+  });
 };
 
 /*
-@function isDirectory (public) [Check if a path is directory or file]
+@function isDirectory (public) [Universalify isDirectory private function. Check if a path is directory or file]
 @param filePath {string}
+@param callback
  */
-exports.isDirectory = function (filePath) {
+exports.isDirectory = universalify(isDirectory);
+/*
+@function isDirectory (private) [Check if a path is directory or file]
+@param filePath {string}
+@param callback
+ */
+function isDirectory(filePath, callback) {
   try {
-    return fs.statSync(filePath).isDirectory();
+    fs.stat(filePath, function (err, data) {
+      if (err) {
+        callback(null, false);
+      } else {
+        callback(null, data.isDirectory());
+      }
+    });
   } catch (e) {
-    return false;
+    callback(null, false);
   }
 };
 
 
 /*
-@function {number} getFileSize
+@function getFileSize (public)
+@description Universalify getFileSize private function. Returns the size of a file
+@param {string} filePath [Path of the file]
+@param callback
+*/
+exports.getFileSize = universalify(getFileSize);
+/*
+@function getFileSize (private)
 @description Returns the size of a file
 @param {string} filePath [Path of the file]
+@param callback
 */
-exports.getFileSize = function (filePath) {
+function getFileSize(filePath, callback) {
   try {
-    if (!exports.isDirectory(filePath)) {
-      return fs.statSync(filePath).size;
-    }
+    isDirectory(filePath, function (err, data) {
+      if (data) {
+        callback(null, -1);
+      } else {
+        fs.stat(filePath, function (err, data) {
+          if (err) {
+            callback(null, -1);
+          } else {
+            callback(null, data.size);
+          }
+        });
+      }
+    });
   } catch (error) {
-    return -1;
+    callback(null, -1);
   }
-
-  return 0;
 };
+
+
+/*
+@function (public) deleteFolderRecursive [Universalify deleteFolderRecursive private function. Delete a folder and its content] @param folderPath {string} [Folder path] @param callback
+ */
+exports.deleteFolderRecursive = universalify(deleteFolderRecursive);
 
 /*
 @function (public) deleteFolderRecursive [Delete a folder and its content] @param folderPath {string} [Folder path] @param callback
  */
-exports.deleteFolderRecursive = function (folderPath, callback) {
+function deleteFolderRecursive(folderPath, callback) {
   callback = callback || function () {}; // rimraf doesn't accept null options nor null callback
   rimraf(folderPath, {}, callback);
 };
 /*
 @function (public) deleteFolderRecursiveSync [Delete a folder and its content] @param folderPath {string} [Folder path]
  */
-exports.deleteFolderRecursiveSync = function (folderPath) {
-  rimraf.sync(folderPath);
-};
-/*
-@function (public) deleteFolderRecursiveAsync [Delete a folder and its content asynchronously] @param folderPath {string} [Folder path]
- */
-exports.deleteFolderRecursiveAsync = function (folderPath) {
-  return new Promise(function (resolve, reject) {
-    rimraf(folderPath, {}, function(err){
-      if(err){
-        reject();
-      }else{
-        resolve();
-      }
-    });
-  });
-};
+// exports.deleteFolderRecursiveSync = function (folderPath) {
+//   rimraf.sync(folderPath);
+// };
 
+
+/*
+@function isInPattern {boolean} (public) [Universalify isInPattern private function. Check if a given path belongs to a pattern]
+@param filePath {string} [Path to file]
+@param pattern {string}
+@param options {object} [exlude:files to exclude from search]
+@param callback
+ */
+exports.isInPattern = universalify(isInPattern);
 
 /*
 @function isInPattern {boolean} (public) [Check if a given path belongs to a pattern]
 @param filePath {string} [Path to file]
 @param pattern {string}
 @param options {object} [exlude:files to exclude from search]
+@param callback
  */
-exports.isInPattern = function (filePath, pattern, options) {
+async function isInPattern(filePath, pattern, options, callback) {
   options = options || {};
   var result = false;
-  if(exports.isDirectory(filePath)){
+  var isDirectory = await exports.isDirectory(filePath);
+  if (isDirectory) {
     options.includeFolders = true;
   }
-  filePath = path.resolve(filePath);    
-  var filesInPattern = exports.getFiles(pattern, options);  
-  filesInPattern.forEach(function (files) {
-    files.files.forEach(function (file) {
-      var currentFile = path.resolve(path.join(files.root, file));
-      if (currentFile === filePath) {
-        result = true;
-      }
+  filePath = path.resolve(filePath);
+  exports.getFiles(pattern, options, function (err, filesInPattern) {
+    filesInPattern.forEach(function (files) {
+      files.files.forEach(function (file) {
+        var currentFile = path.resolve(path.join(files.root, file));
+        if (currentFile === filePath) {
+          result = true;
+        }
+      });
     });
+    callback(null, result);
+
   });
-  return result;
+
 };
+
+
+
+/*
+@function writeToDisk (public) [Universalify writeToDisk private function. Write a string to disk]
+@param output {string} [Output folder]
+@param data {string} [Data to write]
+@param callback
+ */
+exports.writeToDisk = universalify(writeToDisk);
 
 /*
 @function writeToDisk (private)
@@ -207,7 +289,7 @@ exports.isInPattern = function (filePath, pattern, options) {
 @param data {string} [Data to write]
 @param callback
  */
-exports.writeToDisk = function (output, data, callback) {
+function writeToDisk(output, data, callback) {
   fs.mkdirp(path.dirname("" + output), function (err) {
     if (err) {
       if (callback) {
