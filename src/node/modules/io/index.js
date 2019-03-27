@@ -46,7 +46,7 @@ async function getFiles(dir, options, callback) {
     result.push(fileObj);
   } else {
     for (const d of dir) {
-      var noArrayRoot = exports.getRootFromPattern(d);
+      var noArrayRoot = await exports.getRootFromPattern(d);
       var fileObj = {
         root: noArrayRoot,
         files: []
