@@ -11,7 +11,8 @@
     "@vimlet/commons-progress": "0.0.7",
     "@vimlet/commons-request": "0.0.7",
     "@vimlet/commons-run": "0.0.9",
-    "@vimlet/commons-utils": "0.0.2"
+    "@vimlet/commons-utils": "0.0.2",
+    "@vimlet/commons-glob": "0.0.1"
   },
   "author": "Vimlet",
   "repository": {

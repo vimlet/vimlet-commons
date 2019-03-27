@@ -14,3 +14,5 @@ exports.io = require("@vimlet/commons-io");
 exports.copy = require("@vimlet/commons-copy");
 //@property utils (public) {object} [Access to utils lib]
 exports.utils = require("@vimlet/commons-utils");
+//@property glob (public) {object} [Access to glob lib]
+exports.utils = require("@vimlet/commons-glob");
