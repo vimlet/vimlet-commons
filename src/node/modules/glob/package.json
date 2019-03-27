@@ -1,11 +1,8 @@
 {
-  "name": "@vimlet/commons-matcher",
+  "name": "@vimlet/commons-glob",
   "version": "0.0.1",
   "description": "Handle path patterns",
   "main": "index.js",
-  "dependencies": {
-    "escape-string-regexp": "1.0.5"
-  },
   "author": "Vimlet",
   "repository": {
     "type": "git",
