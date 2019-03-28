@@ -100,9 +100,14 @@ async function getFileList(dir, exclude, options) {
     }
   }
   if (options.includeFolders) {
-    result = await promisifyGlob(dir, {ignore: exclude});
+    result = await promisifyGlob(dir, {
+      ignore: exclude
+    });
   } else {
-    result = await promisifyGlob(dir, {ignore: exclude,nodir: true});
+    result = await promisifyGlob(dir, {
+      ignore: exclude,
+      nodir: true
+    });
   }
   var clean = [];
   for (const res of result) {
@@ -246,32 +251,54 @@ exports.isInPattern = universalify(isInPattern);
 /*
 @function isInPattern {boolean} (public) [Check if a given path belongs to a pattern]
 @param filePath {string} [Path to file]
-@param pattern {string}
+@param pattern {string or string[]}
 @param options {object} [exlude:files to exclude from search]
 @param callback
  */
 async function isInPattern(filePath, pattern, options, callback) {
-  options = options || {};
-  var result = false;
-  var isDirectory = await exports.isDirectory(filePath);
-  if (isDirectory) {
-    options.includeFolders = true;
-  }
-  filePath = path.resolve(filePath);
-  exports.getFiles(pattern, options, function (err, filesInPattern) {
-    filesInPattern.forEach(function (files) {
-      files.files.forEach(function (file) {
-        var currentFile = path.resolve(path.join(files.root, file));
-        if (currentFile === filePath) {
-          result = true;
+  if (!pattern) {
+    callback(null, false);
+  } else {
+    options = options || {};
+    // var result = false;
+    var isDirectory = await exports.isDirectory(filePath);
+    if (isDirectory) {
+      options.includeFolders = true;
+    }
+    if (!Array.isArray(pattern)) {
+      var inPattern = await isInPatternSingle(filePath, pattern, options);
+      callback(null, inPattern);
+    } else {
+      var isIn = false;
+      for (const patt of pattern) {
+        var inPattern = await isInPatternSingle(filePath, patt, options);
+        if (inPattern) {
+          isIn = true;
         }
-      });
-    });
-    callback(null, result);
-
-  });
-
+      }
+      callback(null, isIn);
+    }
+  }
 };
+
+// @function isInPatternSingle (private) [Check if a file is in one an only one pattern. The difference between this function and isInPattern is that isInPattern accepts array also] @param filePath @param pattern @param options
+function isInPatternSingle(filePath, pattern, options) {
+  return new Promise(async function (resolve, reject) {
+    var result = false;
+    filePath = path.resolve(filePath);
+    exports.getFiles(pattern, options, function (err, filesInPattern) {
+      filesInPattern.forEach(function (files) {
+        files.files.forEach(function (file) {
+          var currentFile = path.resolve(path.join(files.root, file));
+          if (currentFile === filePath) {
+            result = true;
+          }
+        });
+      });
+      resolve(result);
+    });
+  });
+}
 
 
 
@@ -297,7 +324,6 @@ function writeToDisk(output, data, callback) {
       }
       return console.log(err);
     }
-
     fs.writeFile("" + output, data, function (err) {
       if (err) {
         if (callback) {
@@ -312,6 +338,49 @@ function writeToDisk(output, data, callback) {
     });
   });
 };
+
+
+/*
+@function getRelativeOutput (public) [Universalify getRelativeOutput private function. Get path relative to output from a file and its include pattern. This function is useful for watchers to check if a modified file belongs to a include pattern and then find the folder where the modification file should be reflected.]
+@param include [Include patterns]
+@param output
+@param filePath
+@param options [delete: Flag to know if the file was deleted so it skips files in pattern check]
+*/
+exports.getRelativeOutput = universalify(getRelativeOutput);
+
+/*
+@function getRelativeOutput (private) [Get path relative to output from a file and its include pattern]
+@param include [Include patterns]
+@param output
+@param filePath
+@param options [delete: Flag to know if the file was deleted so it skips files in pattern check]
+*/
+async function getRelativeOutput(include, output, filePath, options, callback) {
+  var options = options || {};
+  var relativeOutput;
+  if (!Array.isArray(include)) {
+    var inPattern = await exports.isInPattern(filePath, include, null);    
+    if (inPattern || options.deleted) {
+      var rootFromPattern = await exports.getRootFromPattern(include);
+      // Relative output is where the template will be saved after parse
+      relativeOutput = path.dirname(path.relative(rootFromPattern, filePath));
+      relativeOutput = path.join(output, relativeOutput);
+    }
+  } else {
+    for (const incl of include) {
+      var inPattern = await exports.isInPattern(filePath, incl, null);
+      if (inPattern || options.deleted) {
+        var rootFromPattern = await exports.getRootFromPattern(incl);
+        // Relative output is where the template will be saved after parse
+        relativeOutput = path.dirname(path.relative(rootFromPattern, filePath));
+        relativeOutput = path.join(output, relativeOutput);
+      }
+    }
+  }
+  callback(null, relativeOutput);
+}
+
 
 
 // @function getCommonBasePath (public) {string} [Return base path, what all have in common, for given paths] @param paths {string[]} [String with multiple path to compare]

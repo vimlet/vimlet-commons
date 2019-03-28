@@ -25,6 +25,26 @@ var less = "resources/less";
 
 
 
+var output = "output/output.txt";
+var data = "Text to be saved";
+io.writeToDisk(output, data).then(function (data) {
+    io.getRelativeOutput("resources/test1/**/*.*", "output", "resources/test1/js3.js.md", null, function (err, data) {
+        console.log("Main output folder", data);
+    });
+    io.getRelativeOutput("resources/test1/**/*.*", "output", "resources/test1/included/jsScratch.js.md", null, function (err, data) {
+        console.log("Main output folder/included", data);
+    });
+});
+
+
+
+// io.isInPattern("resources/test1/folder2.js.md", ["resources/test1/**/*.*"],null,function(err,data){
+//     console.log("Estoy en pattern[]", data);
+// });
+// io.isInPattern("resources/test1/peter.md", ["resources/test1/**/*.*"],null).then(function(data){
+//     console.log("NO estoy en pattern[]", data);
+// });
+
 // io.isInPattern("resources/test1/folder2.js.md", "resources/test1/**/*.*",null,function(err,data){
 //     console.log("Estoy en pattern", data);
 // });
