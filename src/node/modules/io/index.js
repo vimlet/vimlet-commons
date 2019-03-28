@@ -64,7 +64,7 @@ async function getFiles(dir, options, callback) {
 @param index {object} [Object with folders and relative paths]
  */
 exports.absoluteFiles = function (index) {
-  var result = [];
+  var result = [];  
   index.forEach(function (folder) {
     folder.files.forEach(function (file) {
       var currentF = path.join(folder.root, file);

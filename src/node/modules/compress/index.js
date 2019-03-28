@@ -136,8 +136,9 @@ function packHelper(file, dest, format, packHandler, outputHandler, doneHandler,
 }
 
 // @function packFiles (private) [Pack files]
-function packFiles(file, dest, format, packHandler, outputHandler, doneHandler, isTemporal) {
-  var sizeObject = getPackSizeObject(getFileList(file));
+async function packFiles(file, dest, format, packHandler, outputHandler, doneHandler, isTemporal) {
+  var fList = await getFileList(file,null);
+  var sizeObject = await getPackSizeObject(fList);
   var fileStream = new compressing[format].Stream();
   var streamObject = getStreamObject(fileStream);
 
@@ -150,11 +151,12 @@ function packFiles(file, dest, format, packHandler, outputHandler, doneHandler, 
 
   var progressHandler = packHandler ? null : progress.progressHandler(totalSize, 99, null, outputHandler);
 
-  hookOnEntryFinish(streamObject, function (entry) {
-    if (!io.isDirectory(entry)) {
+  hookOnEntryFinish(streamObject, async function (entry) {
+    var isDirectory = await io.isDirectory(entry);
+    if (!isDirectory) {
       // Store currentEntry
-      currentEntry = entry;
-
+      currentEntry = entry;    
+      
       // Update size
       currentEntrySize = sizeObject.files[entry];
 
@@ -177,8 +179,9 @@ function packFiles(file, dest, format, packHandler, outputHandler, doneHandler, 
     }
   });
 
-  // Add file or directories
-  if (io.isDirectory(file) && isTemporal) {
+  // Add file or directories  
+  var isDirectory = await io.isDirectory(file);
+  if (isDirectory && isTemporal) {
     fileStream.addEntry(file, {
       ignoreBase: true
     });
@@ -188,7 +191,7 @@ function packFiles(file, dest, format, packHandler, outputHandler, doneHandler, 
 
   var destStream = fs.createWriteStream(dest);
 
-  pipe(fileStream, destStream, function (error) {
+  pipe(fileStream, destStream, async function (error) {
     if (error) {
       // Make sure we return something
       if (error == "") {
@@ -215,11 +218,11 @@ function packFiles(file, dest, format, packHandler, outputHandler, doneHandler, 
     if (doneHandler) {
       doneHandler(error);
       if (isTemporal) {
-        io.deleteFolderRecursiveSync(tmpFolder);
+        await io.deleteFolderRecursive(tmpFolder);
       }
     } else {
       if (isTemporal) {
-        io.deleteFolderRecursiveSync(tmpFolder);
+        await io.deleteFolderRecursive(tmpFolder);
       }
     }
 
@@ -400,16 +403,20 @@ function getUpackSizeObject(file, format, callback, outputHandler) {
 }
 
 // Recursive function
-function getFileList(dir, fileList) {
+async function getFileList(dir, fileList) {
+  return new Promise(async function (resolve, reject) {  
   fileList = fileList || [];
-  var files = io.absoluteFiles(io.getFiles(dir));
+  var filesIndex = await io.getFiles(dir, null);   
+  var files = io.absoluteFiles(filesIndex);
   files.forEach(function (file) {
     fileList.push(file);
   });
-  return fileList;
+  resolve(fileList);
+});
 }
 
-function getPackSizeObject(fileList) {
+async function getPackSizeObject(fileList) {
+  return new Promise(async function (resolve, reject) {  
   var sizeObject = {
     useFileCount: false,
     totalSize: 0,
@@ -422,7 +429,7 @@ function getPackSizeObject(fileList) {
 
   for (var i = 0; i < fileList.length; i++) {
     file = fileList[i];
-    size = io.getFileSize(file);
+    size = await io.getFileSize(file);
 
     if (size == -1) {
       sizeObject.useFileCount = true;
@@ -431,8 +438,8 @@ function getPackSizeObject(fileList) {
     sizeObject.files[file] = size;
     sizeObject.totalSize += size;
   }
-
-  return sizeObject;
+  resolve(sizeObject);
+});
 }
 
 function onUnpackEntryWrite(header, stream, next, dest) {

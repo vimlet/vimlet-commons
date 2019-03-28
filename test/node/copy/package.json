@@ -6,7 +6,7 @@
   "scripts": {},
   "dependencies": {
     "@vimlet/cli": "1.0.0",
-    "@vimlet/commons": "2.6.13"
+    "@vimlet/commons": "2.7.11"
   },
   "author": "",
   "license": "UNLICENSED"

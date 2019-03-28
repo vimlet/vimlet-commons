@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@vimlet/commons-progress": "0.0.7",
-    "@vimlet/commons-io": "0.0.10",
+    "@vimlet/commons-io": "0.1.2",
     "fs-extra": "5.0.0",
     "compressing": "1.2.3",
     "multipipe": "1.0.2",

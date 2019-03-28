@@ -10,14 +10,16 @@ var out = path.join(__dirname, "resources/compress/compress.zip");
 
 
 compress.pack(pack, out, null,  
-  function (error) {
+  async function (error) {
     if (!error) {
-      console.log("Done Compress",io.absoluteFiles(io.getFiles(out)));
+      var files = await io.getFiles(out, null);
+      console.log("Done Compress",io.absoluteFiles(files));
       
      
 
-      compress.unpack(out, unpack, null, function (error) {
-          console.log("Done upack", io.absoluteFiles(io.getFiles(unpack)));
+      compress.unpack(out, unpack, null, async function (error) {
+        var files = await io.getFiles(unpack, null);
+          console.log("Done upack", io.absoluteFiles(files));
         }
       );
 
@@ -25,3 +27,5 @@ compress.pack(pack, out, null,
     }
   }
 );
+
+
