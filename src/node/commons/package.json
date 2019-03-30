@@ -1,6 +1,6 @@
 {
   "name": "@vimlet/commons",
-  "version": "2.7.12",
+  "version": "2.7.13",
   "description": "Provide utilities for common tasks such as, file compression, file download, OS integration, exec, etc",
   "main": "index.js",
   "dependencies": {
@@ -12,12 +12,12 @@
     "@vimlet/commons-request": "0.0.7",
     "@vimlet/commons-run": "0.0.9",
     "@vimlet/commons-utils": "0.0.2",
-    "@vimlet/commons-glob": "0.0.1"
+    "@vimlet/commons-glob": "1.0.0"
   },
   "author": "Vimlet",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vimlet/VimletCommons.git"
+    "url": "https://github.com/vimlet/vimlet-commons.git"
   },
   "license": "MIT",
   "keywords": [

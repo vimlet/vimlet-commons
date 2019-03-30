@@ -1,6 +1,10 @@
+var fs = require("fs");
+var path = require("path");
+
 class Glob {
   match(paths, patterns, options) {
     var self = this;
+    var options = options || {};
     var matches = [];
 
     // Support single path/pattern string
@@ -13,11 +17,8 @@ class Glob {
 
     // Store filtered patterns in options 
     var filtered = this.filterPatterns(patterns);
-
-    var options = {
-      patterns: filtered[0],
-      negatePatterns: filtered[1]
-    };
+    options.patterns = filtered[0];
+    options.negatePatterns = filtered[1];
 
     // Match against paths
     paths.forEach(function (p) {
@@ -86,9 +87,46 @@ class Glob {
     return [patterns, negatePatterns];
   }
 
-  files(patterns, options) {
-    // TODO: Use match against fs
-    return [];
+  files(patterns, options, done) {
+    var self = this;
+    options = options || {};
+    options.path = options.path || "./";
+    self.filewalker(options.path, function (error, result) {
+      done(error, self.match(result, patterns, options));
+    });
+  }
+
+  filewalker(s, done) {
+    var self = this;
+    var results = [];
+    fs.readdir(s, function (error, list) {
+      if (error) {
+        return done(error);
+      }
+      var pending = list.length;
+      if (!pending) {
+        return done(null, results);
+      }
+      list.forEach(function (file) {
+        file = path.normalize(path.resolve(s, file)).replace(/\\/g, "/");;
+        fs.stat(file, function (error, stat) {
+          if (stat && stat.isDirectory()) {
+            results.push(file);
+            self.filewalker(file, function (error, res) {
+              results = results.concat(res);
+              if (!--pending) {
+                done(null, results);
+              }
+            });
+          } else {
+            results.push(file);
+            if (!--pending) {
+              done(null, results);
+            }
+          }
+        });
+      });
+    });
   }
 }
 
