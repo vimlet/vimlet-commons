@@ -87,25 +87,41 @@ class Glob {
     return [patterns, negatePatterns];
   }
 
-  files(patterns, options, done) {
+  files(patterns, options, callback) {
     var self = this;
+    if (!callback) {
+      return new Promise(function (resolve, reject) {
+        self.files(patterns, options, function (error, data) {
+          error ? reject(error) : resolve(data);
+        });
+      });
+    }
+
     options = options || {};
     options.path = options.path || "./";
     self.filewalker(options.path, function (error, result) {
-      done(error, self.match(result, patterns, options));
+      callback(error, self.match(result, patterns, options));
     });
   }
 
-  filewalker(s, done) {
+  filewalker(s, callback) {
     var self = this;
+    if (!callback) {
+      return new Promise(function (resolve, reject) {
+        self.filewalker(s, function (error, data) {
+          error ? reject(error) : resolve(data);
+        });
+      });
+    }
+    
     var results = [];
     fs.readdir(s, function (error, list) {
       if (error) {
-        return done(error);
+        return callback(error);
       }
       var pending = list.length;
       if (!pending) {
-        return done(null, results);
+        return callback(null, results);
       }
       list.forEach(function (file) {
         file = path.normalize(path.resolve(s, file)).replace(/\\/g, "/");;
@@ -115,13 +131,13 @@ class Glob {
             self.filewalker(file, function (error, res) {
               results = results.concat(res);
               if (!--pending) {
-                done(null, results);
+                callback(null, results);
               }
             });
           } else {
             results.push(file);
             if (!--pending) {
-              done(null, results);
+              callback(null, results);
             }
           }
         });
