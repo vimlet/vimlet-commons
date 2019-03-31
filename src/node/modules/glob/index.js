@@ -38,6 +38,8 @@ class Glob {
     options = options || {};
     options.caseSensitive = options.caseSensitive ? "" : "i";
 
+    patterns = typeof patterns === "string" ? [patterns] : patterns;
+
     // Use stored filtered patterns to avoid filtering more than once
     var negatePatterns;
     if ("negatePatterns" in options) {
