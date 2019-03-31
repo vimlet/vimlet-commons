@@ -22,8 +22,12 @@ class Glob {
 
     // Match against paths
     paths.forEach(function (p) {
-      if (self.isMatch(p, null, options)) {
-        matches.push(p);
+      var foundPattern = self.isMatch(p, null, options);
+      if (foundPattern) {
+        matches.push({
+          match: p,
+          pattern: foundPattern
+        });
       }
     });
 
@@ -51,13 +55,13 @@ class Glob {
         // Check if match with negate pattern
         for (var j = 0; j < negatePatterns.length; j++) {
           if (s.match(new RegExp("^" + this.patternToRegex(negatePatterns[j]) + "$"), options.caseSensitive)) {
-            return false;
+            return null;
           }
         }
-        return true;
+        return patterns[i];
       }
     }
-    return false;
+    return null;
   }
 
   isPattern(s) {
@@ -113,7 +117,7 @@ class Glob {
         });
       });
     }
-    
+
     var results = [];
     fs.readdir(s, function (error, list) {
       if (error) {
