@@ -15,4 +15,12 @@ glob.files(patterns, {
   console.dir(result);
 });
 
+glob.files(patterns, {
+  path: __dirname
+}).then(function (result) {
+  console.dir(result);
+}).catch(function(error){
+  console.log(error);
+});
+
 console.dir(matches);
