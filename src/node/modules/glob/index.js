@@ -104,9 +104,16 @@ class Glob {
     }
 
     options = options || {};
-    options.path = options.path || "./";
-    self.filewalker(options.path, function (error, result) {
-      callback(error, self.match(result, patterns, options));
+    options.path = options.path || process.cwd();
+    self.filewalker(options.path, function (error, files) {
+      files = files.map(function (entry) {
+        return path.normalize(path.relative(options.path, entry)).replace(/\\/g, "/");
+      });
+      var matchesWithFile = self.match(files, patterns, options).map(function (entry) {
+        entry.file = path.normalize(path.join(options.path, entry.match)).replace(/\\/g, "/");
+        return entry;
+      });
+      callback(error, matchesWithFile);
     });
   }
 
@@ -130,7 +137,7 @@ class Glob {
         return callback(null, results);
       }
       list.forEach(function (file) {
-        file = path.normalize(path.resolve(s, file)).replace(/\\/g, "/");;
+        file = path.normalize(path.join(s, file)).replace(/\\/g, "/");
         fs.stat(file, function (error, stat) {
           if (stat && stat.isDirectory()) {
             results.push(file);
