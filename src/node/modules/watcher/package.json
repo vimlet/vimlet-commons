@@ -1,0 +1,15 @@
+{
+    "name": "@vimlet/commons-watcher",
+    "version": "0.0.1",
+    "description": "",
+    "main": "index.js", 
+    "bin": {
+        "vimlet-watch": "index.js"
+    }, 
+    "scripts": {},
+    "dependencies": {
+        "chokidar": "2.1.5"
+    },
+    "author": "",
+    "license": "MIT"
+}

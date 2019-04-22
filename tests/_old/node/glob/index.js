@@ -1,21 +1,21 @@
-var glob = require("../../../src/node/modules/glob");;
+var glob = require("../../../../src/node/modules/glob");;
 
 var paths = [
   "/a/b/c",
   "/a"
 ];
-// var patterns = ["/a**"];
-var patterns = ["**.js"];
+var patternsMatch = ["/a**"];
+var patternsFiles = ["**.js"];
 
-var matches = glob.match(paths, patterns);
+var matches = glob.match(paths, patternsMatch);
 
-glob.files(patterns, {
+glob.files(patternsFiles, {
   path: __dirname
 }, function (error, result) {
   console.dir(result);
 });
 
-glob.files(patterns, {
+glob.files(patternsFiles, {
   path: __dirname
 }).then(function (result) {
   console.dir(result);
