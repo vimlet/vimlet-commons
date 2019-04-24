@@ -5,6 +5,7 @@ class Glob {
   match(paths, patterns, options) {
     var self = this;
     var options = options || {};
+    options.preservePathOrder = "preservePathOrder" in options ? options.preservePathOrder : false;
     var matches = [];
 
     // Support single path/pattern string
@@ -20,16 +21,35 @@ class Glob {
     options.patterns = filtered[0];
     options.negatePatterns = filtered[1];
 
-    // Match against paths
-    paths.forEach(function (p) {
-      var foundPattern = self.isMatch(p, null, options);
-      if (foundPattern) {
-        matches.push({
-          match: p,
-          pattern: foundPattern
+    // Match against paths or patterns to preserve order respectively
+    if (options.preservePathOrder) {
+      paths.forEach(function (p) {
+        var foundPattern = self.isMatch(p, null, options);
+        if (foundPattern) {
+          matches.push({
+            match: p,
+            pattern: foundPattern
+          });
+        }
+      });
+    } else {
+      // Single pattern should have the same performance
+      var singlePatternOptions = {
+        negatePatterns: options.negatePatterns
+      };
+      options.patterns.forEach(function (pattern) {
+        singlePatternOptions.patterns = [pattern];
+        paths.forEach(function (p) {
+          var foundPattern = self.isMatch(p, null, singlePatternOptions);
+          if (foundPattern) {
+            matches.push({
+              match: p,
+              pattern: foundPattern
+            });
+          }
         });
-      }
-    });
+      });
+    }
 
     return matches;
   }
