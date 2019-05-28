@@ -36,7 +36,7 @@ suite("glob", () => {
         });
     });
     test("match", () => {
-        var paths = [
+        var paths = [ 
           "/a/b/c",
           "/a"
         ];

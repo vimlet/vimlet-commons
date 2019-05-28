@@ -50,8 +50,11 @@ suite("watcher", () => {
                     assert.strictEqual(JSON.stringify(result), JSON.stringify(expected),
                       "The expected output is: " + JSON.stringify(expected));
                     console.log();
-                    console.log("For some external reason watcher never stops within timeout");
+                    console.log("For some external reason watcher never stops without timeout");
                     watch.close();
+                    setTimeout(() => {
+                        process.exit();
+                    }, 1000);
                   });
                 }, 500);
               });

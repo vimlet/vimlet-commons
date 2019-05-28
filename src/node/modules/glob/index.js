@@ -13,7 +13,7 @@ class Glob {
     patterns = typeof patterns === "string" ? [patterns] : patterns;
 
     if (!patterns || patterns.length === 0) {
-      return matches;
+      return matches; 
     }
 
     // Store filtered patterns in options 
@@ -125,7 +125,7 @@ class Glob {
 
     options = options || {};
     options.path = options.path || process.cwd();
-    self.filewalker(options.path, function (error, files) {
+    self.filewalker(options.path, options, function (error, files) {
       files = files.map(function (entry) {
         return path.normalize(path.relative(options.path, entry)).replace(/\\/g, "/");
       });
@@ -137,11 +137,11 @@ class Glob {
     });
   }
 
-  filewalker(s, callback) {
+  filewalker(s, options, callback) {
     var self = this;
     if (!callback) {
       return new Promise(function (resolve, reject) {
-        self.filewalker(s, function (error, data) {
+        self.filewalker(s, options, function (error, data) {
           error ? reject(error) : resolve(data);
         });
       });
@@ -160,8 +160,10 @@ class Glob {
         file = path.normalize(path.join(s, file)).replace(/\\/g, "/");
         fs.stat(file, function (error, stat) {
           if (stat && stat.isDirectory()) {
-            results.push(file);
-            self.filewalker(file, function (error, res) {
+            if(options.includeFolders){ 
+              results.push(file);
+            }
+            self.filewalker(file, options, function (error, res) {
               results = results.concat(res);
               if (!--pending) {
                 callback(null, results);
