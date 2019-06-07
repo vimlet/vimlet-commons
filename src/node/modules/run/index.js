@@ -11,6 +11,7 @@ var os = require("@vimlet/commons-os");
 */
 exports.exec = function (command, options, doneHandler) {
   options = options || {};
+  options.workingDirectory = options.workingDirectory || process.cwd();
   var p;
 
   var config = {
