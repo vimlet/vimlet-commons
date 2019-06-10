@@ -10,8 +10,8 @@
     "@vimlet/commons-os": "0.0.7",
     "@vimlet/commons-progress": "0.0.7",
     "@vimlet/commons-request": "0.0.7",
-    "@vimlet/commons-run": "0.0.10",
-    "@vimlet/commons-utils": "0.0.2",
+    "@vimlet/commons-run": "0.0.11",
+    "@vimlet/commons-utils": "0.0.4",
     "@vimlet/commons-glob": "1.2.2"
   },
   "author": "Vimlet",
