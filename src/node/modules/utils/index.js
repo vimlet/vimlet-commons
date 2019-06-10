@@ -13,7 +13,11 @@ module.exports.json = {
                     if (obj[prop] && typeof obj[prop] == "object" && !Array.isArray(obj[prop])) {
                         merged[prop] = module.exports.json.deepMerge(merged[prop], obj[prop]);
                     } else {
-                        merged[prop] = obj[prop];
+                        if (obj[prop] != null) {
+                            merged[prop] = obj[prop];
+                        } else {
+                            delete merged[prop];
+                        }
                     }
                 }
             }

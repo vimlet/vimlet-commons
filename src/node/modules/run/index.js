@@ -10,6 +10,13 @@ var os = require("@vimlet/commons-os");
 @param-optional {function} doneHandler [Default done callback function(error, exitCode)]
 */
 exports.exec = function (command, options, doneHandler) {
+  if (!doneHandler) {
+    return new Promise(function (resolve, reject) {
+      exports.exec(command, options, function (error, data) {
+        error ? reject(error) : resolve(data);
+      });
+    });
+  }
   options = options || {};
   options.workingDirectory = options.workingDirectory || process.cwd();
   var p;
