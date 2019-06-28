@@ -16,7 +16,7 @@ This module is a constant effort of improvement to achieve a stable and flexible
 
 You can access the source code at [vimlet/commons](https://github.com/vimlet/vimlet-commons)
 
-## Instalation:
+## Installation:
 
 * Via NPM: `npm install @vimlet/commons`
 
@@ -132,7 +132,7 @@ Delete a folder and all its content.
 Return true if given file belongs to given pattern. False if not.
 
 * options:
-1. exlude: files to exclude from search.
+1. exclude: files to exclude from search.
 
 `io.writeToDisk(output, data, callback)`
 
@@ -162,8 +162,8 @@ Return a path that all given paths have in common.
 `os.setUserEnvironmentVariable(key, value, callback)`
 
 Sets environment variables without admin privileges.
-* key: Enviroment variable key.
-* value: Enviroment variable value.
+* key: Environment variable key.
+* value: Environment variable value.
 * callback
 
 `os.addToUserPath(value, callback)`
