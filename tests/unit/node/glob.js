@@ -58,4 +58,15 @@ suite("glob", () => {
         assert.strictEqual(JSON.stringify(matches), JSON.stringify(expected),
         "The expected output is: " + JSON.stringify(expected)); 
     });
+    test("match ignore extension", () => {
+        var paths = [ 
+          "/a/b/c.txt",
+          "/a"
+        ];
+        var patterns = ["/a**.txt"];
+        var matches = glob.match(paths, patterns, {ignoreExtension:true});
+        var expected = [{"match":"/a/b/c.txt","pattern":"/a**.txt"},{"match":"/a","pattern":"/a**.txt"}];                
+        assert.strictEqual(JSON.stringify(matches), JSON.stringify(expected),
+        "The expected output is: " + JSON.stringify(expected)); 
+    });
 });

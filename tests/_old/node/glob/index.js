@@ -1,13 +1,16 @@
 var glob = require("../../../../src/node/modules/glob");;
 
 var paths = [
-  "/a/b/c",
+  "/a/b/c.txt",
   "/a"
 ];
-var patternsMatch = ["/a**"];
+var patternsMatch = ["/a**.txt"];
 var patternsFiles = ["**.js"];
 
 var matches = glob.match(paths, patternsMatch);
+console.dir(matches);
+var matchesNoExt = glob.match(paths, patternsMatch, {ignoreExtension:true});
+console.log("IgnoreExtension",matchesNoExt);
 
 // glob.files(patternsFiles, {
 //   path: __dirname
@@ -23,11 +26,9 @@ var matches = glob.match(paths, patternsMatch);
 //   console.log(error);
 // });
 
-// console.dir(matches);
 
-
-glob.files("resources/**/subfolder/build.**.js").then(data => {
-  console.log(data);
-}).catch(e => {
-  console.log("Err");
-})
+// glob.files("resources/**/subfolder/build.**.js").then(data => {
+//   console.log(data);
+// }).catch(e => {
+//   console.log("Err");
+// })

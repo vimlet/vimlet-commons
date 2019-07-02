@@ -20,12 +20,19 @@ module.exports.watch = function (patterns, options, callback) {
                 callback(null, {event:event,path:path});
             });
         }else{
-            options.event.array.forEach(function(e) {
+            options.event.forEach(function(e) {
                 watcher.on(e, function(event, path){
                     callback(null, {event:event,path:path});
                 });
-            });
+            }); 
         }
     }
+    watcher.on('error', function (error) {
+      if (process.platform === 'win32' && error.code === 'EPERM') {
+        // Deleting an empty folder doesn't fire on windows
+      } else {
+        broadcastErr(error);
+      }
+    });
     return watcher;
 }
