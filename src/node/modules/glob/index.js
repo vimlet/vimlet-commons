@@ -7,15 +7,12 @@ class Glob {
     var options = options || {};
     options.preservePathOrder = "preservePathOrder" in options ? options.preservePathOrder : false;
     var matches = [];
-
     // Support single path/pattern string
     paths = typeof paths === "string" ? [paths] : paths;
     patterns = typeof patterns === "string" ? [patterns] : patterns;
-
     if (!patterns || patterns.length === 0) {
       return matches; 
     }
-
     // Store filtered patterns in options 
     var filtered = this.filterPatterns(patterns);
     options.patterns = filtered[0];
@@ -30,16 +27,12 @@ class Glob {
             match: p,
             pattern: foundPattern
           });
-          if(options.ignoreExtension){
-            matches.ignoreExtension = true;
-          }
         }
       });
     } else {
       // Single pattern should have the same performance
       var singlePatternOptions = {
-        negatePatterns: options.negatePatterns,
-        ignoreExtension: options.ignoreExtension
+        negatePatterns: options.negatePatterns
       };
       options.patterns.forEach(function (pattern) {
         singlePatternOptions.patterns = [pattern];
@@ -50,23 +43,15 @@ class Glob {
               match: p,
               pattern: foundPattern
             });
-            if(options.ignoreExtension){
-              matches.ignoreExtension = true;
-            }
           }
         });
       });
     }
+
     return matches;
   }
 
   isMatch(s, patterns, options) {
-    if(options.ignoreExtension){
-      var index = s.indexOf(".");
-      if(index > -1){
-        s = s.substr(0, s.indexOf("."));
-      }
-    }
     options = options || {};
     options.caseSensitive = options.caseSensitive ? "" : "i";
 
@@ -85,14 +70,7 @@ class Glob {
 
     // Check if match with pattern
     for (var i = 0; i < patterns.length; i++) {
-      var currentPattern = patterns[i];
-      if(options.ignoreExtension){
-        var index = currentPattern.indexOf(".");
-        if(index > -1){
-          currentPattern = currentPattern.substr(0, currentPattern.indexOf("."));
-        }
-      }      
-      if (s.match(new RegExp("^" + this.patternToRegex(currentPattern) + "$"), options.caseSensitive)) {
+      if (s.match(new RegExp("^" + this.patternToRegex(patterns[i]) + "$"), options.caseSensitive)) {
         // Check if match with negate pattern
         for (var j = 0; j < negatePatterns.length; j++) {
           if (s.match(new RegExp("^" + this.patternToRegex(negatePatterns[j]) + "$"), options.caseSensitive)) {
