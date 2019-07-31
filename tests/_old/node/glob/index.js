@@ -6,11 +6,12 @@ var paths = [
 ];
 var patternsMatch = ["/a**.txt"];
 var patternsFiles = ["**.js"];
+var sortFiles = ["resources/sort/**.txt"];
 
-var matches = glob.match(paths, patternsMatch);
-console.dir(matches);
-var matchesNoExt = glob.match(paths, patternsMatch, {ignoreExtension:true});
-console.log("IgnoreExtension",matchesNoExt);
+// var matches = glob.match(paths, patternsMatch);
+// console.dir(matches);
+// var matchesNoExt = glob.match(paths, patternsMatch, {ignoreExtension:true});
+// // console.log("IgnoreExtension",matchesNoExt);
 
 // glob.files(patternsFiles, {
 //   path: __dirname
@@ -32,3 +33,40 @@ console.log("IgnoreExtension",matchesNoExt);
 // }).catch(e => {
 //   console.log("Err");
 // })
+
+
+glob.files(sortFiles, {
+  path: __dirname,
+  sort:true
+}, function (error, result) {
+  // console.dir(result);
+});
+
+
+// var array = [{
+//     file: "a"
+//   },
+//   {
+//     file: "d"
+//   },
+//   {
+//     file: "c"
+//   },
+//   {
+//     file: "b"
+//   },
+// ];
+
+// function compare(a, b) {
+//   if (a.file < b.file) {
+//     return -1;
+//   }
+//   if (a.file > b.file) {
+//     return 1;
+//   }
+//   return 0;
+// }
+
+// console.log("1", array);
+// array.sort(compare);
+// console.log("2", array);

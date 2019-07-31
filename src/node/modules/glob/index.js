@@ -130,6 +130,9 @@ class Glob {
         entry.file = path.normalize(path.join(options.path, entry.match)).replace(/\\/g, "/");
         return entry;
       });
+      if(options.sort){
+        matchesWithFile.sort(self.sortFiles);
+      }      
       callback(error, matchesWithFile);
     });
   }
@@ -176,6 +179,18 @@ class Glob {
       });
     });
   }
+
+
+  sortFiles(a, b) {
+    if (a.file < b.file) {
+      return -1;
+    }
+    if (a.file > b.file) {
+      return 1;
+    }
+    return 0;
+  }
+
 }
 
 module.exports = new Glob();
