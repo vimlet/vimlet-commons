@@ -1,6 +1,6 @@
 {
   "name": "@vimlet/commons-run",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Platform independent exec",
   "main": "index.js",
   "dependencies": {
