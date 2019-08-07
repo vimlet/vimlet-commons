@@ -71,20 +71,26 @@ exports.exec = function (command, options, doneHandler) {
 @param-optional {function} doneHandler [Default done callback function(error, exitCode)]
 */
 exports.fetch = function (command, options, doneHandler) {
+  if (!doneHandler) {
+    return new Promise(function (resolve, reject) {
+      exports.fetch(command, options, function (error, data) {
+        error ? reject(error) : resolve(data);
+      });
+    });
+  }
   var stringOutput = "";
+  options.execHandler = function (error, out) {
+    if (out) {
+      stringOutput += out;
+    }
 
+    if (error) {
+      stringOutput += error;
+    }
+  };
   exports.exec(
     command,
     options,
-    function (out, error) {
-      if (out) {
-        stringOutput += out;
-      }
-
-      if (error) {
-        stringOutput += error;
-      }
-    },
     function () {
       if (doneHandler) {
         doneHandler(null, stringOutput);

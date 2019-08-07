@@ -8,10 +8,10 @@ var patternsMatch = ["/a**.txt"];
 var patternsFiles = ["**.js"];
 var sortFiles = ["resources/sort/**.txt"];
 
-// var matches = glob.match(paths, patternsMatch);
-// console.dir(matches);
+var matches = glob.match(paths, patternsMatch);
+console.dir(matches);
 // var matchesNoExt = glob.match(paths, patternsMatch, {ignoreExtension:true});
-// // console.log("IgnoreExtension",matchesNoExt);
+// console.log("IgnoreExtension",matchesNoExt);
 
 // glob.files(patternsFiles, {
 //   path: __dirname
@@ -35,12 +35,12 @@ var sortFiles = ["resources/sort/**.txt"];
 // })
 
 
-glob.files(sortFiles, {
-  path: __dirname,
-  sort:true
-}, function (error, result) {
-  // console.dir(result);
-});
+// glob.files(sortFiles, {
+//   path: __dirname,
+//   sort:true
+// }, function (error, result) {
+//   // console.dir(result);
+// });
 
 
 // var array = [{

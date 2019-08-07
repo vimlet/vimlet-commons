@@ -1,4 +1,4 @@
-var run = require("../../../src/node/modules/run");
+var run = require("../../../../src/node/modules/run");
 
 // run.exec("dir", "/a");
 
