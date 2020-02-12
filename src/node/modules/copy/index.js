@@ -9,11 +9,18 @@ var watch = require("./lib/watch");
 var deasync = require("deasync");
 
 
-
+// @function copy (public) [Copy given files] @param include @param output @param options [clean: Clean output directory] @param callback
 module.exports.copy = async function (include, output, options, callback) {
+    if (!callback) {
+        return new Promise(function (resolve, reject) {
+            module.exports.copy(include, output, options, function (error) {
+                error ? reject(error) : resolve();
+            });
+        });
+    }
     options = options || {};
-    if (options.clean) {        
-        await io.deleteFolderRecursive(output);                    
+    if (options.clean) {
+        await io.deleteFolderRecursive(output);
     }
     var totalFiles = 0;
     var rootsArray = await io.getFiles(include, options);
@@ -40,16 +47,23 @@ module.exports.copy = async function (include, output, options, callback) {
     }
 };
 
-module.exports.copySync = function (include, output, options) {
-    var done = false;
-    var data;
-    module.exports.copy(include, output, options, function cb(res) {
-        data = res;
-        done = true;
+module.exports.copySync = async function (include, output, options) {
+    options = options || {};
+    if (options.clean) {
+        io.deleteFolderRecursiveSync(output);
+    }
+    var totalFiles = 0;
+    var rootsArray = await io.getFiles(include, options);
+    rootsArray.forEach(function (rootObject) {
+        totalFiles += rootObject.files.length;
     });
-    deasync.loopWhile(function () {
-        return !done;
-    });
+    if (totalFiles != 0) {
+        rootsArray.forEach(function (rootObject) {
+            rootObject.files.forEach(function (relativePath) {
+                fs.copySync(path.join(rootObject.root, relativePath), path.join(output, relativePath));
+            });
+        });
+    }
 };
 
 

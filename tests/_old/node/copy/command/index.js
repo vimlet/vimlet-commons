@@ -19,13 +19,13 @@ var output = path.join(__dirname, "output");
 
 
 
-commons.run.exec("vimlet-copy", {args:["-i", include, "-o", output]}, function (error, data) {
-    if (error) {
-      console.error(error);
-    } else {
-      console.log("done!");
-    }
-  });
+// commons.run.exec("vimlet-copy", {args:["-i", include, "-o", output]}, function (error, data) {
+//     if (error) {
+//       console.error(error);
+//     } else {
+//       console.log("done!");
+//     }
+//   });
 
   
 // commons.run.exec("vimlet-copy", {args:["-w", "-i", "resources/**/*.*", "-o", "output"]}, function (error, data) {

@@ -231,12 +231,13 @@ function deleteFolderRecursive(folderPath, callback) {
   callback = callback || function () {}; // rimraf doesn't accept null options nor null callback
   rimraf(folderPath, {}, callback);
 };
+
 /*
 @function (public) deleteFolderRecursiveSync [Delete a folder and its content] @param folderPath {string} [Folder path]
  */
-// exports.deleteFolderRecursiveSync = function (folderPath) {
-//   rimraf.sync(folderPath);
-// };
+exports.deleteFolderRecursiveSync = function (folderPath) {
+  rimraf.sync(folderPath);
+};
 
 
 /*

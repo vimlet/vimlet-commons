@@ -1,5 +1,5 @@
 var glob = require("../../../../src/node/modules/glob");;
-
+var path = require("path");
 var paths = [
   "/a/b/c.txt",
   "/a"
@@ -8,8 +8,8 @@ var patternsMatch = ["/a**.txt"];
 var patternsFiles = ["**.js"];
 var sortFiles = ["resources/sort/**.txt"];
 
-var matches = glob.match(paths, patternsMatch);
-console.dir(matches);
+// var matches = glob.match(paths, patternsMatch);
+// console.dir(matches);
 // var matchesNoExt = glob.match(paths, patternsMatch, {ignoreExtension:true});
 // console.log("IgnoreExtension",matchesNoExt);
 
@@ -32,7 +32,20 @@ console.dir(matches);
 //   console.log(data);
 // }).catch(e => {
 //   console.log("Err");
-// })
+// });
+
+async function getFiles() {
+  var files = await glob.files("resources/**/subfolder/build.**.js");
+  console.log(files);
+  
+}
+getFiles();
+// async function getFiles() {
+//   var files = await glob.files(path.resolve("resources/**/subfolder/build.**.js"));
+//   console.log(files);
+  
+// }
+// getFiles();
 
 
 // glob.files(sortFiles, {
