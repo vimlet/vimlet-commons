@@ -6,7 +6,6 @@ var glob = require("glob");
 var fs = require("fs-extra");
 var cli = require("@vimlet/cli").instantiate();
 var watch = require("./lib/watch");
-var deasync = require("deasync");
 
 
 // @function copy (public) [Copy given files] @param include @param output @param options [clean: Clean output directory] @param callback

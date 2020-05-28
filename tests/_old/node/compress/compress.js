@@ -1,5 +1,5 @@
-var compress = require("../../../src/node/modules/compress");
-var io = require("../../../src/node/modules/io");
+var compress = require("../../../../src/node/modules/compress");
+var io = require("../../../../src/node/modules/io");
 var path = require("path");
 var fs = require("fs-extra");
 
@@ -28,4 +28,4 @@ compress.pack(pack, out, null,
   }
 );
 
-
+compress.packSync(pack, out);

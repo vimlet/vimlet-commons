@@ -66,7 +66,7 @@ exports.packSync = function (file, dest, options) {
     data = res;
     done = true;
   });
-  deasync.loopWhile(function(){return !done;});
+  deasync.loopWhile(function(){return !done;});  
 };
 
 

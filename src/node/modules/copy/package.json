@@ -12,8 +12,7 @@
     "@vimlet/commons-io": "0.1.2",
     "fs-extra": "7.0.0",
     "mkdirp": "0.5.1",
-    "glob-watcher": "5.0.1",
-    "deasync": "0.1.14"
+    "glob-watcher": "5.0.1"
   },
   "author": "",
   "license": "MIT"
