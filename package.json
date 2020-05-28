@@ -14,7 +14,7 @@
     "zip",
     "tar",
     "tgz",
-    "compress", 
+    "compress",
     "uncompress",
     "spawn",
     "exec",
@@ -23,9 +23,9 @@
     "os"
   ],
   "devDependencies": {
-    "@vimlet/commons-run": "0.0.9",
-    "@vimlet/commons-io": "0.1.2",
-    "@vimlet/commons-copy": "0.1.7",
+    "@vimlet/commons-run": "0.0.12",
+    "@vimlet/commons-io": "0.1.3",
+    "@vimlet/commons-copy": "0.1.9",
     "intern": "4.4.2",
     "express": "4.16.4"
   }
