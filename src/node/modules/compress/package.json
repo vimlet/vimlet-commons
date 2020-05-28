@@ -1,6 +1,6 @@
 {
   "name": "@vimlet/commons-compress",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "File compression",
   "main": "index.js",
   "dependencies": {
