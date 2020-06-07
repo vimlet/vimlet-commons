@@ -1,6 +1,6 @@
 {
   "name": "@vimlet/commons-compress",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "File compression",
   "main": "index.js",
   "dependencies": {
@@ -11,7 +11,7 @@
     "multipipe": "1.0.2",
     "@vimlet/cli": "1.2.6",
     "glob": "7.1.3",
-    "@vimlet/commons-copy": "0.1.4",
+    "@vimlet/commons-copy": "0.1.9",
     "deasync": "0.1.20"
   },
   "bin": {
