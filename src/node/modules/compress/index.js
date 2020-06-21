@@ -10,7 +10,6 @@ var cli = require("@vimlet/cli").instantiate();
 var os = require("os");
 var glob = require("glob");
 var copy = require("@vimlet/commons-copy");
-var deasync = require("deasync");
 
 var tmpFolder = path.join(os.tmpdir(), "compress");
 
@@ -41,7 +40,14 @@ function hookOnEntryFinish(stream, fn) {
 @param {object} options [packHandler: Entry callback function(error, entry, entrySize, totalSize, totalCount), outputHandler: Default output callback function(out), redirects stdout when provided. format: The compression format, must exactly match one of these "zip", "tar", "tgz"]
 @param doneHandler [Default done callback function(error, data)]
 */
-exports.pack = function (file, dest, options, doneHandler) {
+exports.pack = function (file, dest, options, doneHandler) {  
+  if (!doneHandler) {
+    return new Promise(function (resolve, reject) {
+      exports.pack(file, dest, options, function (error, data) {
+        error ? reject(error) : resolve(data);
+      });
+    });
+  }
   fs.ensureDirSync(path.dirname(dest));
   options = options || {};
   var format = options.format || "zip";
@@ -51,24 +57,6 @@ exports.pack = function (file, dest, options, doneHandler) {
     outputStdout("Unsupported format", options.outputHandler);
   }
 };
-/*
-@function packSync
-@description Packs files synchronous
-@param {string} file [Source file or directory]
-@param {string} dest [Destination file]
-@param {string} format [The compression format, must exactly match one of these "zip", "tar", "tgz"]
-@param {object} options [packHandler: Entry callback function(error, entry, entrySize, totalSize, totalCount), outputHandler: Default output callback function(out), redirects stdout when provided. format: The compression format, must exactly match one of these "zip", "tar", "tgz"]
-*/
-exports.packSync = function (file, dest, options) {
-  var done = false;
-  var data;
-  exports.pack(file, dest, options, function cb(res){
-    data = res;
-    done = true;
-  });
-  deasync.loopWhile(function(){return !done;});  
-};
-
 
 /*
 @function unpack
@@ -79,6 +67,13 @@ exports.packSync = function (file, dest, options) {
 @param doneHandler [Default done callback function(error, data)]
 */
 exports.unpack = function (file, dest, options, doneHandler) {
+  if (!doneHandler) {
+    return new Promise(function (resolve, reject) {
+      exports.unpack(file, dest, options, function (error, data) {
+        error ? reject(error) : resolve(data);
+      });
+    });
+  }
   options = options || {};
   var format = options.format || "zip";
   if (isValidFormat(format)) {
@@ -86,22 +81,6 @@ exports.unpack = function (file, dest, options, doneHandler) {
   } else {
     outputStdout("Unsupported format", options.outputHandler);
   }
-};
-/*
-@function unpackSync
-@description Unpack files syncronous
-@param {string} file [Source file or directory]
-@param {string} dest [Destination file]
-@param {object} options [unpackHandler: Entry callback function(error, entry, entrySize, totalSize, totalCount), outputHandler: Default output callback function(out), redirects stdout when provided. format: The compression format, must exactly match one of these "zip", "tar", "tgz"]
-*/
-exports.unpackSync = function (file, dest, options) {
-  var done = false;
-  var data;
-  exports.unpack(file, dest, options, function cb(res){
-    data = res;
-    done = true;
-  });
-  deasync.loopWhile(function(){return !done;});
 };
 
 
@@ -531,9 +510,9 @@ if (!module.parent) {
     cli.printHelp();
   } else {
     if (cli.result.unpack) {
-      exports.unpackSync(include, output, options);
+      exports.unpack(include, output, options);
     } else {
-      exports.packSync(include, output, options);
+      exports.pack(include, output, options);
     }
   }
 
