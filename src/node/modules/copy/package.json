@@ -1,6 +1,6 @@
 {
   "name": "@vimlet/commons-copy",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -9,7 +9,7 @@
   "scripts": {},
   "dependencies": {
     "@vimlet/cli": "1.2.6",
-    "@vimlet/commons-io": "0.1.2",
+    "@vimlet/commons-io": "0.1.3",
     "fs-extra": "7.0.0",
     "mkdirp": "0.5.1",
     "glob-watcher": "5.0.1"
