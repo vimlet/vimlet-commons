@@ -3,17 +3,8 @@ var path = require("path");
 var glob = require("glob");
 var fs = require("fs-extra");
 var rimraf = require("rimraf");
-const universalify = require('universalify').fromCallback;
 var cwd = process.cwd();
 
-
-/*
-@function getFiles {object[]} [Universalify getFiles private function. Get included files, returns an object wich contains relative path and root folder]
-@param dir {string[]} [Array of patterns to search or single pattern]
-@param options [exclude: patterns to exclude from search, ignoreExtension: ignore file extensions, includeFolders: Boolean to include folders as paths, default false]
-@param callback
- */
-exports.getFiles = universalify(getFiles);
 
 /*
 @function getFiles {object[]} [Get included files, returns an object wich contains relative path and root folder]
@@ -21,7 +12,14 @@ exports.getFiles = universalify(getFiles);
 @param options [exclude: patterns to exclude from search, ignoreExtension: ignore file extensions, includeFolders: Boolean to include folders as paths, default false]
 @param callback
  */
-async function getFiles(dir, options, callback) {
+exports.getFiles = async function getFiles(dir, options, callback) {
+  if (!callback) {
+    return new Promise(function (resolve, reject) {
+      exports.getFiles(dir, options, function (error, data) {
+        error ? reject(error) : resolve(data);
+      });
+    });
+  }
   options = options || {};
   if (options.ignoreExtension) {
     var noExtensionDir = [];
@@ -59,12 +57,13 @@ async function getFiles(dir, options, callback) {
 };
 
 
+
 /*
 @function absoluteFiles {string[]} (public) [Return an array of absolute paths from a file index]
 @param index {object} [Object with folders and relative paths]
  */
 exports.absoluteFiles = function (index) {
-  var result = [];  
+  var result = [];
   index.forEach(function (folder) {
     folder.files.forEach(function (file) {
       var currentF = path.join(folder.root, file);
@@ -138,15 +137,17 @@ async function relativePath(dir, currentPath) {
 
 
 /*
-@function (public) getRootFromPattern {string} [Universalify getRootFromPattern private function. Get root from a pattern] @param pattern {string}
- */
-exports.getRootFromPattern = universalify(getRootFromPattern);
-
-/*
 @function (public) getRootFromPattern {string} [Get root from a pattern] @param pattern {string} @param callback
  */
-function getRootFromPattern(pattern, callback) {
-  isDirectory(pattern, function (error, data) {
+exports.getRootFromPattern = function getRootFromPattern(pattern, callback) {
+  if (!callback) {
+    return new Promise(function (resolve, reject) {
+      exports.getRootFromPattern(pattern, function (error, data) {
+        error ? reject(error) : resolve(data);
+      });
+    });
+  }
+  exports.isDirectory(pattern, function (error, data) {
     if (!data) {
       if (glob.hasMagic(pattern)) {
         callback(null, pattern.substring(0, pattern.indexOf("*")));
@@ -159,18 +160,21 @@ function getRootFromPattern(pattern, callback) {
   });
 };
 
-/*
-@function isDirectory (public) [Universalify isDirectory private function. Check if a path is directory or file]
-@param filePath {string}
-@param callback
- */
-exports.isDirectory = universalify(isDirectory);
+
 /*
 @function isDirectory (private) [Check if a path is directory or file]
 @param filePath {string}
 @param callback
  */
-function isDirectory(filePath, callback) {
+exports.isDirectory = function isDirectory(filePath, callback) {
+  if (!callback) {
+    return new Promise(function (resolve, reject) {
+      exports.isDirectory(filePath, function (error, data) {
+        error ? reject(error) : resolve(data);
+      });
+    });
+  }
+
   try {
     fs.stat(filePath, function (err, data) {
       if (err) {
@@ -185,22 +189,24 @@ function isDirectory(filePath, callback) {
 };
 
 
-/*
-@function getFileSize (public)
-@description Universalify getFileSize private function. Returns the size of a file
-@param {string} filePath [Path of the file]
-@param callback
-*/
-exports.getFileSize = universalify(getFileSize);
+
 /*
 @function getFileSize (private)
 @description Returns the size of a file
 @param {string} filePath [Path of the file]
 @param callback
 */
-function getFileSize(filePath, callback) {
+exports.getFileSize = function getFileSize(filePath, callback) {
+  if (!callback) {
+    return new Promise(function (resolve, reject) {
+      exports.getFileSize(filePath, function (error, data) {
+        error ? reject(error) : resolve(data);
+      });
+    });
+  }
+
   try {
-    isDirectory(filePath, function (err, data) {
+    exports.isDirectory(filePath, function (err, data) {
       if (data) {
         callback(null, -1);
       } else {
@@ -219,18 +225,23 @@ function getFileSize(filePath, callback) {
 };
 
 
-/*
-@function (public) deleteFolderRecursive [Universalify deleteFolderRecursive private function. Delete a folder and its content] @param folderPath {string} [Folder path] @param callback
- */
-exports.deleteFolderRecursive = universalify(deleteFolderRecursive);
 
 /*
 @function (public) deleteFolderRecursive [Delete a folder and its content] @param folderPath {string} [Folder path] @param callback
  */
-function deleteFolderRecursive(folderPath, callback) {
+exports.deleteFolderRecursive = function deleteFolderRecursive(folderPath, callback) {
+  if (!callback) {
+    return new Promise(function (resolve, reject) {
+      exports.deleteFolderRecursive(folderPath, function (error, data) {
+        error ? reject(error) : resolve(data);
+      });
+    });
+  }
+
   callback = callback || function () {}; // rimraf doesn't accept null options nor null callback
   rimraf(folderPath, {}, callback);
 };
+
 
 /*
 @function (public) deleteFolderRecursiveSync [Delete a folder and its content] @param folderPath {string} [Folder path]
@@ -241,22 +252,21 @@ exports.deleteFolderRecursiveSync = function (folderPath) {
 
 
 /*
-@function isInPattern {boolean} (public) [Universalify isInPattern private function. Check if a given path belongs to a pattern]
-@param filePath {string} [Path to file]
-@param pattern {string}
-@param options {object} [exlude:files to exclude from search]
-@param callback
- */
-exports.isInPattern = universalify(isInPattern);
-
-/*
 @function isInPattern {boolean} (public) [Check if a given path belongs to a pattern]
 @param filePath {string} [Path to file]
 @param pattern {string or string[]}
 @param options {object} [exlude:files to exclude from search]
 @param callback
  */
-async function isInPattern(filePath, pattern, options, callback) {
+exports.isInPattern = async function isInPattern(filePath, pattern, options, callback) {
+  if (!callback) {
+    return new Promise(function (resolve, reject) {
+      exports.isInPattern(filePath, pattern, options, function (error, data) {
+        error ? reject(error) : resolve(data);
+      });
+    });
+  }
+
   if (!pattern) {
     callback(null, false);
   } else {
@@ -282,6 +292,7 @@ async function isInPattern(filePath, pattern, options, callback) {
   }
 };
 
+
 // @function isInPatternSingle (private) [Check if a file is in one an only one pattern. The difference between this function and isInPattern is that isInPattern accepts array also] @param filePath @param pattern @param options
 function isInPatternSingle(filePath, pattern, options) {
   return new Promise(async function (resolve, reject) {
@@ -304,20 +315,19 @@ function isInPatternSingle(filePath, pattern, options) {
 
 
 /*
-@function writeToDisk (public) [Universalify writeToDisk private function. Write a string to disk]
-@param output {string} [Output folder]
-@param data {string} [Data to write]
-@param callback
- */
-exports.writeToDisk = universalify(writeToDisk);
-
-/*
 @function writeToDisk (private)
 @param output {string} [Output folder]
 @param data {string} [Data to write]
 @param callback
  */
-function writeToDisk(output, data, callback) {
+exports.writeToDisk = function (output, data, callback) {
+  if (!callback) {
+    return new Promise(function (resolve, reject) {
+      exports.writeToDisk(output, data, function (error) {
+        error ? reject(error) : resolve();
+      });
+    });
+  }
   fs.mkdirp(path.dirname("" + output), function (err) {
     if (err) {
       if (callback) {
@@ -338,17 +348,37 @@ function writeToDisk(output, data, callback) {
       }
     });
   });
-};
-
+}
 
 /*
-@function getRelativeOutput (public) [Universalify getRelativeOutput private function. Get path relative to output from a file and its include pattern. This function is useful for watchers to check if a modified file belongs to a include pattern and then find the folder where the modification file should be reflected.]
-@param include [Include patterns]
-@param output
-@param filePath
-@param options [delete: Flag to know if the file was deleted so it skips files in pattern check]
-*/
-exports.getRelativeOutput = universalify(getRelativeOutput);
+@function writeToDisk (private)
+@param output {string} [Output folder]
+@param data {string} [Data to write]
+@param callback
+ */
+// function writeToDisk(output, data, callback) {
+//   fs.mkdirp(path.dirname("" + output), function (err) {
+//     if (err) {
+//       if (callback) {
+//         callback(err);
+//       }
+//       return console.log(err);
+//     }
+//     fs.writeFile("" + output, data, function (err) {
+//       if (err) {
+//         if (callback) {
+//           callback(err);
+//         }
+//         return console.log(err);
+//       } else {
+//         if (callback) {
+//           callback();
+//         }
+//       }
+//     });
+//   });
+// };
+
 
 /*
 @function getRelativeOutput (private) [Get path relative to output from a file and its include pattern]
@@ -357,11 +387,19 @@ exports.getRelativeOutput = universalify(getRelativeOutput);
 @param filePath
 @param options [delete: Flag to know if the file was deleted so it skips files in pattern check]
 */
-async function getRelativeOutput(include, output, filePath, options, callback) {
+exports.getRelativeOutput = async function getRelativeOutput(include, output, filePath, options, callback) {
+  if (!callback) {
+    return new Promise(function (resolve, reject) {
+      exports.getRelativeOutput(include, output, filePath, options, function (error, data) {
+        error ? reject(error) : resolve(data);
+      });
+    });
+  }
+
   var options = options || {};
   var relativeOutput;
   if (!Array.isArray(include)) {
-    var inPattern = await exports.isInPattern(filePath, include, null);    
+    var inPattern = await exports.isInPattern(filePath, include, null);
     if (inPattern || options.deleted) {
       var rootFromPattern = await exports.getRootFromPattern(include);
       // Relative output is where the template will be saved after parse
@@ -380,8 +418,7 @@ async function getRelativeOutput(include, output, filePath, options, callback) {
     }
   }
   callback(null, relativeOutput);
-}
-
+};
 
 
 // @function getCommonBasePath (public) {string} [Return base path, what all have in common, for given paths] @param paths {string[]} [String with multiple path to compare]
