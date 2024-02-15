@@ -11,17 +11,16 @@ module.exports.json = {
             for (var prop in obj) {
                 if (obj.hasOwnProperty(prop)) {
 
-                    if (merged[prop] && typeof merged[prop] != typeof obj[prop]) {
+                    if (obj[prop] === null) {
+                        delete merged[prop];
+                    }
+                    else if (merged[prop] && typeof merged[prop] != typeof obj[prop]) {
                         merged[prop] = obj[prop];
                     } else {
                         if (obj[prop] && typeof obj[prop] == "object" && !Array.isArray(obj[prop])) {
                             merged[prop] = module.exports.json.deepMerge(merged[prop], obj[prop]);
                         } else {
-                            if (obj[prop] != null) {
-                                merged[prop] = obj[prop];
-                            } else {
-                                delete merged[prop];
-                            }
+                            merged[prop] = obj[prop];
                         }
                     }
 
