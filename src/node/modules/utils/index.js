@@ -17,7 +17,7 @@ module.exports.json = {
                     else if (merged[prop] && typeof merged[prop] != typeof obj[prop]) {
                         merged[prop] = obj[prop];
                     } else {
-                        if (obj[prop] && typeof obj[prop] == "object" && !Array.isArray(obj[prop])) {
+                        if (obj[prop] && typeof obj[prop] == "object" && !Array.isArray(obj[prop]) && !(obj[prop] instanceof Date)) {
                             merged[prop] = module.exports.json.deepMerge(merged[prop], obj[prop]);
                         } else {
                             merged[prop] = obj[prop];
